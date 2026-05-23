@@ -3,6 +3,7 @@ import ProtectedRoute from '@/layout/ProtectedRoute';
 import DashboardLayout from '@/layout/DasboardLayout';
 import AdminDashboardPage from '@/pages/AdminDashboardPage';
 import UserManagerPage from '@/pages/UserManagerPage';
+import RoleManagerPage from '@/pages/RoleManagerPage';
 import SubscriptionManagerPage from '@/pages/SubscriptionManagerPage';
 import QuestionBankPage from '@/pages/QuestionBankPage';
 import ExamManagementPage from '@/pages/ExamManagementPage';
@@ -20,6 +21,7 @@ function DashboardRoute() {
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<AdminDashboardPage />} />
         <Route path="users" element={<UserManagerPage />} />
+        <Route path="roles" element={<RoleManagerPage />} />
         <Route path="subscriptions" element={<SubscriptionManagerPage />} />
         <Route path="questions" element={<QuestionBankPage />} />
         <Route path="exams" element={<ExamManagementPage />} />

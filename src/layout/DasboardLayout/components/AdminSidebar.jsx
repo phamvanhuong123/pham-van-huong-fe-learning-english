@@ -1,8 +1,11 @@
 import { NavLink, useNavigate } from 'react-router';
 import { useState } from 'react';
+import { handleLogoutApi } from '@/services/authServices';
+import { toast } from 'sonner';
 import {
   LayoutDashboard,
   Users,
+  UserCheck,
   CreditCard,
   BookOpen,
   Bell,
@@ -21,6 +24,7 @@ import { Button } from '@/components/ui/button';
 const NAV_ITEMS = [
   { label: 'Dashboard', to: '/admin/dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
   { label: 'Người dùng', to: '/admin/users', icon: <Users className="w-4 h-4" /> },
+  { label: 'Quản lý vai trò', to: '/admin/roles', icon: <UserCheck className="w-4 h-4" /> },
   {
     label: 'Đăng ký VIP',
     to: '/admin/subscriptions',
@@ -39,13 +43,18 @@ function AdminSidebar({ onClose }) {
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const handleLogout = () => {
-    setIsLoggingOut(true);
-    console.log("Mock logout initiated...");
-    setTimeout(() => {
-      setIsLoggingOut(false);
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      await handleLogoutApi();
+      toast.success('Đăng xuất thành công!');
       navigate('/login');
-    }, 800);
+    } catch (error) {
+      toast.error('Có lỗi xảy ra khi đăng xuất. Vui lòng thử lại.');
+      console.error(error);
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   // Mock pending subscription counts since there is no api yet

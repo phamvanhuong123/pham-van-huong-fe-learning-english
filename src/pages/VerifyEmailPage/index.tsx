@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { verifyEmailApi } from '@/services/authServices';
 
 const VerifyEmailPage = () => {
   const [searchParams] = useSearchParams();
@@ -10,12 +11,16 @@ const VerifyEmailPage = () => {
 
   useEffect(() => {
     if (token) {
-      setStatus('pending');
-      const timer = setTimeout(() => {
-        setStatus('success');
-      }, 1500);
-
-      return () => clearTimeout(timer);
+      const verify = async () => {
+        try {
+          setStatus('pending');
+          await verifyEmailApi(token);
+          setStatus('success');
+        } catch (error) {
+          setStatus('error');
+        }
+      };
+      verify();
     }
   }, [token]);
 
