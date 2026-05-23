@@ -44,6 +44,7 @@ const LoginPage = () => {
       toast.success('Đăng nhập thành công!');
       
       if (user.role === "superAdmin" || user.role === "ADMIN" || data.email.includes("admin")) {
+        console.log(user)
         navigate('/admin/dashboard');
       } else {
         navigate('/');

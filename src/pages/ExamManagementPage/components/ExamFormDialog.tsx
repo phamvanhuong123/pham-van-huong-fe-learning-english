@@ -59,7 +59,7 @@ export function ExamFormDialog({
     PART7: '',
   });
 
-  const availableExams = allExams.filter((e) => e.part !== 'FULL' && !e.parentExamId);
+  const availableExams = allExams.filter((e) => e.part !== 'FULL' && (!e.parentExamId || e.parentExamId === initialData?.id));
 
   const examsByPart: Record<string, AdminExamItem[]> = {
     PART1: availableExams.filter((e) => e.part === 'PART1'),

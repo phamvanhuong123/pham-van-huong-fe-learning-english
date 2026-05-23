@@ -73,14 +73,14 @@ export function ExamTable({
         <Table>
           <TableHeader className="bg-muted/80 backdrop-blur-sm sticky top-0 z-10 border-b border-border shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
             <TableRow className="hover:bg-transparent border-none">
-              <TableHead className="w-[40px] h-12">
+              <TableHead className="w-10 h-12">
                 <Checkbox 
                   checked={exams.length > 0 && selectedIds.length === exams.length}
                   onCheckedChange={toggleAll}
                 />
               </TableHead>
-              <TableHead className="w-[100px] h-12 font-semibold text-center">Mã đề</TableHead>
-              <TableHead className="min-w-[250px] h-12 font-semibold text-foreground">Tiêu đề</TableHead>
+              <TableHead className="w-25 h-12 font-semibold text-center">Mã đề</TableHead>
+              <TableHead className="min-w-62.5 h-12 font-semibold text-foreground">Tiêu đề</TableHead>
               <TableHead className="h-12 font-semibold text-foreground">Phân loại</TableHead>
               <TableHead className="h-12 font-semibold text-foreground text-center">Câu hỏi</TableHead>
               <TableHead className="h-12 font-semibold text-foreground">Độ khó</TableHead>
@@ -109,7 +109,7 @@ export function ExamTable({
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <div className="font-medium text-foreground truncate max-w-[300px] cursor-default">
+                        <div className="font-medium text-foreground truncate max-w-75 cursor-default">
                           {e.title}
                         </div>
                       </TooltipTrigger>
@@ -124,9 +124,9 @@ export function ExamTable({
                     <Badge variant="secondary" className="w-fit text-[10px] font-bold tracking-tight">
                       {e.part}
                     </Badge>
-                    <span className={e.type === 'VIP' ? 'text-amber-600 text-[11px] font-bold' : 'text-emerald-600 text-[11px] font-bold'}>
+                    <Badge variant={e.type === 'VIP' ? 'destructive' : 'outline'}  className={`${e.type === 'VIP' ? 'text-red-600 text-[11px] font-bold' : 'text-emerald-600 text-[11px] font-bold'} text-center`}>
                       {e.type}
-                    </span>
+                    </Badge>
                   </div>
                 </TableCell>
                 <TableCell className="py-4 text-center">

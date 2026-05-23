@@ -14,17 +14,16 @@ const AuthLayout = () => {
   return (
     <div className="h-screen max-h-screen w-full flex flex-col lg:flex-row bg-background overflow-hidden relative antialiased">
 
-      {/* ---------------- CỘT TRÁI (60% Desktop) - VÙNG TRUYỀN CẢM HƯNG HỌC TẬP TỐI GIẢN & CHÂN THỰC ---------------- */}
       <div className="hidden lg:flex lg:w-[58%] xl:w-[60%] h-full relative flex-col justify-between p-12 overflow-hidden bg-slate-50 dark:bg-[#0f111a] border-r border-border/40">
 
-        {/* Hào quang nền dịu nhẹ (Soft Unified Primary Glows) */}
-        <div className="w-[400px] h-[400px] rounded-full bg-primary/5 blur-[120px] absolute -top-40 -left-40 animate-aurora-1 pointer-events-none" />
-        <div className="w-[450px] h-[450px] rounded-full bg-primary/4 blur-[130px] absolute -right-20 top-1/4 animate-aurora-2 pointer-events-none" />
+   
+        <div className="w-100 h-100 rounded-full bg-primary/5 blur-[120px] absolute -top-40 -left-40 animate-aurora-1 pointer-events-none" />
+        <div className="w-112.5 h-112.5 rounded-full bg-primary/4 blur-[130px] absolute -right-20 top-1/4 animate-aurora-2 pointer-events-none" />
 
-        {/* Lưới tọa độ hình học mờ tinh tế (Geometric Grid) */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.015)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none" />
+       
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.015)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-size-[4rem_4rem] pointer-events-none" />
 
-        {/* Biểu tượng học tập đồng bộ một màu xám tinh tế (Floating Unified Slate Icons) */}
+      
         <div className="absolute top-[15%] left-[10%] text-slate-300 dark:text-slate-800 animate-float-1 select-none pointer-events-none">
           <BookOpen className="w-12 h-12" />
         </div>

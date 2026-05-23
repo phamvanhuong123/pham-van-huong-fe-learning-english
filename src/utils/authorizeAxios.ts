@@ -1,9 +1,11 @@
 import axios from 'axios'
 import { toast } from 'sonner'
-import { handleLogoutApi, refreshTokenApi } from '../services/authServices'
-import { useAuthStore } from '../store/useAuthStore'
+import { handleLogoutApi, refreshTokenApi } from '@/services/authServices'
+import { useAuthStore } from '@/store/useAuthStore'
 
-let authorizedAxiosInstance = axios.create()
+let authorizedAxiosInstance = axios.create({
+    baseURL: import.meta.env.VITE_API_ROOT || 'http://localhost:5000/api/v1'
+})
 //Thời gian chờ tối đa là 10 phút
 authorizedAxiosInstance.defaults.timeout = 1000 * 60 * 10
 
@@ -57,14 +59,14 @@ authorizedAxiosInstance.interceptors.response.use((response) => {
                 //Gán accessToken vào localStorage
                 // console.log('đã gọi refreshToken')
                 const { accessToken } = res.data
-                
+
                 // Update Zustand store
                 const setAuth = useAuthStore.getState().setAuth
                 const currentUser = useAuthStore.getState().userInfo
                 if (currentUser) {
-                  setAuth(currentUser, accessToken)
+                    setAuth(currentUser, accessToken)
                 }
-                
+
                 authorizedAxiosInstance.defaults.headers.Authorization = `Bearer ${accessToken}`
 
                 //Cho trường hợp cookie

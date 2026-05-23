@@ -14,7 +14,7 @@ import AdminGrammarPage from '@/pages/AdminGrammarPage';
 
 function DashboardRoute() {
   return (
-    <Route path="/admin" element={<ProtectedRoute requiredRole="ADMIN" />}>
+    <Route path="/admin" element={<ProtectedRoute requiredRole="superAdmin" />}>
       {/* Layer 2: Layout — sidebar + main content */}
       <Route element={<DashboardLayout />}>
         {/* Redirect /admin → /admin/dashboard */}
