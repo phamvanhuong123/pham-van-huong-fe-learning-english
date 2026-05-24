@@ -1,6 +1,6 @@
 import { ExamTable } from './ExamTable';
 import { ExamFormDialog } from './ExamFormDialog';
-import { DeleteConfirmDialog } from './DeleteConfirmDialog';
+import { DeleteConfirmDialog } from '@/components/common/DeleteConfirmDialog';
 import { Button } from '@/components/ui/button';
 import { Plus, Search, Filter } from 'lucide-react';
 import { Input } from '@/components/ui/input';
