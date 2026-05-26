@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { connectSocket, disconnectSocket } from '../lib/socket';
 
 interface UserInfo {
   id: string;
@@ -22,9 +23,15 @@ export const useAuthStore = create<AuthState>()(
       userInfo: null,
       accessToken: null,
 
-      setAuth: (user, token) => set({ userInfo: user, accessToken: token }),
+      setAuth: (user, token) => {
+        set({ userInfo: user, accessToken: token });
+        connectSocket(token);
+      },
 
-      clearAuth: () => set({ userInfo: null, accessToken: null }),
+      clearAuth: () => {
+        set({ userInfo: null, accessToken: null });
+        disconnectSocket();
+      },
     }),
     {
       name: 'auth-storage', // Tên key trong localStorage

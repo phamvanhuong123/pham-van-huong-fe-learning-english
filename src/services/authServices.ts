@@ -32,3 +32,11 @@ export const refreshTokenApi = async () => {
         withCredentials: true
     });
 };
+
+export const forgotPasswordApi = async (email: string) => {
+    return await axios.post(`${API_ROOT}/forgot-password`, { email });
+};
+
+export const resetPasswordApi = async (data: { token: string; newPassword: string }) => {
+    return await axios.post(`${API_ROOT}/reset-password`, data);
+};

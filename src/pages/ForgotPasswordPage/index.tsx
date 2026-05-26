@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link } from 'react-router';
+import { useMutation } from '@tanstack/react-query';
+import { forgotPasswordApi } from '@/services/authServices';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -24,9 +26,18 @@ const ForgotPasswordPage = () => {
     resolver: zodResolver(forgotPasswordSchema),
   });
 
+  const { mutate: forgotPassword, isPending } = useMutation({
+    mutationFn: (email: string) => forgotPasswordApi(email),
+    onSuccess: () => {
+      setSuccessMsg("Một link đặt lại mật khẩu đã được gửi đến email của bạn. Vui lòng kiểm tra hộp thư.");
+    },
+    onError: (error: any) => {
+      // toast error is handled by axios interceptor usually, or we can handle here
+    }
+  });
+
   const onSubmit = (data: ForgotPasswordFormValues) => {
-    console.log("Mock Forgot Password Submitted:", data);
-    setSuccessMsg("Một link đặt lại mật khẩu đã được gửi đến email của bạn. Vui lòng kiểm tra hộp thư.");
+    forgotPassword(data.email);
   };
 
   return (
@@ -49,8 +60,8 @@ const ForgotPasswordPage = () => {
               <Input id="email" type="email" placeholder="m@example.com" {...register('email')} />
               {errors.email && <p className="text-sm text-destructive mt-1">{errors.email.message}</p>}
             </div>
-            <Button type="submit" className="w-full">
-              Gửi link khôi phục
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending ? 'Đang gửi...' : 'Gửi link khôi phục'}
             </Button>
           </form>
         )}

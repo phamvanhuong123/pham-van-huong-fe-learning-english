@@ -11,6 +11,8 @@ import AdminNotificationsPage from '@/pages/AdminNotificationsPage';
 import TrashManagerPage from '@/pages/TrashManagerPage';
 import AdminVocabPage from '@/pages/AdminVocabPage';
 import AdminGrammarPage from '@/pages/AdminGrammarPage';
+import UserDetailPage from '@/pages/UserDetailPage';
+import AdminLogsPage from '@/pages/AdminLogsPage';
 
 function DashboardRoute() {
   return (
@@ -21,7 +23,9 @@ function DashboardRoute() {
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<AdminDashboardPage />} />
         <Route path="users" element={<UserManagerPage />} />
+        <Route path="users/:id" element={<UserDetailPage />} />
         <Route path="roles" element={<RoleManagerPage />} />
+        <Route path="logs" element={<AdminLogsPage />} />
         <Route path="subscriptions" element={<SubscriptionManagerPage />} />
         <Route path="questions" element={<QuestionBankPage />} />
         <Route path="exams" element={<ExamManagementPage />} />

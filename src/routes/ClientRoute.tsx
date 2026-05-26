@@ -1,5 +1,6 @@
 import { Route } from 'react-router';
 import ClientLayout from '@/layout/ClientLayout';
+import ProtectedRoute from '@/layout/ProtectedRoute';
 import HomePage from '@/pages/HomePage';
 import ExamsPage from '@/pages/ExamsPage';
 import VocabPage from '@/pages/VocabPage';
@@ -19,11 +20,15 @@ function ClientRoute() {
         <Route path="exams/:id" element={<ExamDetailPage />} />
         <Route path="vocab" element={<VocabPage />} />
         <Route path="grammar" element={<GrammarPage />} />
-        <Route path="history" element={<HistoryPage />} />
-        <Route path="results/:resultId" element={<ScoreReportPage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="history" element={<HistoryPage />} />
+          <Route path="results/:resultId" element={<ScoreReportPage />} />
+        </Route>
       </Route>
-      <Route path="exams/:id/take" element={<ClientExamWorkspacePage />} />
-      <Route path="results/:resultId/review" element={<ReviewModePage />} />
+      <Route element={<ProtectedRoute />}>
+        <Route path="exams/:id/take" element={<ClientExamWorkspacePage />} />
+        <Route path="results/:resultId/review" element={<ReviewModePage />} />
+      </Route>
     </>
   );
 }
