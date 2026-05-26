@@ -39,7 +39,11 @@ const NAV_ITEMS = [
   { label: 'Thùng rác', to: '/admin/trash', icon: <Trash2 className="w-4 h-4" /> },
 ];
 
-function AdminSidebar({ onClose }) {
+interface AdminSidebarProps {
+  onClose?: () => void;
+}
+
+function AdminSidebar({ onClose }: AdminSidebarProps) {
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -60,7 +64,7 @@ function AdminSidebar({ onClose }) {
   // Mock pending subscription counts since there is no api yet
   const pendingCount = 5;
 
-  const getBadgeValue = (badgeKey) => {
+  const getBadgeValue = (badgeKey?: string) => {
     if (badgeKey === 'pendingSubscriptions') return pendingCount;
     return 0;
   };

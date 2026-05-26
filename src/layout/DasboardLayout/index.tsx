@@ -10,8 +10,8 @@ function DashboardLayout() {
   return (
     <div className="min-h-screen bg-background flex w-full">
       {/* Desktop Sidebar — cố định bên trái */}
-      <div className="hidden lg:flex lg:flex-shrink-0 h-screen sticky top-0">
-        <AdminSidebar />
+      <div className="hidden lg:flex lg:shrink-0 h-screen sticky top-0">
+        <AdminSidebar  />
       </div>
 
       {/* Mobile Sidebar Overlay */}

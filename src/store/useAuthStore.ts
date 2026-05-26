@@ -8,6 +8,8 @@ interface UserInfo {
   name: string;
   avatarUrl?: string;
   role: string;
+  isSuperAdmin: boolean;
+  permissions: string[];
 }
 
 interface AuthState {
