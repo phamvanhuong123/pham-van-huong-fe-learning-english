@@ -18,7 +18,7 @@ export const ExamsPagination: React.FC<ExamsPaginationProps> = ({ page, totalPag
         size="icon"
         disabled={page === 1} 
         onClick={() => setPage(p => Math.max(1, p - 1))}
-        className="h-10 w-10 rounded-full border-gray-200"
+        className="h-10 w-10 rounded-md border-gray-200"
       >
         <ChevronLeft className="h-5 w-5" />
       </Button>
@@ -36,7 +36,7 @@ export const ExamsPagination: React.FC<ExamsPaginationProps> = ({ page, totalPag
               key={p}
               variant={p === page ? "default" : "outline"}
               onClick={() => setPage(p)}
-              className={`h-10 w-10 rounded-full font-medium ${p === page ? 'bg-blue-600 shadow-md' : 'border-gray-200 text-gray-600 hover:text-blue-600'}`}
+              className={`h-10 w-10 rounded-md font-medium ${p === page ? 'bg-blue-600 shadow-sm' : 'border-gray-200 text-gray-600 hover:text-blue-600'}`}
             >
               {p}
             </Button>
@@ -49,7 +49,7 @@ export const ExamsPagination: React.FC<ExamsPaginationProps> = ({ page, totalPag
         size="icon"
         disabled={page === totalPages} 
         onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-        className="h-10 w-10 rounded-full border-gray-200"
+        className="h-10 w-10 rounded-md border-gray-200"
       >
         <ChevronRight className="h-5 w-5" />
       </Button>

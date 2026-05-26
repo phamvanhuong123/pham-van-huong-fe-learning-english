@@ -153,7 +153,7 @@ export function ExamFormDialog({
 
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 sm:space-y-8 bg-gradient-to-br from-background to-muted/20">
           {/* Section: Thông tin chính */}
-          <div className="bg-white rounded-xl shadow-sm border p-4 sm:p-6 space-y-4 sm:space-y-5">
+          <div className="bg-white rounded-md shadow-sm border p-4 sm:p-6 space-y-4 sm:space-y-5">
             <h3 className="font-semibold text-base flex items-center gap-2 text-primary">
               <Info className="w-5 h-5" /> Thông tin cơ bản
             </h3>
@@ -213,7 +213,7 @@ export function ExamFormDialog({
 
           {/* ── Chọn đề con (chỉ khi FULL) ── */}
           {part === 'FULL' && (
-            <div className="bg-white rounded-xl shadow-sm border p-4 sm:p-6 space-y-4 sm:space-y-5">
+            <div className="bg-white rounded-md shadow-sm border p-4 sm:p-6 space-y-4 sm:space-y-5">
               <h3 className="font-semibold text-base flex items-center gap-2 text-primary">
                 <Layers className="w-5 h-5 text-primary" /> Ghép đề thành phần
               </h3>
@@ -293,7 +293,7 @@ export function ExamFormDialog({
           )}
 
           {/* Section: Cấu hình */}
-          <div className="bg-white rounded-xl shadow-sm border p-4 sm:p-6 space-y-4 sm:space-y-5">
+          <div className="bg-white rounded-md shadow-sm border p-4 sm:p-6 space-y-4 sm:space-y-5">
             <h3 className="font-semibold text-base flex items-center gap-2 text-primary">
               <Settings2 className="w-5 h-5" /> Cấu hình & Độ khó
             </h3>

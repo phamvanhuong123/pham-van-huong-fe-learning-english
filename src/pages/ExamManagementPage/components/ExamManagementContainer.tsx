@@ -94,7 +94,7 @@ export function ExamManagementContainer() {
   return (
     <div className="space-y-4 h-full flex flex-col">
       {/* Top Search and Add Controls */}
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-card p-4 rounded-xl border border-border shadow-sm">
+      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-card p-4 rounded-md border border-border shadow-sm">
         <div className="relative w-full sm:max-w-xs">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input

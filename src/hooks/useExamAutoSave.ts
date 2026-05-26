@@ -46,5 +46,39 @@ export const useExamAutoSave = () => {
     return () => clearInterval(interval);
   }, [examId, resultId, answers, timeTaken, tabSwitchCount, status, isSaving]);
 
+  // Lắng nghe sự kiện kết nối lại mạng để đồng bộ ngay lập tức
+  useEffect(() => {
+    const handleOnline = async () => {
+      // Chỉ đồng bộ nếu đang thi và có dữ liệu hợp lệ
+      if (status !== 'IN_PROGRESS' || !examId || !resultId) return;
+      
+      const currentAnswers = useClientExamStore.getState().answers;
+      const currentTabCount = useClientExamStore.getState().tabSwitchCount;
+      const currentTime = useClientExamStore.getState().timeTaken;
+
+      toast.info("Đã kết nối lại mạng. Đang đồng bộ dữ liệu...", { id: 'online-sync' });
+      
+      try {
+        setIsSaving(true);
+        await autoSaveExamApi(examId, {
+          resultId,
+          answers: currentAnswers,
+          timeTaken: currentTime,
+          tabSwitchCount: currentTabCount
+        });
+        lastAnswersRef.current = { ...currentAnswers };
+        toast.success("Đồng bộ dữ liệu thành công!", { id: 'online-sync' });
+      } catch (error) {
+        console.error("Lỗi đồng bộ online:", error);
+        toast.error("Đồng bộ thất bại, sẽ thử lại sau.", { id: 'online-sync' });
+      } finally {
+        setIsSaving(false);
+      }
+    };
+
+    window.addEventListener('online', handleOnline);
+    return () => window.removeEventListener('online', handleOnline);
+  }, [examId, resultId, status]);
+
   return { isSaving };
 };

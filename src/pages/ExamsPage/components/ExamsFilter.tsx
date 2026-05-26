@@ -30,12 +30,12 @@ export const ExamsFilter: React.FC<ExamsFilterProps> = ({
   };
 
   return (
-    <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 mb-8 flex flex-col md:flex-row gap-4 items-center">
+    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 mb-8 flex flex-col md:flex-row gap-4 items-center">
       <div className="relative flex-1 w-full">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
         <Input 
           placeholder="Tìm kiếm đề thi..." 
-          className="pl-10 h-12 bg-gray-50 border-gray-200 focus-visible:ring-blue-500 rounded-xl"
+          className="pl-10 h-12 bg-gray-50 border-gray-200 focus-visible:ring-blue-500 rounded-md"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={handleSearchKeyDown}
@@ -44,7 +44,7 @@ export const ExamsFilter: React.FC<ExamsFilterProps> = ({
       
       <div className="flex gap-4 w-full md:w-auto">
         <Select value={part} onValueChange={setPart}>
-          <SelectTrigger className="w-full md:w-[160px] h-12 rounded-xl border-gray-200 bg-gray-50">
+          <SelectTrigger className="w-full md:w-[160px] h-12 rounded-md border-gray-200 bg-gray-50">
             <SelectValue placeholder="Phần thi" />
           </SelectTrigger>
           <SelectContent>
@@ -61,7 +61,7 @@ export const ExamsFilter: React.FC<ExamsFilterProps> = ({
         </Select>
 
         <Select value={difficulty} onValueChange={setDifficulty}>
-          <SelectTrigger className="w-full md:w-[160px] h-12 rounded-xl border-gray-200 bg-gray-50">
+          <SelectTrigger className="w-full md:w-[160px] h-12 rounded-md border-gray-200 bg-gray-50">
             <SelectValue placeholder="Độ khó" />
           </SelectTrigger>
           <SelectContent>
@@ -72,7 +72,7 @@ export const ExamsFilter: React.FC<ExamsFilterProps> = ({
           </SelectContent>
         </Select>
 
-        <Button onClick={onFilter} className="h-12 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-sm transition-all">
+        <Button onClick={onFilter} className="h-12 px-6 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-sm transition-all">
           Lọc
         </Button>
       </div>

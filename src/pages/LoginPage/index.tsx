@@ -57,7 +57,7 @@ const LoginPage = () => {
   };
 
   return (
-    <Card className="border border-border/75 bg-card shadow-xl rounded-2xl relative overflow-hidden">
+    <Card className="border border-border/75 bg-card shadow-xl rounded-lg relative overflow-hidden">
       <CardHeader className="space-y-1 pb-3 pt-5">
         <CardTitle className="text-xl font-extrabold tracking-tight text-foreground">
           Chào mừng quay trở lại
@@ -96,7 +96,7 @@ const LoginPage = () => {
           </div>
           <Button 
             type="submit" 
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-sm hover:scale-[1.01] active:scale-[0.99] transition-all duration-150 py-3.5 mt-2 rounded-xl text-sm"
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-sm hover:scale-[1.01] active:scale-[0.99] transition-all duration-150 py-3.5 mt-2 rounded-md text-sm"
             disabled={isLoading}
           >
             {isLoading ? "Đang kết nối..." : "Đăng nhập"}

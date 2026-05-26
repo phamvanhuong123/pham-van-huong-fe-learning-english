@@ -7,6 +7,8 @@ import GrammarPage from '@/pages/GrammarPage';
 import HistoryPage from '@/pages/HistoryPage';
 import ExamDetailPage from '@/pages/ExamDetailPage';
 import { ClientExamWorkspacePage } from '@/pages/ClientExamWorkspacePage';
+import ScoreReportPage from '@/pages/ScoreReportPage';
+import ReviewModePage from '@/pages/ReviewModePage';
 
 function ClientRoute() {
   return (
@@ -18,8 +20,10 @@ function ClientRoute() {
         <Route path="vocab" element={<VocabPage />} />
         <Route path="grammar" element={<GrammarPage />} />
         <Route path="history" element={<HistoryPage />} />
+        <Route path="results/:resultId" element={<ScoreReportPage />} />
       </Route>
       <Route path="exams/:id/take" element={<ClientExamWorkspacePage />} />
+      <Route path="results/:resultId/review" element={<ReviewModePage />} />
     </>
   );
 }

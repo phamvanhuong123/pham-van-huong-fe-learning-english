@@ -14,7 +14,8 @@ import type { QuestionQueryParams, QuestionRow } from '@/types/question.type';
 import type { AdminExamItem } from '@/types/exam.type';
 
 import { QuestionTable } from './QuestionTable';
-import { QuestionFormDialog } from './QuestionFormDialog';
+import { CreateQuestionDialog } from './CreateQuestionDialog';
+import { UpdateQuestionDialog } from './UpdateQuestionDialog';
 import { DeleteConfirmDialog } from '@/components/common/DeleteConfirmDialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -280,21 +281,36 @@ export function QuestionBankContainer() {
         )}
       </div>
 
-      {/* ── Form Dialog ── */}
-      <QuestionFormDialog
-        isOpen={isFormOpen}
-        onClose={closeForm}
-        onSave={async (data, isGroup) => {
-          await saveMutation.mutateAsync({
-            data,
-            isGroup,
-            editingId: editingItem?.data.id,
-          });
-        }}
-        initialData={editingItem?.data}
-        exams={examsList}
-        isPending={saveMutation.isPending}
-      />
+      {/* ── Form Dialogs ── */}
+      {editingItem ? (
+        <UpdateQuestionDialog
+          isOpen={isFormOpen}
+          onClose={closeForm}
+          onSave={async (data, isGroup) => {
+            await saveMutation.mutateAsync({
+              data,
+              isGroup,
+              editingId: editingItem.data.id,
+            });
+          }}
+          initialData={editingItem.data}
+          exams={examsList}
+          isPending={saveMutation.isPending}
+        />
+      ) : (
+        <CreateQuestionDialog
+          isOpen={isFormOpen}
+          onClose={closeForm}
+          onSave={async (data, isGroup) => {
+            await saveMutation.mutateAsync({
+              data,
+              isGroup,
+            });
+          }}
+          exams={examsList}
+          isPending={saveMutation.isPending}
+        />
+      )}
 
       {/* ── Delete Confirm Dialog ── */}
       <DeleteConfirmDialog

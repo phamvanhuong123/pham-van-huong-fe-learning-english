@@ -51,7 +51,7 @@ const RegisterPage = () => {
 
   if (isSuccess) {
     return (
-      <Card className="border border-border/75 bg-card shadow-xl rounded-2xl relative overflow-hidden text-center py-4">
+      <Card className="border border-border/75 bg-card shadow-xl rounded-lg relative overflow-hidden text-center py-4">
         <CardHeader className="space-y-4">
           <div className="mx-auto flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 border border-primary/20 text-primary">
             <MailOpen className="w-8 h-8 animate-bounce" />
@@ -66,7 +66,7 @@ const RegisterPage = () => {
           </div>
         </CardHeader>
         <CardFooter className="flex justify-center border-t border-border/40 pt-6 pb-4">
-          <Button asChild className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-sm hover:scale-[1.01] active:scale-[0.99] transition-all duration-150 py-5 rounded-xl">
+          <Button asChild className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-sm hover:scale-[1.01] active:scale-[0.99] transition-all duration-150 py-5 rounded-md">
             <Link to="/login">Trở lại trang Đăng nhập</Link>
           </Button>
         </CardFooter>
@@ -75,7 +75,7 @@ const RegisterPage = () => {
   }
 
   return (
-    <Card className="border border-border/75 bg-card shadow-xl rounded-2xl relative overflow-hidden">
+    <Card className="border border-border/75 bg-card shadow-xl rounded-lg relative overflow-hidden">
       <CardHeader className="space-y-1 pb-3 pt-5">
         <CardTitle className="text-xl font-extrabold tracking-tight text-foreground">
           Đăng ký tài khoản
@@ -129,7 +129,7 @@ const RegisterPage = () => {
           </div>
           <Button 
             type="submit" 
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-sm hover:scale-[1.01] active:scale-[0.99] transition-all duration-150 py-3.5 mt-2 rounded-xl text-sm"
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-sm hover:scale-[1.01] active:scale-[0.99] transition-all duration-150 py-3.5 mt-2 rounded-md text-sm"
             disabled={isLoading}
           >
             {isLoading ? "Đang tạo tài khoản..." : "Đăng ký"}

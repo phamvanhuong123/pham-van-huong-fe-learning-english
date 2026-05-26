@@ -91,7 +91,7 @@ export function MediaUploadInput({
   return (
     <div className={cn('relative w-full', className)}>
       {previewSrc ? (
-        <div className="relative border rounded-xl overflow-hidden bg-muted/30 group">
+        <div className="relative border rounded-md overflow-hidden bg-muted/30 group">
           {/* Badge "Chờ upload" nếu là file pending */}
           {pendingFile && (
             <div className="absolute top-2 left-2 z-10 flex items-center gap-1.5 bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow">
@@ -136,7 +136,7 @@ export function MediaUploadInput({
       ) : (
         <div
           onClick={() => inputRef.current?.click()}
-          className="border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center gap-3 transition-colors text-center hover:bg-muted/50 hover:border-primary/50 cursor-pointer"
+          className="border-2 border-dashed rounded-md p-8 flex flex-col items-center justify-center gap-3 transition-colors text-center hover:bg-muted/50 hover:border-primary/50 cursor-pointer"
         >
           <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
             <UploadCloud className="w-6 h-6" />

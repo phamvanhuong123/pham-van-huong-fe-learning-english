@@ -13,16 +13,15 @@ import { uploadMediaApi } from '@/services/questionService';
 import { Save, LayoutTemplate, Eye, PenLine } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { ExamSelection } from './QuestionForm/ExamSelection';
 import { PassageEditor } from './QuestionForm/PassageEditor';
 import { QuestionEditor } from './QuestionForm/QuestionEditor';
 import { PreviewPane } from './QuestionForm/PreviewPane';
 
-interface QuestionFormDialogProps {
+interface UpdateQuestionDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (data: any, isGroup: boolean) => Promise<void>;
-  initialData?: any;
+  initialData: any;
   exams: any[];
   isPending?: boolean;
 }
@@ -34,15 +33,14 @@ const DEFAULT_OPTIONS = [
   { label: 'D', text: '', isCorrect: false },
 ];
 
-export function QuestionFormDialog({
+export function UpdateQuestionDialog({
   isOpen,
   onClose,
   onSave,
   initialData,
   exams,
   isPending
-}: QuestionFormDialogProps) {
-  const [step, setStep] = useState(1);
+}: UpdateQuestionDialogProps) {
   const [examId, setExamId] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'form' | 'preview'>('form');
 
@@ -55,61 +53,19 @@ export function QuestionFormDialog({
   const isSingleQuestionPart = ['PART1', 'PART2', 'PART5'].includes(part);
 
   useEffect(() => {
-    if (isOpen) {
-      if (initialData) {
-        setExamId(initialData.examId);
-        setStep(2);
-        setActiveTab('form');
+    if (isOpen && initialData) {
+      setExamId(initialData.examId);
+      setActiveTab('form');
 
-        if (initialData.passages) {
-          setPassages(initialData.passages || []);
-          setQuestions(initialData.questions || []);
-        } else {
-          setPassages([]);
-          setQuestions([initialData]);
-        }
+      if (initialData.passages) {
+        setPassages(initialData.passages || []);
+        setQuestions(initialData.questions || []);
       } else {
-        setStep(1);
-        setExamId('');
-        setActiveTab('form');
-        setPassages([{ mediaType: 'TEXT', content: '', mediaUrl: '', order: 1 }]);
-        setQuestions([{
-          order: 1,
-          questionText: '',
-          difficulty: 'MEDIUM',
-          explanation: '',
-          options: JSON.parse(JSON.stringify(DEFAULT_OPTIONS))
-        }]);
+        setPassages([]);
+        setQuestions([initialData]);
       }
     }
   }, [isOpen, initialData]);
-
-  const handleExamSelect = (val: string) => {
-    setExamId(val);
-    const ex = exams.find(e => e.id === val);
-    if (!ex) return;
-
-    const selectedPart = ex.part;
-    if (selectedPart === 'PART5') {
-      setPassages([]);
-    } else if (selectedPart === 'PART1') {
-      setPassages([{ mediaType: 'VIDEO', content: '', mediaUrl: '', order: 1 }]);
-    } else if (['PART2', 'PART3', 'PART4'].includes(selectedPart)) {
-      setPassages([{ mediaType: 'AUDIO', content: '', mediaUrl: '', order: 1 }]);
-    } else {
-      setPassages([{ mediaType: 'TEXT', content: '', mediaUrl: '', order: 1 }]);
-    }
-
-    setQuestions([{
-      order: 1,
-      questionText: '',
-      difficulty: 'MEDIUM',
-      explanation: '',
-      options: JSON.parse(JSON.stringify(selectedPart === 'PART2' ? DEFAULT_OPTIONS.slice(0, 3) : DEFAULT_OPTIONS))
-    }]);
-
-    setTimeout(() => setStep(2), 100);
-  };
 
   const handleSave = async () => {
     try {
@@ -191,59 +147,51 @@ export function QuestionFormDialog({
         <SheetHeader className="px-6 py-4 border-b bg-card shrink-0">
           <SheetTitle className="text-xl flex items-center gap-2">
             <LayoutTemplate className="w-5 h-5 text-primary" />
-            {initialData ? 'Chỉnh sửa Câu hỏi' : 'Tạo Câu hỏi Mới'}
+            Chỉnh sửa Câu hỏi
           </SheetTitle>
           <SheetDescription>
-            {initialData ? 'Chỉnh sửa thông tin câu hỏi bên dưới.' : 'Chọn đề thi và nhập đầy đủ thông tin để tạo câu hỏi mới.'}
+            Chỉnh sửa thông tin câu hỏi bên dưới.
           </SheetDescription>
         </SheetHeader>
 
-        {/* TAB BAR - Chỉ hiện ở step 2 */}
-        {step === 2 && (
-          <div className="flex border-b bg-card shrink-0 px-6">
-            <button
-              type="button"
-              onClick={() => setActiveTab('form')}
-              className={cn(
-                "flex items-center gap-2 px-1 py-3 text-sm font-medium border-b-2 transition-all mr-6",
-                activeTab === 'form'
-                  ? "border-primary text-primary"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <PenLine className="w-4 h-4" />
-              Nhập liệu
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('preview')}
-              className={cn(
-                "flex items-center gap-2 px-1 py-3 text-sm font-medium border-b-2 transition-all",
-                activeTab === 'preview'
-                  ? "border-primary text-primary"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <Eye className="w-4 h-4" />
-              Xem trước
-            </button>
-          </div>
-        )}
+        {/* TAB BAR */}
+        <div className="flex border-b bg-card shrink-0 px-6">
+          <button
+            type="button"
+            onClick={() => setActiveTab('form')}
+            className={cn(
+              "flex items-center gap-2 px-1 py-3 text-sm font-medium border-b-2 transition-all mr-6",
+              activeTab === 'form'
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground hover:text-foreground"
+            )}
+          >
+            <PenLine className="w-4 h-4" />
+            Nhập liệu
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('preview')}
+            className={cn(
+              "flex items-center gap-2 px-1 py-3 text-sm font-medium border-b-2 transition-all",
+              activeTab === 'preview'
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground hover:text-foreground"
+            )}
+          >
+            <Eye className="w-4 h-4" />
+            Xem trước
+          </button>
+        </div>
 
         {/* CONTENT */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-gradient-to-br from-background to-muted/10">
 
-
-          {step === 2 && activeTab === 'preview' && (
+          {activeTab === 'preview' && (
             <PreviewPane part={part} passages={passages} questions={questions} />
           )}
 
-
-          {step === 1 && (
-            <ExamSelection exams={exams} selectedExamId={examId} onExamSelect={handleExamSelect} />
-          )}
-
-          {step === 2 && activeTab === 'form' && (
+          {activeTab === 'form' && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
               <div className="flex items-center justify-between p-4 rounded-lg bg-primary/5 border border-primary/20">
                 <div>
@@ -254,7 +202,6 @@ export function QuestionFormDialog({
                   {part}
                 </Badge>
               </div>
-
 
               <PassageEditor part={part} passages={passages} setPassages={setPassages} />
 
@@ -269,16 +216,13 @@ export function QuestionFormDialog({
           )}
         </div>
 
-
         <SheetFooter className="px-6 py-4 border-t bg-muted/20 shrink-0 flex gap-2 sm:justify-end">
           <Button variant="outline" className="h-11 rounded-md" onClick={onClose} disabled={isPending}>Hủy bỏ</Button>
-          {step === 2 && (
-            <Button onClick={handleSave} disabled={isPending} className="min-w-[120px] h-11 rounded-md">
-              {isPending ? 'Đang lưu...' : (
-                <><Save className="w-4 h-4 mr-2" /> Lưu dữ liệu</>
-              )}
-            </Button>
-          )}
+          <Button onClick={handleSave} disabled={isPending} className="min-w-[120px] h-11 rounded-md">
+            {isPending ? 'Đang lưu...' : (
+              <><Save className="w-4 h-4 mr-2" /> Lưu dữ liệu</>
+            )}
+          </Button>
         </SheetFooter>
       </SheetContent>
     </Sheet>

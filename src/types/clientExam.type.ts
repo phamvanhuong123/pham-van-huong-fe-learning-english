@@ -8,6 +8,7 @@ export interface ClientQuestion {
   id: string;
   order: number;
   questionText: string | null;
+  part: string;
   options: ClientOption[];
 }
 
@@ -21,6 +22,7 @@ export interface ClientPassage {
 
 export interface ClientPassageGroup {
   id: string;
+  part: string;
   passages: ClientPassage[];
   questions: ClientQuestion[];
 }

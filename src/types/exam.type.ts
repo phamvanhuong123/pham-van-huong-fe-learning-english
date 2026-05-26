@@ -25,3 +25,14 @@ export interface ExamCreateBody {
   duration: number;
   childrenIdExam?: string[];
 }
+
+export interface ClientExam {
+  createdAt: Date,
+  description: string,
+  difficulty: QuestionDifficulty
+  duration: number,
+  id: string,
+  part: ExamPart
+  title: string
+  type: ExamType
+}

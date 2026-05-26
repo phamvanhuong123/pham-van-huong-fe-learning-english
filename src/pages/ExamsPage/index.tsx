@@ -5,11 +5,12 @@ import { toast } from 'sonner';
 
 import { ExamsHeader } from './components/ExamsHeader';
 import { ExamsFilter } from './components/ExamsFilter';
-import { ExamCard, type Exam } from './components/ExamCard';
+import { ExamCard } from './components/ExamCard';
 import { ExamsPagination } from './components/ExamsPagination';
+import type { ClientExam } from '@/types/exam.type';
 
 function ExamsPage() {
-  const [exams, setExams] = useState<Exam[]>([]);
+  const [exams, setExams] = useState<ClientExam[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   // Filters state
@@ -20,8 +21,7 @@ function ExamsPage() {
   // Pagination state
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
-
+  const [total, setTotal] = useState(0)
   const fetchExams = async () => {
     setIsLoading(true);
     try {
@@ -30,9 +30,11 @@ function ExamsPage() {
       if (part !== 'ALL') params.part = part;
       if (difficulty !== 'ALL') params.difficulty = difficulty;
 
-      const res = await getPublishedExamsApi(params);
-      const data = res.data.data;
-      const meta = res.data.meta;
+      const res = await getPublishedExamsApi(params) as any;
+      console.log(res);
+
+      const data = res.data?.data || [];
+      const meta = res.data?.meta || {};
 
       setExams(data);
       setTotalPages(meta.totalPages || 1);
@@ -46,14 +48,14 @@ function ExamsPage() {
 
   useEffect(() => {
     fetchExams();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [page, part, difficulty]);
 
   const handleFilter = () => {
     setPage(1);
     fetchExams();
   };
-
+  console.log(exams)
   return (
     <div className="py-12 bg-gray-50/50 min-h-[calc(100vh-64px)]">
       <div className="container mx-auto px-4 max-w-6xl">
@@ -78,11 +80,11 @@ function ExamsPage() {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map(i => (
-              <div key={i} className="h-64 bg-white rounded-2xl animate-pulse border border-gray-100 shadow-sm"></div>
+              <div key={i} className="h-64 bg-white rounded-lg animate-pulse border border-gray-100 shadow-sm"></div>
             ))}
           </div>
         ) : exams.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-200">
+          <div className="text-center py-20 bg-white rounded-lg border border-dashed border-gray-200">
             <FileText className="mx-auto h-12 w-12 text-gray-300 mb-3" />
             <h3 className="text-lg font-semibold text-gray-900">Không tìm thấy đề thi</h3>
             <p className="text-gray-500 mt-1">Vui lòng thử thay đổi bộ lọc hoặc từ khóa tìm kiếm.</p>

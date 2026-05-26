@@ -4,19 +4,20 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router';
+import type { ClientExam } from '@/types/exam.type';
 
-export interface Exam {
-  id: string;
-  title: string;
-  description: string;
-  part: string;
-  difficulty: string;
-  type: string;
-  duration: number;
-}
+// export interface Exam {
+//   id: string;
+//   title: string;
+//   description: string;
+//   part: string;
+//   difficulty: string;
+//   type: string;
+//   duration: number;
+// }
 
 interface ExamCardProps {
-  exam: Exam;
+  exam: ClientExam;
 }
 
 export const ExamCard: React.FC<ExamCardProps> = ({ exam }) => {
@@ -33,7 +34,7 @@ export const ExamCard: React.FC<ExamCardProps> = ({ exam }) => {
 
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 border-gray-100 hover:border-blue-100 overflow-hidden flex flex-col bg-white">
-      <CardHeader className="pb-3 bg-gradient-to-br from-white to-gray-50/80">
+      <CardHeader className="pb-3 bg-linear-to-br from-white to-gray-50/80">
         <div className="flex justify-between items-start gap-2 mb-2">
           <Badge variant="outline" className="bg-white/80 font-bold tracking-wider text-xs px-2 py-0.5 border-gray-200 shadow-sm text-gray-600">
             {exam.part === 'FULL' ? 'FULL TEST' : exam.part.replace('PART', 'PART ')}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useClientExamStore } from '../store/useClientExamStore';
 
 export const useExamTimer = (totalDurationMinutes: number, onTimeUp: () => void) => {
@@ -10,14 +10,25 @@ export const useExamTimer = (totalDurationMinutes: number, onTimeUp: () => void)
   // Thời gian còn lại
   const [timeLeft, setTimeLeft] = useState(Math.max(0, totalSeconds - timeTaken));
 
+  const onTimeUpRef = useRef(onTimeUp);
+  useEffect(() => {
+    onTimeUpRef.current = onTimeUp;
+  }, [onTimeUp]);
+
   useEffect(() => {
     if (status !== 'IN_PROGRESS') return;
+
+    // Nếu vừa vào đã hết giờ (do cộng dồn thời gian offline) thì nộp bài luôn
+    if (timeLeft <= 0) {
+      onTimeUpRef.current();
+      return;
+    }
 
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          onTimeUp();
+          onTimeUpRef.current();
           return 0;
         }
         return prev - 1;
@@ -26,7 +37,7 @@ export const useExamTimer = (totalDurationMinutes: number, onTimeUp: () => void)
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [status, onTimeUp, incrementTimeTaken]);
+  }, [status, incrementTimeTaken]);
 
   // Format MM:SS
   const formatTime = (seconds: number) => {

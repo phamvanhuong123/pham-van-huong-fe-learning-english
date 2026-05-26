@@ -1,9 +1,11 @@
+import type { IResponse } from '@/types/api.type';
+import type { ClientExam } from '@/types/exam.type';
 import authorizedAxiosInstance from '@/utils/authorizeAxios';
 
 const API_ROOT = `/client-exam`;
 
 export const getPublishedExamsApi = async (params?: any) => {
-  return await authorizedAxiosInstance.get(API_ROOT, { params });
+  return (await authorizedAxiosInstance.get<IResponse<ClientExam[]>>(API_ROOT, { params })).data;
 };
 
 export const getExamDetailsForClientApi = async (id: string) => {
