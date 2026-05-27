@@ -9,9 +9,12 @@ import { toast } from 'sonner';
 import SubscriptionStatusBadge from './SubscriptionStatusBadge';
 import ProofPreviewModal from './ProofPreviewModal';
 import RejectDialog from './RejectDialog';
+import EditSubscriptionModal from './EditSubscriptionModal';
+import RevokeDialog from './RevokeDialog';
+import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 
 import type { Subscription } from '@/types/subscription.type';
-import { useApproveSubscription, useBanBankAccount } from '@/hooks/queries/useSubscriptionQuery';
+import { useApproveSubscription, useBanBankAccount, useDeleteSubscription } from '@/hooks/queries/useSubscriptionQuery';
 
 interface SubscriptionTableProps {
   data: Subscription[];
@@ -21,31 +24,77 @@ interface SubscriptionTableProps {
 export default function SubscriptionTable({ data, isLoading }: SubscriptionTableProps) {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [rejectId, setRejectId] = useState<string | null>(null);
+  const [editSub, setEditSub] = useState<Subscription | null>(null);
+  const [revokeSub, setRevokeSub] = useState<Subscription | null>(null);
   
+  const [confirmState, setConfirmState] = useState<{
+    isOpen: boolean;
+    title: string;
+    description: string;
+    onConfirm: () => void;
+    variant: 'default' | 'destructive';
+  }>({ isOpen: false, title: '', description: '', onConfirm: () => {}, variant: 'default' });
+
   const { mutateAsync: approveSubscription, isPending: isApproving } = useApproveSubscription();
   const { mutateAsync: banBankAccount } = useBanBankAccount();
+  const { mutateAsync: deleteSubscription } = useDeleteSubscription();
 
-  const handleApprove = async (id: string) => {
-    if (window.confirm('Bạn có chắc chắn muốn duyệt yêu cầu này? User sẽ được cộng thời gian VIP tương ứng.')) {
-      try {
-        await approveSubscription(id);
-        toast.success('Đã duyệt yêu cầu thành công');
-      } catch (error: any) {
-        toast.error(error?.response?.data?.message || 'Có lỗi xảy ra');
+  const handleApprove = (id: string) => {
+    setConfirmState({
+      isOpen: true,
+      title: 'Xác nhận Duyệt',
+      description: 'Bạn có chắc chắn muốn duyệt yêu cầu này? User sẽ được cộng thời gian VIP tương ứng.',
+      variant: 'default',
+      onConfirm: async () => {
+        try {
+          await approveSubscription(id);
+          toast.success('Đã duyệt yêu cầu thành công');
+        } catch (error: any) {
+          toast.error(error?.response?.data?.message || 'Có lỗi xảy ra');
+        } finally {
+          setConfirmState(prev => ({ ...prev, isOpen: false }));
+        }
       }
-    }
+    });
   };
 
-  const handleBanAccount = async (bankAccountNo: string | null) => {
+  const handleBanAccount = (bankAccountNo: string | null) => {
     if (!bankAccountNo) return;
-    if (window.confirm(`Bạn có chắc chắn muốn cấm STK ${bankAccountNo}? Tất cả yêu cầu tương lai từ STK này sẽ bị flag.`)) {
-      try {
-        await banBankAccount({ bankAccountNo, reason: 'Gian lận hóa đơn' });
-        toast.success(`Đã cấm STK ${bankAccountNo}`);
-      } catch (error: any) {
-        toast.error(error?.response?.data?.message || 'Có lỗi xảy ra');
+    setConfirmState({
+      isOpen: true,
+      title: 'Xác nhận Cấm STK',
+      description: `Bạn có chắc chắn muốn cấm STK ${bankAccountNo}? Tất cả yêu cầu tương lai từ STK này sẽ bị từ chối.`,
+      variant: 'destructive',
+      onConfirm: async () => {
+        try {
+          await banBankAccount({ bankAccountNo, reason: 'Gian lận hóa đơn' });
+          toast.success(`Đã cấm STK ${bankAccountNo}`);
+        } catch (error: any) {
+          toast.error(error?.response?.data?.message || 'Có lỗi xảy ra');
+        } finally {
+          setConfirmState(prev => ({ ...prev, isOpen: false }));
+        }
       }
-    }
+    });
+  };
+
+  const handleDelete = (id: string) => {
+    setConfirmState({
+      isOpen: true,
+      title: 'Xác nhận Xóa',
+      description: 'Bạn có chắc chắn muốn xóa vĩnh viễn yêu cầu này không? Hành động này không thể hoàn tác!',
+      variant: 'destructive',
+      onConfirm: async () => {
+        try {
+          await deleteSubscription(id);
+          toast.success('Đã xóa yêu cầu thành công');
+        } catch (error: any) {
+          toast.error(error?.response?.data?.message || 'Có lỗi xảy ra');
+        } finally {
+          setConfirmState(prev => ({ ...prev, isOpen: false }));
+        }
+      }
+    });
   };
 
   if (isLoading) {
@@ -163,7 +212,38 @@ export default function SubscriptionTable({ data, isLoading }: SubscriptionTable
                         <X className="w-4 h-4 mr-1.5" />
                         Từ chối
                       </Button>
+                      
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        className="h-8 shadow-sm"
+                        onClick={() => setEditSub(sub)}
+                      >
+                        Sửa
+                      </Button>
                     </>
+                  )}
+
+                  {sub.status === 'APPROVED' && (
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="h-8 shadow-sm"
+                      onClick={() => setRevokeSub(sub)}
+                    >
+                      Thu hồi
+                    </Button>
+                  )}
+
+                  {sub.status !== 'APPROVED' && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 text-destructive hover:bg-destructive hover:text-white shadow-sm"
+                      onClick={() => handleDelete(sub.id)}
+                    >
+                      Xóa
+                    </Button>
                   )}
 
                   {sub.riskScore > 50 && (
@@ -200,6 +280,27 @@ export default function SubscriptionTable({ data, isLoading }: SubscriptionTable
         isOpen={!!rejectId} 
         onClose={() => setRejectId(null)} 
         subscriptionId={rejectId} 
+      />
+
+      <EditSubscriptionModal
+        isOpen={!!editSub}
+        onClose={() => setEditSub(null)}
+        subscription={editSub}
+      />
+
+      <RevokeDialog
+        isOpen={!!revokeSub}
+        onClose={() => setRevokeSub(null)}
+        subscription={revokeSub}
+      />
+
+      <ConfirmDialog
+        open={confirmState.isOpen}
+        onOpenChange={(isOpen) => setConfirmState(prev => ({ ...prev, isOpen }))}
+        onConfirm={confirmState.onConfirm}
+        title={confirmState.title}
+        description={confirmState.description}
+        variant={confirmState.variant}
       />
     </div>
   );

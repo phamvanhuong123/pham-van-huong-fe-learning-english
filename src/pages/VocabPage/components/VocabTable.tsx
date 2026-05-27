@@ -19,6 +19,13 @@ const statusColors: Record<string, string> = {
   MASTERED: 'bg-green-100 text-green-800',
 };
 
+const statusLabels: Record<string, string> = {
+  NEW: 'Từ mới',
+  LEARNING: 'Đang học',
+  REVIEW: 'Chờ ôn tập',
+  MASTERED: 'Đã thuộc',
+};
+
 export default function VocabTable({ vocabs, isLoading, onEdit, onDelete }: VocabTableProps) {
   if (isLoading) {
     return <div className="text-center py-10">Đang tải dữ liệu...</div>;
@@ -61,7 +68,7 @@ export default function VocabTable({ vocabs, isLoading, onEdit, onDelete }: Voca
               </TableCell>
               <TableCell>
                 <Badge className={statusColors[vocab.schedule?.status || 'NEW']} variant="secondary">
-                  {vocab.schedule?.status || 'NEW'}
+                  {statusLabels[vocab.schedule?.status || 'NEW']}
                 </Badge>
               </TableCell>
               <TableCell className="text-sm text-muted-foreground">

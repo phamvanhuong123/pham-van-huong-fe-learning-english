@@ -54,7 +54,7 @@ export function AssignRoleModal({ open, onOpenChange, userId }: AssignRoleModalP
                 <SelectValue placeholder={loadingRoles ? "Đang tải..." : "Chọn vai trò..."} />
               </SelectTrigger>
               <SelectContent>
-                {roles?.map((role) => (
+                {roles?.filter(role => role.name !== 'VIP').map((role) => (
                   <SelectItem key={role.id} value={role.name}>{role.name}</SelectItem>
                 ))}
               </SelectContent>

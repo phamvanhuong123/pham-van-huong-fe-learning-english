@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
+import { UAParser } from 'ua-parser-js';
 
 export default function SessionsTab() {
   const [loading, setLoading] = useState(true);
@@ -61,7 +62,22 @@ export default function SessionsTab() {
   };
 
   const parseDevice = (deviceInfo?: string) => {
-    if (!deviceInfo) return 'Không rõ thiết bị';
+    if (!deviceInfo) return 'Thiết bị không rõ';
+
+    const parser = new UAParser(deviceInfo);
+    const result = parser.getResult();
+    const browserName = result.browser.name;
+    const osName = result.os.name;
+
+    if (browserName && osName) {
+      return `${browserName} trên ${osName}`;
+    } else if (browserName) {
+      return browserName;
+    } else if (osName) {
+      return osName;
+    }
+
+    // Fallback if parsing fails
     const match = deviceInfo.match(/^([^\(]+)/);
     if (match) return match[1].trim();
     return deviceInfo.substring(0, 30);
@@ -111,17 +127,16 @@ export default function SessionsTab() {
                     )}
                   </div>
                   <div className="text-xs sm:text-sm text-muted-foreground mt-1 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-                    <span>IP: {session.ipAddress || 'Không rõ'}</span>
                     <span className="hidden sm:inline text-border">•</span>
                     <span>Hoạt động: {formatDistanceToNow(new Date(session.lastActiveAt), { addSuffix: true, locale: vi })}</span>
                   </div>
                 </div>
               </div>
-              
+
               {!session.isCurrent && (
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   className="text-destructive hover:text-destructive hover:bg-destructive/10 rounded-full h-8 w-8 p-0 sm:w-auto sm:px-3 sm:py-2 sm:rounded-md"
                   disabled={revokingId === session.id}
                   onClick={() => handleRevokeOne(session.id)}

@@ -7,11 +7,18 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Plus, Search, Edit2, Trash2, BookOpen } from 'lucide-react';
 import { TopicModal } from './components/TopicModal';
 import { toast } from 'sonner';
+import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 
 function AdminGrammarPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTopic, setEditingTopic] = useState<GrammarTopic | null>(null);
+  
+  const [confirmState, setConfirmState] = useState<{
+    isOpen: boolean;
+    topicId: string | null;
+    topicName: string;
+  }>({ isOpen: false, topicId: null, topicName: '' });
 
   const { data, isLoading } = useGetAdminGrammarTopics({ search: searchTerm, limit: 100 });
   const deleteTopic = useDeleteGrammarTopic();
@@ -27,12 +34,21 @@ function AdminGrammarPage() {
   };
 
   const handleDelete = (id: string, name: string) => {
-    if (window.confirm(`Bạn có chắc muốn xóa chủ đề "${name}"? Các câu hỏi bên trong cũng sẽ bị ảnh hưởng.`)) {
-      deleteTopic.mutate(id, {
-        onSuccess: () => toast.success('Đã xóa chủ đề'),
-        onError: () => toast.error('Không thể xóa chủ đề này')
-      });
-    }
+    setConfirmState({ isOpen: true, topicId: id, topicName: name });
+  };
+
+  const executeDelete = () => {
+    if (!confirmState.topicId) return;
+    deleteTopic.mutate(confirmState.topicId, {
+      onSuccess: () => {
+        toast.success('Đã xóa chủ đề');
+        setConfirmState({ isOpen: false, topicId: null, topicName: '' });
+      },
+      onError: () => {
+        toast.error('Không thể xóa chủ đề này');
+        setConfirmState({ isOpen: false, topicId: null, topicName: '' });
+      }
+    });
   };
 
   return (
@@ -119,6 +135,15 @@ function AdminGrammarPage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         topic={editingTopic}
+      />
+
+      <ConfirmDialog
+        open={confirmState.isOpen}
+        onOpenChange={(isOpen) => setConfirmState(prev => ({ ...prev, isOpen }))}
+        onConfirm={executeDelete}
+        title="Xác nhận xóa"
+        description={`Bạn có chắc muốn xóa chủ đề "${confirmState.topicName}"? Các câu hỏi bên trong cũng sẽ bị ảnh hưởng.`}
+        variant="destructive"
       />
     </div>
   );

@@ -1,6 +1,8 @@
 import React from 'react';
 import type { ClientPassageGroup } from '@/types/clientExam.type';
 import { useClientExamStore } from '@/store/useClientExamStore';
+import { cn } from '@/lib/utils';
+import { Bookmark, Headphones } from 'lucide-react';
 
 interface Part34ViewerProps {
   passageGroup: ClientPassageGroup;
@@ -10,56 +12,82 @@ export const Part34Viewer: React.FC<Part34ViewerProps> = ({ passageGroup }) => {
   const { answers, selectAnswer, toggleBookmark, bookmarks } = useClientExamStore();
 
   const audioPassage = passageGroup.passages.find(p => p.mediaType === 'AUDIO' || p.mediaType === 'audio');
+  const imagePassage = passageGroup.passages.find(p => p.mediaType === 'IMAGE' || p.mediaType === 'image');
+
+  // Lấy ra danh sách các câu hỏi trong nhóm này (ví dụ: 32-34)
+  const questionNumbers = passageGroup.questions.map(q => q.order).join(' - ');
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-white p-4 rounded-md shadow-sm border border-gray-100 mb-8">
-      {/* Cột trái: Audio */}
-      <div className="flex flex-col gap-4 lg:sticky lg:top-28 h-fit">
+    <div className="bg-white p-3 md:p-4 rounded-xl shadow-sm border border-slate-100 mb-4">
+      {/* Passage Header / Audio Player */}
+      <div className="mb-4 pb-4 border-b border-slate-100">
+        <div className="flex items-center gap-1.5 mb-3">
+          <Headphones className="w-3.5 h-3.5 text-slate-400" />
+          <h3 className="text-xs font-bold text-slate-800">
+            Questions <span className="text-blue-600">{questionNumbers}</span> refer to the following conversation.
+          </h3>
+        </div>
+
+        {imagePassage?.mediaUrl && (
+          <div className="rounded-lg overflow-hidden border border-slate-200/60 bg-slate-50 max-w-sm mx-auto mb-3 p-1">
+            <img src={imagePassage.mediaUrl} alt="Passage Image" className="w-full h-auto object-contain rounded-md" />
+          </div>
+        )}
 
         {audioPassage?.mediaUrl && (
-          <div className="p-3 bg-blue-50 rounded-md border border-blue-100">
+          <div className="max-w-sm mx-auto w-full bg-slate-50 p-1 rounded-lg border border-slate-100 shadow-inner">
             <audio
               controls
               controlsList="nodownload noplaybackrate"
-              className="w-full h-10 outline-none"
+              className="w-full outline-none custom-audio h-6"
               src={audioPassage.mediaUrl}
             />
           </div>
         )}
       </div>
 
-      {/* Cột phải: Danh sách câu hỏi */}
-      <div className="flex flex-col gap-6">
+      {/* Questions List */}
+      <div className="flex flex-col gap-4">
         {passageGroup.questions.map((question) => {
           const isBookmarked = bookmarks.includes(question.id);
 
           return (
-            <div id={`question-${question.id}`} key={question.id} className="border-b border-gray-100 pb-6 last:border-0 scroll-mt-24">
-              <div className="flex gap-3 mb-4">
-                <span className="font-bold text-blue-600 min-w-[28px]">{question.order}.</span>
-                <p className="font-semibold text-gray-800 text-lg leading-snug flex-1">
-                  {question.questionText}
-                </p>
+            <div id={`question-${question.id}`} key={question.id} className="scroll-mt-20">
+              <div className="flex gap-2 mb-2">
+                <div className="w-5 h-5 shrink-0 rounded-full bg-slate-100 flex items-center justify-center text-slate-800 font-bold text-[10px] border border-slate-200">
+                  {question.order}
+                </div>
+                <div className="flex-1 pt-0">
+                  <p className="font-semibold text-slate-800 text-[12px] md:text-[13px] leading-snug">
+                    {question.questionText}
+                  </p>
+                </div>
                 <button
                   onClick={() => toggleBookmark(question.id)}
-                  className={`p-1.5 h-fit rounded transition-colors ${isBookmarked ? 'bg-orange-100 text-orange-600' : 'text-gray-400 hover:bg-gray-100'}`}
+                  className={cn(
+                    "p-2 h-fit shrink-0 rounded-full transition-all duration-200",
+                    isBookmarked 
+                      ? "bg-amber-100 text-amber-600 shadow-sm" 
+                      : "text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                  )}
                   title="Đánh dấu xem lại"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill={isBookmarked ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                  </svg>
+                  <Bookmark className="w-4 h-4" fill={isBookmarked ? "currentColor" : "none"} />
                 </button>
               </div>
 
-              <div className="flex flex-col gap-3 pl-10">
+              <div className="flex flex-col gap-1 pl-0 md:pl-7">
                 {question.options.map((opt) => {
                   const isSelected = answers[question.id] === opt.label;
                   return (
                     <label
                       key={opt.id}
-                      className={`flex items-start gap-3 p-3 rounded border cursor-pointer transition-colors
-                        ${isSelected ? 'bg-blue-50 border-blue-400' : 'hover:bg-gray-50 border-transparent'}
-                      `}
+                      className={cn(
+                        "group flex items-center gap-1.5 p-1 rounded-md border cursor-pointer transition-all duration-200",
+                        isSelected 
+                          ? "bg-blue-50/50 border-blue-200 shadow-sm" 
+                          : "bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300"
+                      )}
                     >
                       <input
                         type="radio"
@@ -67,10 +95,20 @@ export const Part34Viewer: React.FC<Part34ViewerProps> = ({ passageGroup }) => {
                         value={opt.label}
                         checked={isSelected}
                         onChange={() => selectAnswer(question.id, opt.label)}
-                        className="mt-1 w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                        className="sr-only"
                       />
-                      <span className="font-medium w-6 shrink-0">({opt.label})</span>
-                      <span className={`${isSelected ? 'text-blue-900 font-medium' : 'text-gray-700'}`}>
+                      <div className={cn(
+                        "flex items-center justify-center w-4 h-4 rounded-full border-[1.2px] text-[9px] font-bold transition-all duration-200 shrink-0",
+                        isSelected 
+                          ? "bg-blue-600 border-blue-600 text-white" 
+                          : "bg-white border-slate-300 text-slate-500 group-hover:border-blue-400 group-hover:text-blue-500"
+                      )}>
+                        {opt.label}
+                      </div>
+                      <span className={cn(
+                        "font-medium text-[11px] md:text-[12px]",
+                        isSelected ? "text-slate-900" : "text-slate-600"
+                      )}>
                         {opt.text}
                       </span>
                     </label>

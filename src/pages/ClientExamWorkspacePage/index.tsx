@@ -15,6 +15,7 @@ import { Part2Viewer } from './components/viewers/Part2Viewer';
 import { Part34Viewer } from './components/viewers/Part34Viewer';
 import { Part5Viewer } from './components/viewers/Part5Viewer';
 import { Part67Viewer } from './components/viewers/Part67Viewer';
+import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 
 export const ClientExamWorkspacePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -23,6 +24,7 @@ export const ClientExamWorkspacePage: React.FC = () => {
   const [examData, setExamData] = React.useState<ClientExamData | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [activePart, setActivePart] = React.useState<string>('');
+  const [isConfirmOpen, setIsConfirmOpen] = React.useState(false);
 
   const { initExam, setSubmitting, resultId, answers, timeTaken, tabSwitchCount, clearExam } = useClientExamStore();
   useExamAutoSave();
@@ -37,7 +39,6 @@ export const ClientExamWorkspacePage: React.FC = () => {
         // 1. Fetch đề thi
         const examRes = await getExamDetailsForClientApi(id);
         setExamData(examRes.data.data);
-
 
         const storeState = useClientExamStore.getState();
         if (storeState.examId === id && storeState.status === 'IN_PROGRESS' && storeState.resultId) {
@@ -112,10 +113,9 @@ export const ClientExamWorkspacePage: React.FC = () => {
   const handleSubmit = async (forceSubmit = false) => {
     if (!id || !resultId) return;
 
-    if (!forceSubmit) {
-      const answeredCount = Object.keys(answers).length;
-      const isConfirm = window.confirm(`Bạn đã làm ${answeredCount}/${allQuestions.length} câu. Bạn có chắc chắn muốn nộp bài?`);
-      if (!isConfirm) return;
+    if (!forceSubmit && !isConfirmOpen) {
+      setIsConfirmOpen(true);
+      return;
     }
 
     try {
@@ -133,11 +133,12 @@ export const ClientExamWorkspacePage: React.FC = () => {
       toast.error("Lỗi khi nộp bài. Vui lòng thử lại!");
     } finally {
       setSubmitting(false);
+      setIsConfirmOpen(false);
     }
   };
 
   if (isLoading || !examData) {
-    return <div className="flex h-screen items-center justify-center bg-gray-50"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>;
+    return <div className="flex h-screen items-center justify-center bg-slate-50"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-900"></div></div>;
   }
 
   const renderPartViewers = () => {
@@ -169,22 +170,21 @@ export const ClientExamWorkspacePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30 flex flex-col">
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans selection:bg-blue-100 selection:text-blue-900">
       <ExamHeader title={examData.title} duration={examData.duration} onSubmit={handleSubmit} />
 
-      {/* Part Navigation Toolbar */}
       <ExamToolbar
         parts={availableParts}
         activePart={activePart}
         onPartClick={(p) => setActivePart(p)}
       />
 
-      <main className="flex-1 container mx-auto px-4 py-8 flex gap-8 items-start relative">
+      <main className="flex-1 container mx-auto px-4 py-8 flex gap-8 items-start relative max-w-7xl">
         <div className="flex-1 min-w-0">
           {renderPartViewers()}
         </div>
 
-        <div className="w-80 hidden lg:block shrink-0">
+        <div className="w-[340px] hidden lg:block shrink-0">
           <QuestionPalette 
             questions={allQuestions} 
             activePart={activePart}
@@ -193,15 +193,22 @@ export const ClientExamWorkspacePage: React.FC = () => {
         </div>
       </main>
 
-      {/* Nút Submit cuối trang cho mobile */}
-      <div className="lg:hidden p-4 bg-white border-t sticky bottom-0">
+      <div className="lg:hidden p-4 bg-white border-t border-slate-200 sticky bottom-0 z-50">
         <button
           onClick={() => handleSubmit(false)}
-          className="w-full py-3 bg-blue-600 text-white font-bold rounded-lg"
+          className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors shadow-sm"
         >
           Nộp Bài ({Object.keys(answers).length}/{allQuestions.length})
         </button>
       </div>
+
+      <ConfirmDialog
+        open={isConfirmOpen}
+        onOpenChange={setIsConfirmOpen}
+        onConfirm={() => handleSubmit(true)}
+        title="Xác nhận nộp bài"
+        description={`Bạn đã làm ${Object.keys(answers).length}/${allQuestions.length} câu. Bạn có chắc chắn muốn nộp bài?`}
+      />
     </div>
   );
 };

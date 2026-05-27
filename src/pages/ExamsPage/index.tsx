@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FileText } from 'lucide-react';
+import { SearchX, LayoutGrid } from 'lucide-react';
 import { getPublishedExamsApi } from '@/services/clientExamService';
 import { toast } from 'sonner';
 
@@ -21,7 +21,8 @@ function ExamsPage() {
   // Pagination state
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0)
+  const [total, setTotal] = useState(0);
+
   const fetchExams = async () => {
     setIsLoading(true);
     try {
@@ -31,8 +32,7 @@ function ExamsPage() {
       if (difficulty !== 'ALL') params.difficulty = difficulty;
 
       const res = await getPublishedExamsApi(params) as any;
-      console.log(res);
-
+      
       const data = res.data?.data || [];
       const meta = res.data?.meta || {};
 
@@ -48,17 +48,23 @@ function ExamsPage() {
 
   useEffect(() => {
     fetchExams();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, part, difficulty, search]); // search added so it auto-fetches
 
-  }, [page, part, difficulty]);
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [search, part, difficulty]);
 
+  // Keep for compatibility if child components still call it explicitly
   const handleFilter = () => {
     setPage(1);
     fetchExams();
   };
-  console.log(exams)
+
   return (
-    <div className="py-12 bg-gray-50/50 min-h-[calc(100vh-64px)]">
-      <div className="container mx-auto px-4 max-w-6xl">
+    <div className="py-10 bg-white min-h-[calc(100vh-64px)] selection:bg-blue-100 selection:text-blue-900">
+      <div className="container mx-auto px-4 max-w-[1200px]">
         <ExamsHeader />
 
         <ExamsFilter
@@ -72,25 +78,34 @@ function ExamsPage() {
         />
 
         {/* Status Bar */}
-        <div className="mb-6 flex justify-between items-center text-sm text-gray-500 font-medium px-2">
-          <span>Tìm thấy <strong className="text-blue-600">{total}</strong> đề thi</span>
+        <div className="mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-2 text-slate-600 font-medium text-sm">
+            <LayoutGrid className="w-4 h-4" />
+            <span>
+              Tìm thấy <strong className="text-slate-900">{total}</strong> đề thi phù hợp
+            </span>
+          </div>
         </div>
 
         {/* Grid List */}
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map(i => (
-              <div key={i} className="h-64 bg-white rounded-lg animate-pulse border border-gray-100 shadow-sm"></div>
+              <div key={i} className="h-[380px] bg-slate-50/50 rounded-xl animate-pulse border border-slate-100"></div>
             ))}
           </div>
         ) : exams.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-lg border border-dashed border-gray-200">
-            <FileText className="mx-auto h-12 w-12 text-gray-300 mb-3" />
-            <h3 className="text-lg font-semibold text-gray-900">Không tìm thấy đề thi</h3>
-            <p className="text-gray-500 mt-1">Vui lòng thử thay đổi bộ lọc hoặc từ khóa tìm kiếm.</p>
+          <div className="flex flex-col items-center justify-center py-32 bg-slate-50/50 rounded-3xl border border-dashed border-slate-200">
+            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm border border-slate-100 mb-4">
+              <SearchX className="h-8 w-8 text-slate-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-slate-900 mb-2">Không tìm thấy kết quả</h3>
+            <p className="text-slate-500 max-w-sm text-center">
+              Rất tiếc, chúng tôi không tìm thấy đề thi nào phù hợp với tiêu chí của bạn. Vui lòng thử lại với từ khóa khác.
+            </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {exams.map(exam => (
               <ExamCard key={exam.id} exam={exam} />
             ))}
@@ -98,8 +113,10 @@ function ExamsPage() {
         )}
 
         {/* Pagination */}
-        {!isLoading && (
-          <ExamsPagination page={page} totalPages={totalPages} setPage={setPage} />
+        {!isLoading && exams.length > 0 && (
+          <div className="mt-12">
+            <ExamsPagination page={page} totalPages={totalPages} setPage={setPage} />
+          </div>
         )}
       </div>
     </div>

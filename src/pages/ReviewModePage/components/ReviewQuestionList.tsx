@@ -48,7 +48,7 @@ export const ReviewQuestionList: React.FC<ReviewQuestionListProps> = ({ passageG
 
     return (
       <div key={q.id} className="py-6 border-b border-gray-100 last:border-0" id={`question-${q.order}`}>
-        
+
         {/* Question Header */}
         <div className="flex items-start gap-3 mb-4">
           <div className="shrink-0 mt-1">
@@ -66,9 +66,9 @@ export const ReviewQuestionList: React.FC<ReviewQuestionListProps> = ({ passageG
               <Badge variant="outline" className="text-xs font-normal text-gray-500 bg-gray-50">{q.part}</Badge>
             </div>
             {q.questionText && (
-              <div 
-                className="text-gray-800 font-medium mt-2 text-base leading-relaxed" 
-                dangerouslySetInnerHTML={{ __html: q.questionText }} 
+              <div
+                className="text-gray-800 font-medium mt-2 text-base leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: q.questionText }}
               />
             )}
           </div>
@@ -81,16 +81,16 @@ export const ReviewQuestionList: React.FC<ReviewQuestionListProps> = ({ passageG
 
         {/* Explanation & Note */}
         <div className="pl-9 space-y-4">
-          
+
           {/* Explanation Box */}
           {q.explanation && (
             <div className="bg-blue-50/50 rounded-lg p-4 border border-blue-100 text-sm">
               <div className="flex items-center gap-2 text-blue-700 font-bold mb-2">
                 <FileText className="w-4 h-4" /> Giải thích chi tiết
               </div>
-              <div 
-                className="text-gray-700 leading-relaxed" 
-                dangerouslySetInnerHTML={{ __html: q.explanation }} 
+              <div
+                className="text-gray-700 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: q.explanation }}
               />
             </div>
           )}
@@ -117,23 +117,23 @@ export const ReviewQuestionList: React.FC<ReviewQuestionListProps> = ({ passageG
 
   const renderPassageGroup = (pg: ReviewPassageGroup) => (
     <div key={pg.id} className="mb-12 bg-white border border-gray-200 rounded-md overflow-hidden shadow-sm">
-      
+
       {/* Passages / Media */}
       <div className="bg-gray-50 p-6 border-b border-gray-200 space-y-6">
         {pg.passages.map((p, idx) => (
           <div key={p.id} className="space-y-4">
             {pg.passages.length > 1 && <h4 className="font-bold text-gray-600 uppercase text-xs tracking-wider">Đoạn {idx + 1}</h4>}
-            
+
             {p.mediaType === 'IMAGE' && p.mediaUrl && (
               <img src={p.mediaUrl} alt="passage image" className="max-w-full rounded-lg shadow-sm border border-gray-200" />
             )}
-            
+
             {p.mediaType === 'AUDIO' && p.mediaUrl && (
               <audio controls src={p.mediaUrl} className="w-full h-12" />
             )}
 
             {p.content && (
-              <div 
+              <div
                 className="bg-white p-5 rounded-lg border border-gray-200 text-gray-800 leading-relaxed font-serif shadow-sm"
                 dangerouslySetInnerHTML={{ __html: p.content }}
               />
@@ -143,7 +143,7 @@ export const ReviewQuestionList: React.FC<ReviewQuestionListProps> = ({ passageG
             {p.transcript && (
               <div className="mt-3 bg-yellow-50/50 p-4 rounded-lg border border-yellow-100 text-sm">
                 <h5 className="font-bold text-yellow-800 mb-2">Transcript / Dịch nghĩa:</h5>
-                <div 
+                <div
                   className="text-yellow-900/80 leading-relaxed"
                   dangerouslySetInnerHTML={{ __html: p.transcript }}
                 />
@@ -165,7 +165,7 @@ export const ReviewQuestionList: React.FC<ReviewQuestionListProps> = ({ passageG
       <div className="max-w-4xl mx-auto">
         {/* Render Passage Groups */}
         {passageGroups.map(renderPassageGroup)}
-        
+
         {/* Render Standalone Questions (Part 5) */}
         {standaloneQuestions.length > 0 && (
           <div className="bg-white border border-gray-200 rounded-md overflow-hidden shadow-sm p-5">

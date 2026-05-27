@@ -7,12 +7,14 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import type { ClientExamData } from '@/types/clientExam.type';
 import { useClientExamStore } from '@/store/useClientExamStore';
+import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 
 function ExamDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [exam, setExam] = useState<ClientExamData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   // Lấy trạng thái từ store để kiểm tra xem có bài làm dở không
   const activeExamId = useClientExamStore((state) => state.examId);
@@ -151,13 +153,7 @@ function ExamDetailPage() {
                   </Button>
                   <Button
                     variant="outline"
-                    onClick={() => {
-                      const isConfirm = window.confirm("Bắt đầu bài thi mới sẽ xoá toàn bộ tiến trình làm bài hiện tại. Bạn có chắc chắn?");
-                      if (isConfirm) {
-                        clearExam();
-                        navigate(`/exams/${exam.id}/take`);
-                      }
-                    }}
+                    onClick={() => setIsConfirmOpen(true)}
                     className="w-full h-12 font-bold border-2 border-red-500 text-red-600 hover:bg-red-50 rounded-md transition-all"
                   >
                     <RotateCcw className="w-5 h-5 mr-2" />
@@ -180,6 +176,19 @@ function ExamDetailPage() {
           </div>
         </div>
       </div>
+      
+      <ConfirmDialog
+        open={isConfirmOpen}
+        onOpenChange={setIsConfirmOpen}
+        onConfirm={() => {
+          setIsConfirmOpen(false);
+          clearExam();
+          navigate(`/exams/${exam.id}/take`);
+        }}
+        title="Xác nhận làm lại"
+        description="Bắt đầu bài thi mới sẽ xoá toàn bộ tiến trình làm bài hiện tại. Bạn có chắc chắn?"
+        variant="destructive"
+      />
     </div>
   );
 }

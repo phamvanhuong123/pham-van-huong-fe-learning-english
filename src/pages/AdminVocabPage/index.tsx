@@ -6,6 +6,7 @@ import VocabModal from './components/AdminVocabModal';
 import AdminVocabImportModal from './components/AdminVocabImportModal';
 import type { Vocab, VocabStatus } from '@/types/vocab.type';
 import { toast } from 'sonner';
+import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 
 export default function AdminVocabPage() {
   const [search, setSearch] = useState('');
@@ -15,6 +16,11 @@ export default function AdminVocabPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [editingVocab, setEditingVocab] = useState<Vocab | null>(null);
+  
+  const [confirmState, setConfirmState] = useState<{
+    isOpen: boolean;
+    vocabId: string | null;
+  }>({ isOpen: false, vocabId: null });
 
   const { data: vocabsData, isLoading } = useAdminVocabs({
     search: search || undefined,
@@ -39,14 +45,19 @@ export default function AdminVocabPage() {
     setIsModalOpen(true);
   };
 
-  const handleDeleteClick = async (id: string) => {
-    if (window.confirm('Xóa từ vựng hệ thống sẽ làm ảnh hưởng đến các người dùng đang tham chiếu (nếu có sau này). Bạn có chắc không?')) {
-      try {
-        await deleteVocab(id);
-        toast.success('Xóa từ vựng thành công');
-      } catch (error) {
-        // Handled by interceptor
-      }
+  const handleDeleteClick = (id: string) => {
+    setConfirmState({ isOpen: true, vocabId: id });
+  };
+
+  const executeDelete = async () => {
+    if (!confirmState.vocabId) return;
+    try {
+      await deleteVocab(confirmState.vocabId);
+      toast.success('Xóa từ vựng thành công');
+    } catch (error) {
+      // Handled by interceptor
+    } finally {
+      setConfirmState({ isOpen: false, vocabId: null });
     }
   };
 
@@ -90,6 +101,15 @@ export default function AdminVocabPage() {
       <AdminVocabImportModal 
         isOpen={isImportModalOpen} 
         onClose={() => setIsImportModalOpen(false)} 
+      />
+
+      <ConfirmDialog
+        open={confirmState.isOpen}
+        onOpenChange={(isOpen) => setConfirmState(prev => ({ ...prev, isOpen }))}
+        onConfirm={executeDelete}
+        title="Xác nhận xóa"
+        description="Xóa từ vựng hệ thống sẽ làm ảnh hưởng đến các người dùng đang tham chiếu (nếu có sau này). Bạn có chắc không?"
+        variant="destructive"
       />
     </div>
   );

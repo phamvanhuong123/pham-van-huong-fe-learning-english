@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { useDebounce } from 'use-debounce';
 
 interface ExamsFilterProps {
   search: string;
@@ -11,8 +12,20 @@ interface ExamsFilterProps {
   setPart: (val: string) => void;
   difficulty: string;
   setDifficulty: (val: string) => void;
-  onFilter: () => void;
+  onFilter: () => void; // Keep for backward compatibility if parent still uses it manually
 }
+
+const PARTS = [
+  { value: 'ALL', label: 'Tất cả' },
+  { value: 'FULL', label: 'Full Test' },
+  { value: 'PART1', label: 'Part 1' },
+  { value: 'PART2', label: 'Part 2' },
+  { value: 'PART3', label: 'Part 3' },
+  { value: 'PART4', label: 'Part 4' },
+  { value: 'PART5', label: 'Part 5' },
+  { value: 'PART6', label: 'Part 6' },
+  { value: 'PART7', label: 'Part 7' },
+];
 
 export const ExamsFilter: React.FC<ExamsFilterProps> = ({
   search,
@@ -23,58 +36,73 @@ export const ExamsFilter: React.FC<ExamsFilterProps> = ({
   setDifficulty,
   onFilter
 }) => {
-  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+  const [localSearch, setLocalSearch] = useState(search);
+  const [debouncedSearch] = useDebounce(localSearch, 500);
+
+  // Auto trigger search when debounced value changes
+  useEffect(() => {
+    if (debouncedSearch !== search) {
+      setSearch(debouncedSearch);
       onFilter();
     }
-  };
+  }, [debouncedSearch, search, setSearch, onFilter]);
+
+  // Handle direct parts/difficulty clicks auto triggering filter in parent due to useEffect there, 
+  // but we can also manually call onFilter if needed. Parent already has useEffect for part/difficulty.
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 mb-8 flex flex-col md:flex-row gap-4 items-center">
-      <div className="relative flex-1 w-full">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
-        <Input 
-          placeholder="Tìm kiếm đề thi..." 
-          className="pl-10 h-12 bg-gray-50 border-gray-200 focus-visible:ring-blue-500 rounded-md"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          onKeyDown={handleSearchKeyDown}
-        />
+    <div className="mb-8 space-y-6">
+      {/* Top row: Search and Difficulty */}
+      <div className="flex flex-col md:flex-row gap-4 items-center bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
+        <div className="relative flex-1 w-full flex items-center">
+          <Search className="absolute left-4 text-slate-400 h-5 w-5" />
+          <Input 
+            placeholder="Tìm kiếm đề thi..." 
+            className="pl-12 h-12 bg-transparent border-none shadow-none focus-visible:ring-0 text-base"
+            value={localSearch}
+            onChange={(e) => setLocalSearch(e.target.value)}
+          />
+        </div>
+        
+        <div className="h-8 w-px bg-slate-200 hidden md:block"></div>
+        
+        <div className="w-full md:w-auto px-2 pb-2 md:pb-0">
+          <Select 
+            value={difficulty} 
+            onValueChange={(val) => {
+              setDifficulty(val);
+              // Give state time to update in parent, parent's useEffect will catch it
+            }}
+          >
+            <SelectTrigger className="w-full md:w-[180px] h-10 border-none bg-slate-50/50 hover:bg-slate-100 focus:ring-0 font-medium">
+              <SelectValue placeholder="Độ khó" />
+            </SelectTrigger>
+            <SelectContent className="rounded-xl shadow-lg border-slate-100">
+              <SelectItem value="ALL">Mọi độ khó</SelectItem>
+              <SelectItem value="EASY">Dễ</SelectItem>
+              <SelectItem value="MEDIUM">Trung bình</SelectItem>
+              <SelectItem value="HARD">Khó</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
-      
-      <div className="flex gap-4 w-full md:w-auto">
-        <Select value={part} onValueChange={setPart}>
-          <SelectTrigger className="w-full md:w-[160px] h-12 rounded-md border-gray-200 bg-gray-50">
-            <SelectValue placeholder="Phần thi" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="ALL">Tất cả phần thi</SelectItem>
-            <SelectItem value="FULL">Full Test</SelectItem>
-            <SelectItem value="PART1">Part 1</SelectItem>
-            <SelectItem value="PART2">Part 2</SelectItem>
-            <SelectItem value="PART3">Part 3</SelectItem>
-            <SelectItem value="PART4">Part 4</SelectItem>
-            <SelectItem value="PART5">Part 5</SelectItem>
-            <SelectItem value="PART6">Part 6</SelectItem>
-            <SelectItem value="PART7">Part 7</SelectItem>
-          </SelectContent>
-        </Select>
 
-        <Select value={difficulty} onValueChange={setDifficulty}>
-          <SelectTrigger className="w-full md:w-[160px] h-12 rounded-md border-gray-200 bg-gray-50">
-            <SelectValue placeholder="Độ khó" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="ALL">Mọi độ khó</SelectItem>
-            <SelectItem value="EASY">Dễ</SelectItem>
-            <SelectItem value="MEDIUM">Trung bình</SelectItem>
-            <SelectItem value="HARD">Khó</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Button onClick={onFilter} className="h-12 px-6 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-sm transition-all">
-          Lọc
-        </Button>
+      {/* Bottom row: Parts (Pills) */}
+      <div className="flex overflow-x-auto pb-2 -mx-2 px-2 scrollbar-hide gap-2 mask-linear-fade">
+        {PARTS.map((p) => (
+          <button
+            key={p.value}
+            onClick={() => setPart(p.value)}
+            className={cn(
+              "whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
+              part === p.value 
+                ? "bg-slate-900 text-white shadow-md shadow-slate-900/20" 
+                : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:border-slate-300"
+            )}
+          >
+            {p.label}
+          </button>
+        ))}
       </div>
     </div>
   );

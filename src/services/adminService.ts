@@ -179,5 +179,33 @@ export const adminService = {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
     return res.data;
+  },
+
+  // Subscriptions Extended
+  editPendingSubscription: async (id: string, data: { plan: string; amount: number }) => {
+    const res = await authorizedAxiosInstance.put(`/admin/subscriptions/${id}`, data);
+    return res.data;
+  },
+  revokeSubscription: async (id: string, reason: string) => {
+    const res = await authorizedAxiosInstance.post(`/admin/subscriptions/${id}/revoke`, { reason });
+    return res.data;
+  },
+  deleteSubscription: async (id: string) => {
+    const res = await authorizedAxiosInstance.delete(`/admin/subscriptions/${id}`);
+    return res.data;
+  },
+
+  // Banned Bank Accounts
+  getBannedBankAccounts: async () => {
+    const res = await authorizedAxiosInstance.get('/admin/subscriptions/banned-accounts');
+    return res.data.data;
+  },
+  banBankAccount: async (data: { bankAccountNo: string; reason?: string }) => {
+    const res = await authorizedAxiosInstance.post('/admin/subscriptions/banned-accounts', data);
+    return res.data;
+  },
+  unbanBankAccount: async (id: string) => {
+    const res = await authorizedAxiosInstance.delete(`/admin/subscriptions/banned-accounts/${id}`);
+    return res.data;
   }
 };

@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { User, Shield, BarChart3, MonitorSmartphone } from 'lucide-react';
+import { User, Shield, BarChart3, MonitorSmartphone, Crown } from 'lucide-react';
 import ProfileInfoTab from './components/ProfileInfoTab';
 import SecurityTab from './components/SecurityTab';
 import StatsTab from './components/StatsTab';
 import SessionsTab from './components/SessionsTab';
+import SubscriptionTab from './components/SubscriptionTab';
 import { cn } from '@/lib/utils';
 
 const tabs = [
@@ -11,6 +12,7 @@ const tabs = [
   { id: 'security', label: 'Bảo mật', icon: Shield, component: SecurityTab },
   { id: 'stats', label: 'Thống kê', icon: BarChart3, component: StatsTab },
   { id: 'sessions', label: 'Thiết bị', icon: MonitorSmartphone, component: SessionsTab },
+  { id: 'subscription', label: 'Gói VIP & Thanh toán', icon: Crown, component: SubscriptionTab },
 ];
 
 export default function ProfilePage() {
@@ -21,12 +23,12 @@ export default function ProfilePage() {
   return (
     <div className="container mx-auto max-w-6xl py-8 md:py-12 px-4 md:px-8">
       <div className="flex flex-col md:flex-row gap-8 md:gap-12">
-        
+
         {/* Sidebar */}
         <aside className="w-full md:w-64 flex-shrink-0">
           <div className="sticky top-24">
             <h1 className="text-2xl font-bold tracking-tight mb-6">Cài đặt tài khoản</h1>
-            
+
             <nav className="flex md:flex-col gap-2 overflow-x-auto pb-2 md:pb-0 [&::-webkit-scrollbar]:hidden">
               {tabs.map((tab) => {
                 const isActive = activeTab === tab.id;

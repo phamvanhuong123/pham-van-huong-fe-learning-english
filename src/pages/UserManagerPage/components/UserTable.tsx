@@ -27,16 +27,23 @@ export function UserTable({ users, pagination, isLoading, error, onPageChange, o
   }
 
   const renderRoles = (user: UserListDTO) => {
-    if (!user.userRoles || user.userRoles.length === 0) {
+    const isVip = user.vipExpiresAt && new Date(user.vipExpiresAt) > new Date();
+
+    if ((!user.userRoles || user.userRoles.length === 0) && !isVip) {
       return <Badge variant="outline">User</Badge>;
     }
     return (
       <div className="flex gap-1 flex-wrap">
-        {user.userRoles.map((ur, idx) => (
+        {user.userRoles && user.userRoles.map((ur, idx) => (
           <Badge key={idx} variant="secondary" className="text-[10px]">
             {ur.role.name}
           </Badge>
         ))}
+        {isVip && (
+          <Badge variant="default" className="bg-amber-500 hover:bg-amber-600 text-[10px] text-white">
+            VIP
+          </Badge>
+        )}
       </div>
     );
   };

@@ -16,7 +16,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { useAuthStore } from '@/store/useAuthStore';
 import { cn } from '@/lib/utils';
 import { NotificationBell } from './NotificationBell';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { handleLogoutApi } from '@/services/authServices';
 
 const navItems = [
   { label: 'Trang chủ', to: '/', icon: LayoutDashboard, end: true },
@@ -28,13 +28,16 @@ const navItems = [
 
 export function ClientHeader() {
   const userInfo = useAuthStore(state => state.userInfo);
-  const clearAuth = useAuthStore(state => state.clearAuth);
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
-  const handleLogout = () => {
-    clearAuth();
+  const handleLogout = async () => {
+    try {
+      await handleLogoutApi();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
     navigate('/login', { replace: true });
     setUserMenuOpen(false);
   };
@@ -81,111 +84,124 @@ export function ClientHeader() {
 
         {/* ── Right Section ── */}
         <div className="flex items-center gap-2">
-          {/* Go VIP button — chỉ hiển thị với user thường */}
+          {/* Go VIP button / VIP Badge */}
           {userInfo && !isAdmin && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="hidden lg:flex gap-2 border-primary/30 text-primary hover:bg-primary/5 rounded-full"
-              asChild
-            >
-              <Link to="/pricing">
-                <Crown className="h-4 w-4" />
-                Nâng cấp VIP
-              </Link>
-            </Button>
+            userInfo.isVip ? (
+              <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-200 to-yellow-400 text-yellow-900 text-sm font-semibold shadow-sm cursor-default">
+                <Crown className="h-4 w-4 fill-yellow-900" />
+                VIP
+              </div>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                className="hidden lg:flex gap-2 border-primary/30 text-primary hover:bg-primary/5 rounded-full"
+                asChild
+              >
+                <Link to="/pricing">
+                  <Crown className="h-4 w-4" />
+                  Nâng cấp VIP
+                </Link>
+              </Button>
+            )
           )}
 
           {/* ── Khi đã đăng nhập: User Menu ── */}
           {userInfo ? (
             <div className="flex items-center gap-2">
               <NotificationBell />
-              
+
               <div className="relative">
-              <button
-                id="client-user-menu-trigger"
-                onClick={() => setUserMenuOpen((prev) => !prev)}
-                className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-muted transition-colors"
-              >
-                <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center overflow-hidden border">
-                  {userInfo.avatarUrl ? (
-                    <img
-                      src={userInfo.avatarUrl}
-                      alt={userInfo.name || 'User'}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <User className="h-4 w-4 text-muted-foreground" />
-                  )}
-                </div>
-                <span 
-                  className="text-sm font-medium hidden md:inline-block max-w-[120px] lg:max-w-[180px] truncate text-left"
-                  title={userInfo?.name || userInfo?.email}
+                <button
+                  id="client-user-menu-trigger"
+                  onClick={() => setUserMenuOpen((prev) => !prev)}
+                  className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-muted transition-colors"
                 >
-                  {userInfo?.name || userInfo?.email.split('@')[0]}
-                </span>
-              </button>
+                  <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center overflow-hidden border">
+                    {userInfo.avatarUrl ? (
+                      <img
+                        src={userInfo.avatarUrl}
+                        alt={userInfo.name || 'User'}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <User className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </div>
+                  <span
+                    className="text-sm font-medium hidden md:inline-block max-w-[120px] lg:max-w-[180px] truncate text-left"
+                    title={userInfo?.name || userInfo?.email}
+                  >
+                    {userInfo?.name || userInfo?.email.split('@')[0]}
+                  </span>
+                </button>
 
-              {/* Dropdown */}
-              {userMenuOpen && (
-                <>
-                  {/* overlay để click ngoài đóng menu */}
-                  <div
-                    className="fixed inset-0 z-40"
-                    onClick={() => setUserMenuOpen(false)}
-                  />
-                  <div className="absolute right-0 mt-2 w-56 rounded-lg border bg-popover shadow-md z-50 p-1.5 flex flex-col gap-0.5">
-                    <div className="px-2 py-1.5 text-xs text-muted-foreground w-full overflow-hidden flex flex-col gap-0.5">
-                      <span className="font-semibold text-foreground block truncate" title={userInfo.name || userInfo.email}>
-                        {userInfo.name || userInfo.email.split('@')[0]}
-                      </span>
-                      <span className="block truncate opacity-80" title={userInfo.email}>
-                        {userInfo.email}
-                      </span>
-                    </div>
-                    <div className="h-px bg-border my-1" />
-
-                    <Link
-                      to="/profile"
+                {/* Dropdown */}
+                {userMenuOpen && (
+                  <>
+                    {/* overlay để click ngoài đóng menu */}
+                    <div
+                      className="fixed inset-0 z-40"
                       onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2 px-2 py-1.5 text-sm rounded-md hover:bg-muted transition-colors"
-                    >
-                      <User className="h-4 w-4" /> Hồ sơ của tôi
-                    </Link>
+                    />
+                    <div className="absolute right-0 mt-2 w-56 rounded-lg border bg-popover shadow-md z-50 p-1.5 flex flex-col gap-0.5">
+                      <div className="px-2 py-1.5 text-xs text-muted-foreground w-full overflow-hidden flex flex-col gap-0.5">
+                        <span className="font-semibold text-foreground block truncate" title={userInfo.name || userInfo.email}>
+                          {userInfo.name || userInfo.email.split('@')[0]}
+                        </span>
+                        <span className="block truncate opacity-80" title={userInfo.email}>
+                          {userInfo.email}
+                        </span>
+                      </div>
+                      <div className="h-px bg-border my-1" />
 
-                    {isAdmin && (
                       <Link
-                        to="/admin/dashboard"
+                        to="/profile"
                         onClick={() => setUserMenuOpen(false)}
                         className="flex items-center gap-2 px-2 py-1.5 text-sm rounded-md hover:bg-muted transition-colors"
                       >
-                        <LayoutDashboard className="h-4 w-4" /> Trang Admin
+                        <User className="h-4 w-4" /> Hồ sơ của tôi
                       </Link>
-                    )}
 
-                    {!isAdmin && (
-                      <Link
-                        to="/pricing"
-                        onClick={() => setUserMenuOpen(false)}
-                        className="flex items-center gap-2 px-2 py-1.5 text-sm rounded-md hover:bg-muted text-primary font-medium transition-colors"
+                      {isAdmin && (
+                        <Link
+                          to="/admin/dashboard"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center gap-2 px-2 py-1.5 text-sm rounded-md hover:bg-muted transition-colors"
+                        >
+                          <LayoutDashboard className="h-4 w-4" /> Trang Admin
+                        </Link>
+                      )}
+
+                      {!isAdmin && (
+                        userInfo.isVip ? (
+                          <div className="flex items-center gap-2 px-2 py-1.5 text-sm rounded-md text-yellow-600 font-semibold bg-yellow-500/10 cursor-default">
+                            <Crown className="h-4 w-4 fill-yellow-600" /> Thành viên VIP
+                          </div>
+                        ) : (
+                          <Link
+                            to="/pricing"
+                            onClick={() => setUserMenuOpen(false)}
+                            className="flex items-center gap-2 px-2 py-1.5 text-sm rounded-md hover:bg-muted text-primary font-medium transition-colors"
+                          >
+                            <Crown className="h-4 w-4" /> Nâng cấp VIP
+                          </Link>
+                        )
+                      )}
+
+                      <div className="h-px bg-border my-1" />
+
+                      <button
+                        id="client-logout-btn"
+                        onClick={handleLogout}
+                        className="flex items-center gap-2 w-full px-2 py-1.5 text-sm rounded-md hover:bg-destructive/10 text-destructive transition-colors"
                       >
-                        <Crown className="h-4 w-4" /> Nâng cấp VIP
-                      </Link>
-                    )}
-
-                    <div className="h-px bg-border my-1" />
-
-                    <button
-                      id="client-logout-btn"
-                      onClick={handleLogout}
-                      className="flex items-center gap-2 w-full px-2 py-1.5 text-sm rounded-md hover:bg-destructive/10 text-destructive transition-colors"
-                    >
-                      <LogOut className="h-4 w-4" />
-                      Đăng xuất
-                    </button>
-                  </div>
-                </>
-              )}
+                        <LogOut className="h-4 w-4" />
+                        Đăng xuất
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           ) : (

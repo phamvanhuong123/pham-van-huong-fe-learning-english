@@ -1,6 +1,8 @@
 import React from 'react';
 import type { ClientQuestion } from '@/types/clientExam.type';
 import { useClientExamStore } from '@/store/useClientExamStore';
+import { cn } from '@/lib/utils';
+import { Bookmark } from 'lucide-react';
 
 interface Part5ViewerProps {
   question: ClientQuestion;
@@ -11,32 +13,42 @@ export const Part5Viewer: React.FC<Part5ViewerProps> = ({ question }) => {
   const isBookmarked = bookmarks.includes(question.id);
 
   return (
-    <div id={`question-${question.id}`} className="max-w-4xl mx-auto bg-white p-4 rounded-md shadow-sm border border-gray-100 mb-4 scroll-mt-28">
-      <div className="flex gap-3 mb-4">
-        <span className="font-bold text-blue-600 min-w-[28px] mt-0.5">{question.order}.</span>
-        <p className="font-semibold text-gray-800 text-lg leading-snug flex-1">
-          {question.questionText}
-        </p>
+    <div id={`question-${question.id}`} className="max-w-2xl mx-auto bg-white p-3 md:p-4 rounded-xl shadow-sm border border-slate-100 mb-3 scroll-mt-20">
+      <div className="flex gap-2 mb-3">
+        <div className="w-5 h-5 shrink-0 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-[10px] shadow-sm">
+          {question.order}
+        </div>
+        <div className="flex-1 pt-0">
+          <p className="font-semibold text-slate-800 text-[12px] md:text-[13px] leading-snug">
+            {question.questionText}
+          </p>
+        </div>
         <button
           onClick={() => toggleBookmark(question.id)}
-          className={`p-1.5 h-fit rounded transition-colors ${isBookmarked ? 'bg-orange-100 text-orange-600' : 'text-gray-400 hover:bg-gray-100'}`}
+          className={cn(
+            "p-2.5 h-fit shrink-0 rounded-full transition-all duration-200",
+            isBookmarked 
+              ? "bg-amber-100 text-amber-600 shadow-sm" 
+              : "text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+          )}
           title="Đánh dấu xem lại"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill={isBookmarked ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-          </svg>
+          <Bookmark className="w-5 h-5" fill={isBookmarked ? "currentColor" : "none"} />
         </button>
       </div>
 
-      <div className="flex flex-col gap-2 pl-10">
+      <div className="flex flex-col gap-3 pl-0 md:pl-14">
         {question.options.map((opt) => {
           const isSelected = answers[question.id] === opt.label;
           return (
             <label
               key={opt.id}
-              className={`flex items-start gap-2 py-1.5 px-2 rounded border cursor-pointer transition-colors
-                ${isSelected ? 'bg-blue-50 border-blue-400' : 'hover:bg-gray-50 border-transparent'}
-              `}
+              className={cn(
+                "group flex items-center gap-2 p-1 rounded-md border cursor-pointer transition-all duration-200",
+                isSelected 
+                  ? "bg-blue-50/50 border-blue-200 shadow-sm" 
+                  : "bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300"
+              )}
             >
               <input
                 type="radio"
@@ -44,10 +56,20 @@ export const Part5Viewer: React.FC<Part5ViewerProps> = ({ question }) => {
                 value={opt.label}
                 checked={isSelected}
                 onChange={() => selectAnswer(question.id, opt.label)}
-                className="mt-0.5 w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                className="sr-only"
               />
-              <span className="font-medium w-6 shrink-0">({opt.label})</span>
-              <span className={`${isSelected ? 'text-blue-900 font-medium' : 'text-gray-700'}`}>
+              <div className={cn(
+                "flex items-center justify-center w-5 h-5 rounded-full border-[1.5px] text-[10px] font-bold transition-all duration-200 shrink-0",
+                isSelected 
+                  ? "bg-blue-600 border-blue-600 text-white" 
+                  : "bg-white border-slate-300 text-slate-500 group-hover:border-blue-400 group-hover:text-blue-500"
+              )}>
+                {opt.label}
+              </div>
+              <span className={cn(
+                "font-medium text-[12px]",
+                isSelected ? "text-slate-900" : "text-slate-600"
+              )}>
                 {opt.text}
               </span>
             </label>

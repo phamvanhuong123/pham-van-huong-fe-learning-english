@@ -1,12 +1,11 @@
 import { io, Socket } from 'socket.io-client';
 import { toast } from 'sonner';
-import { useAuthStore } from '../store/useAuthStore';
 import { handleLogoutApi } from '../services/authServices';
 
 let socket: Socket | null = null;
 
-const SOCKET_URL = import.meta.env.VITE_API_ROOT 
-  ? import.meta.env.VITE_API_ROOT.replace('/api/v1', '') 
+const SOCKET_URL = import.meta.env.VITE_API_ROOT
+  ? import.meta.env.VITE_API_ROOT.replace('/api/v1', '')
   : 'http://localhost:5000';
 
 export const connectSocket = (token: string) => {
@@ -35,7 +34,7 @@ export const connectSocket = (token: string) => {
       description: data.body,
       duration: 5000,
     });
-    
+
     // Invalidate queries để NotificationBell tải lại ngay lập tức
     import('../main').then((module) => {
       module.queryClient.invalidateQueries({ queryKey: ['notifications'] });
@@ -55,6 +54,13 @@ export const connectSocket = (token: string) => {
     toast.error('Tài khoản của bạn đã bị khóa');
     handleLogoutApi().then(() => {
       window.location.href = '/login';
+    });
+  });
+
+  // Handle real-time VIP status update
+  socket.on('vip_status_updated', (data: { isVip: boolean }) => {
+    import('../store/useAuthStore').then((module) => {
+      module.useAuthStore.getState().updateUserInfo({ isVip: data.isVip });
     });
   });
 };

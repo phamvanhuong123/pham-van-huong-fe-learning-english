@@ -1,6 +1,8 @@
 import React from 'react';
 import type { ClientPassageGroup, ClientQuestion } from '@/types/clientExam.type';
 import { useClientExamStore } from '@/store/useClientExamStore';
+import { cn } from '@/lib/utils';
+import { Bookmark } from 'lucide-react';
 
 interface Part2ViewerProps {
   passageGroup?: ClientPassageGroup;
@@ -14,42 +16,51 @@ export const Part2Viewer: React.FC<Part2ViewerProps> = ({ passageGroup, question
   const isBookmarked = bookmarks.includes(question.id);
 
   return (
-    <div id={`question-${question.id}`} className="max-w-4xl mx-auto bg-white p-4 rounded-md shadow-sm border border-gray-100 mb-6 scroll-mt-28">
-      <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-100">
-        <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-          <span className="text-blue-600">{question.order}.</span>
-        </h3>
+    <div id={`question-${question.id}`} className="max-w-2xl mx-auto bg-white p-3 md:p-4 rounded-xl shadow-sm border border-slate-100 mb-3 scroll-mt-20">
+      <div className="flex items-start justify-between mb-3 pb-2 border-b border-slate-100">
+        <div className="flex items-center gap-1.5">
+          <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-[10px] shadow-sm">
+            {question.order}
+          </div>
+          <span className="text-slate-500 font-medium text-[11px]">Part 2: Question-Response</span>
+        </div>
         <button
           onClick={() => toggleBookmark(question.id)}
-          className={`p-2 rounded transition-all duration-300 ${isBookmarked ? 'bg-orange-100 text-orange-600 shadow-sm' : 'text-gray-400 hover:bg-gray-100 hover:shadow-sm hover:text-gray-600'}`}
+          className={cn(
+            "p-2.5 rounded-full transition-all duration-200",
+            isBookmarked 
+              ? "bg-amber-100 text-amber-600 shadow-sm" 
+              : "text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+          )}
           title="Đánh dấu xem lại"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill={isBookmarked ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-          </svg>
+          <Bookmark className="w-5 h-5" fill={isBookmarked ? "currentColor" : "none"} />
         </button>
       </div>
 
       {audioPassage?.mediaUrl && (
-        <div className="mb-6 max-w-2xl mx-auto flex justify-center">
+        <div className="mb-4 w-full bg-slate-50 p-1.5 rounded-lg border border-slate-100 shadow-inner">
           <audio
             controls
             controlsList="nodownload noplaybackrate"
-            className="w-full outline-none custom-audio h-10"
+            className="w-full outline-none custom-audio h-7"
             src={audioPassage.mediaUrl}
           />
         </div>
       )}
 
-      <div className="flex flex-col gap-3 max-w-2xl mx-auto w-full">
+      <div className="flex flex-col gap-1.5 w-full">
         {question.options.map((opt) => {
           const isSelected = answers[question.id] === opt.label;
           return (
             <label
               key={opt.id}
-              className={`flex items-center gap-2 py-1.5 px-3 rounded border cursor-pointer transition-all
-                ${isSelected ? 'bg-blue-50 border-blue-500 shadow-sm' : 'hover:bg-gray-50 border-gray-200'}
-              `}
+              className={cn(
+                "group flex items-center gap-1.5 p-1 rounded-md border cursor-pointer transition-all duration-200 w-full",
+                isSelected 
+                  ? "bg-blue-50/50 border-blue-200 shadow-sm" 
+                  : "bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300"
+              )}
             >
               <input
                 type="radio"
@@ -57,11 +68,24 @@ export const Part2Viewer: React.FC<Part2ViewerProps> = ({ passageGroup, question
                 value={opt.label}
                 checked={isSelected}
                 onChange={() => selectAnswer(question.id, opt.label)}
-                className="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500"
+                className="sr-only"
               />
-              <span className={`font-semibold text-base w-6 shrink-0 ${isSelected ? 'text-blue-700' : 'text-gray-600'}`}>
-                {opt.label}.
-              </span>
+              <div className={cn(
+                "flex items-center justify-center w-5 h-5 rounded-full border-[1.5px] text-[10px] font-bold transition-all duration-200 shrink-0",
+                isSelected 
+                  ? "bg-blue-600 border-blue-600 text-white" 
+                  : "bg-white border-slate-300 text-slate-500 group-hover:border-blue-400 group-hover:text-blue-500"
+              )}>
+                {opt.label}
+              </div>
+              {opt.text && (
+                <span className={cn(
+                  "font-medium text-[12px]",
+                  isSelected ? "text-slate-900" : "text-slate-600"
+                )}>
+                  {opt.text}
+                </span>
+              )}
             </label>
           );
         })}
