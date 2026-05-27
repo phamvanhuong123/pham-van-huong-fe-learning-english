@@ -77,105 +77,105 @@ export interface BroadcastPayload {
 export const adminService = {
   // Dashboard
   getDashboardStats: async () => {
-    const res = await authorizedAxiosInstance.get<{ data: DashboardData }>(`${API_ROOT}/admin/dashboard/stats`);
+    const res = await authorizedAxiosInstance.get<{ data: DashboardData }>('/admin/dashboard/stats');
     return res.data.data;
   },
 
   // Users
   getUsers: async (params: { page?: number; limit?: number; search?: string; role?: string; status?: string }) => {
-    const res = await authorizedAxiosInstance.get<{ data: { users: UserListDTO[]; pagination: any } }>(`${API_ROOT}/admin/users`, { params });
+    const res = await authorizedAxiosInstance.get<{ data: { users: UserListDTO[]; pagination: any } }>('/admin/users', { params });
     return res.data.data;
   },
   getUserById: async (id: string) => {
-    const res = await authorizedAxiosInstance.get<{ data: UserDetailDTO }>(`${API_ROOT}/admin/users/${id}`);
+    const res = await authorizedAxiosInstance.get<{ data: UserDetailDTO }>(`/admin/users/${id}`);
     return res.data.data;
   },
   banUser: async (id: string, isBanned: boolean, reason?: string) => {
-    const res = await authorizedAxiosInstance.patch(`${API_ROOT}/admin/users/${id}/ban`, { isBanned, reason });
+    const res = await authorizedAxiosInstance.patch(`/admin/users/${id}/ban`, { isBanned, reason });
     return res.data;
   },
   updateUserRole: async (id: string, role: string) => {
-    const res = await authorizedAxiosInstance.patch(`${API_ROOT}/admin/users/${id}/role`, { role });
+    const res = await authorizedAxiosInstance.patch(`/admin/users/${id}/role`, { role });
     return res.data;
   },
   resetUserPassword: async (id: string) => {
-    const res = await authorizedAxiosInstance.post(`${API_ROOT}/admin/users/${id}/reset-password`);
+    const res = await authorizedAxiosInstance.post(`/admin/users/${id}/reset-password`);
     return res.data;
   },
   kickUserSessions: async (id: string) => {
-    const res = await authorizedAxiosInstance.delete(`${API_ROOT}/admin/users/${id}/sessions`);
+    const res = await authorizedAxiosInstance.delete(`/admin/users/${id}/sessions`);
     return res.data;
   },
 
   // Roles
   getRoles: async () => {
-    const res = await authorizedAxiosInstance.get<{ data: RoleDTO[] }>(`${API_ROOT}/admin/roles`);
+    const res = await authorizedAxiosInstance.get<{ data: RoleDTO[] }>('/admin/roles');
     return res.data.data;
   },
   getPermissions: async () => {
-    const res = await authorizedAxiosInstance.get<{ data: PermissionDTO[] }>(`${API_ROOT}/admin/roles/permissions`);
+    const res = await authorizedAxiosInstance.get<{ data: PermissionDTO[] }>('/admin/roles/permissions');
     return res.data.data;
   },
   getRolePermissions: async (id: string) => {
-    const res = await authorizedAxiosInstance.get<{ data: string[] }>(`${API_ROOT}/admin/roles/${id}/permissions`);
+    const res = await authorizedAxiosInstance.get<{ data: string[] }>(`/admin/roles/${id}/permissions`);
     return res.data.data;
   },
   updateRolePermissions: async (id: string, permissionIds: string[]) => {
-    const res = await authorizedAxiosInstance.put(`${API_ROOT}/admin/roles/${id}/permissions`, { permissionIds });
+    const res = await authorizedAxiosInstance.put(`/admin/roles/${id}/permissions`, { permissionIds });
     return res.data;
   },
 
   // Notifications
   getBroadcasts: async (params: { page?: number; limit?: number }) => {
-    const res = await authorizedAxiosInstance.get<{ data: { broadcasts: any[]; pagination: any } }>(`${API_ROOT}/admin/notifications`, { params });
+    const res = await authorizedAxiosInstance.get<{ data: { broadcasts: any[]; pagination: any } }>('/admin/notifications', { params });
     return res.data.data;
   },
   sendBroadcast: async (payload: BroadcastPayload) => {
-    const res = await authorizedAxiosInstance.post(`${API_ROOT}/admin/notifications/broadcast`, payload);
+    const res = await authorizedAxiosInstance.post('/admin/notifications/broadcast', payload);
     return res.data;
   },
 
   // Logs
   getLogs: async (params: { page?: number; limit?: number; action?: string }) => {
-    const res = await authorizedAxiosInstance.get<{ data: { logs: AdminLog[]; pagination: any } }>(`${API_ROOT}/admin/logs`, { params });
+    const res = await authorizedAxiosInstance.get<{ data: { logs: AdminLog[]; pagination: any } }>('/admin/logs', { params });
     return res.data.data;
   },
 
   // Trash
   getTrash: async (params: { type: string; page?: number; limit?: number }) => {
-    const res = await authorizedAxiosInstance.get<{ data: { items: any[]; pagination: any } }>(`${API_ROOT}/admin/trash`, { params });
+    const res = await authorizedAxiosInstance.get<{ data: { items: any[]; pagination: any } }>('/admin/trash', { params });
     return res.data.data;
   },
   restoreTrash: async (type: string, id: string) => {
-    const res = await authorizedAxiosInstance.patch(`${API_ROOT}/admin/trash/${type}/${id}/restore`);
+    const res = await authorizedAxiosInstance.patch(`/admin/trash/${type}/${id}/restore`);
     return res.data;
   },
   hardDeleteTrash: async (type: string, id: string) => {
-    const res = await authorizedAxiosInstance.delete(`${API_ROOT}/admin/trash/${type}/${id}`);
+    const res = await authorizedAxiosInstance.delete(`/admin/trash/${type}/${id}`);
     return res.data;
   },
 
   // Vocab (System)
   getSystemVocabs: async (params: any) => {
-    const res = await authorizedAxiosInstance.get<{ data: any; meta: any }>(`${API_ROOT}/admin/vocab`, { params });
+    const res = await authorizedAxiosInstance.get<{ data: any; meta: any }>('/admin/vocab', { params });
     return res.data;
   },
   createSystemVocab: async (data: any) => {
-    const res = await authorizedAxiosInstance.post(`${API_ROOT}/admin/vocab`, data);
+    const res = await authorizedAxiosInstance.post('/admin/vocab', data);
     return res.data;
   },
   updateSystemVocab: async (id: string, data: any) => {
-    const res = await authorizedAxiosInstance.put(`${API_ROOT}/admin/vocab/${id}`, data);
+    const res = await authorizedAxiosInstance.put(`/admin/vocab/${id}`, data);
     return res.data;
   },
   deleteSystemVocab: async (id: string) => {
-    const res = await authorizedAxiosInstance.delete(`${API_ROOT}/admin/vocab/${id}`);
+    const res = await authorizedAxiosInstance.delete(`/admin/vocab/${id}`);
     return res.data;
   },
   importSystemCsv: async (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
-    const res = await authorizedAxiosInstance.post<{ data: any }>(`${API_ROOT}/admin/vocab/import`, formData, {
+    const res = await authorizedAxiosInstance.post<{ data: any }>('/admin/vocab/import', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
     return res.data;

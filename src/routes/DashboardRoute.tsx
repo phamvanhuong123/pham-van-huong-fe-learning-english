@@ -20,7 +20,7 @@ function DashboardRoute() {
     // Instead of requiredRole="superAdmin", we check for basic admin access (or we can just let any logged-in user in, but they need some permissions)
     // Actually, if we remove requiredRole="superAdmin", any user can access /admin but the inner routes will block them.
     // However, to keep it simple, let's keep the outer route protected for ADMIN or SUPERADMIN, or just use ProtectedRoute.
-    <Route path="/admin" element={<ProtectedRoute />}>
+    <Route path="/admin" element={<ProtectedRoute requireAdminAccess={true} />}>
       <Route element={<DashboardLayout />}>
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<AdminDashboardPage />} />

@@ -5,9 +5,10 @@ import { usePermission } from '@/hooks/usePermission';
 interface ProtectedRouteProps {
   requiredRole?: 'STANDARD' | 'VIP' | 'ADMIN' | 'superAdmin';
   requiredPermissions?: string[];
+  requireAdminAccess?: boolean;
 }
 
-function ProtectedRoute({ requiredRole, requiredPermissions }: ProtectedRouteProps) {
+function ProtectedRoute({ requiredRole, requiredPermissions, requireAdminAccess }: ProtectedRouteProps) {
   const { userInfo } = useAuthStore();
   const { hasAnyPermission } = usePermission();
 
@@ -20,8 +21,16 @@ function ProtectedRoute({ requiredRole, requiredPermissions }: ProtectedRoutePro
     return <Navigate to="/" replace />;
   }
 
+  // Chặn người dùng thường vào Admin Panel (Phải là SuperAdmin hoặc có ít nhất 1 permission)
+  if (requireAdminAccess) {
+    const hasAdminAccess = userInfo.isSuperAdmin || (userInfo.permissions && userInfo.permissions.length > 0);
+    if (!hasAdminAccess) {
+      return <Navigate to="/403" replace />;
+    }
+  }
+
   if (requiredPermissions && !hasAnyPermission(requiredPermissions)) {
-    return <Navigate to="/admin" replace />; // Redirect to dashboard or 403
+    return <Navigate to="/403" replace />; 
   }
 
   return <Outlet />;

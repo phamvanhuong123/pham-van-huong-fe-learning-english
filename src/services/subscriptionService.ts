@@ -17,7 +17,7 @@ export const subscriptionService = {
     formData.append('amount', data.amount.toString());
     formData.append('image', data.image);
 
-    const response = await authorizedAxiosInstance.post('/v1/subscription', formData, {
+    const response = await authorizedAxiosInstance.post('/subscription', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -26,28 +26,28 @@ export const subscriptionService = {
   },
 
   getMySubscriptions: async (): Promise<{ data: Subscription[] }> => {
-    const response = await authorizedAxiosInstance.get('/v1/subscription/mine');
+    const response = await authorizedAxiosInstance.get('/subscription/mine');
     return response.data;
   },
 
   // --- ADMIN API ---
   getAdminSubscriptions: async (filters: SubscriptionQueryFilters) => {
-    const response = await authorizedAxiosInstance.get('/v1/admin/subscriptions', { params: filters });
+    const response = await authorizedAxiosInstance.get('/admin/subscriptions', { params: filters });
     return response.data;
   },
 
   approveSubscription: async (id: string): Promise<{ data: Subscription, message: string }> => {
-    const response = await authorizedAxiosInstance.post(`/v1/admin/subscriptions/${id}/approve`);
+    const response = await authorizedAxiosInstance.post(`/admin/subscriptions/${id}/approve`);
     return response.data;
   },
 
   rejectSubscription: async (id: string, data: RejectSubscriptionDto): Promise<{ data: Subscription, message: string }> => {
-    const response = await authorizedAxiosInstance.post(`/v1/admin/subscriptions/${id}/reject`, data);
+    const response = await authorizedAxiosInstance.post(`/admin/subscriptions/${id}/reject`, data);
     return response.data;
   },
 
   banBankAccount: async (data: BanBankAccountDto): Promise<{ message: string }> => {
-    const response = await authorizedAxiosInstance.post('/v1/admin/subscriptions/ban-account', data);
+    const response = await authorizedAxiosInstance.post('/admin/subscriptions/ban-account', data);
     return response.data;
   }
 };

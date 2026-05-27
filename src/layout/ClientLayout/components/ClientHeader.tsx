@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useAuthStore } from '@/store/useAuthStore';
 import { cn } from '@/lib/utils';
+import { NotificationBell } from './NotificationBell';
 
 const navItems = [
   { label: 'Trang chủ', to: '/', icon: LayoutDashboard, end: true },
@@ -95,7 +96,10 @@ export function ClientHeader() {
 
           {/* ── Khi đã đăng nhập: User Menu ── */}
           {userInfo ? (
-            <div className="relative">
+            <div className="flex items-center gap-2">
+              <NotificationBell />
+              
+              <div className="relative">
               <button
                 id="client-user-menu-trigger"
                 onClick={() => setUserMenuOpen((prev) => !prev)}
@@ -173,6 +177,7 @@ export function ClientHeader() {
                   </div>
                 </>
               )}
+              </div>
             </div>
           ) : (
             /* ── Khi chưa đăng nhập ── */

@@ -9,6 +9,7 @@ interface UserInfo {
   avatarUrl?: string;
   role: string;
   isSuperAdmin: boolean;
+  isVip: boolean;
   permissions: string[];
 }
 

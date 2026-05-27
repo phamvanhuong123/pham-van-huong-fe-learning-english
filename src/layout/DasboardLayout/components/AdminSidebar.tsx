@@ -1,5 +1,7 @@
 import { NavLink, useNavigate } from 'react-router';
 import { useState } from 'react';
+import { usePermission } from '@/hooks/usePermission';
+import { PERMISSIONS } from '@/config/rbacConfig';
 import { handleLogoutApi } from '@/services/authServices';
 import { toast } from 'sonner';
 import {
@@ -23,20 +25,21 @@ import { Button } from '@/components/ui/button';
 
 const NAV_ITEMS = [
   { label: 'Dashboard', to: '/admin/dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
-  { label: 'Người dùng', to: '/admin/users', icon: <Users className="w-4 h-4" /> },
-  { label: 'Quản lý vai trò', to: '/admin/roles', icon: <UserCheck className="w-4 h-4" /> },
+  { label: 'Người dùng', to: '/admin/users', icon: <Users className="w-4 h-4" />, permission: PERMISSIONS.USER_MANAGE },
+  { label: 'Quản lý vai trò', to: '/admin/roles', icon: <UserCheck className="w-4 h-4" />, permission: PERMISSIONS.ROLE_MANAGE },
   {
     label: 'Đăng ký VIP',
     to: '/admin/subscriptions',
     icon: <CreditCard className="w-4 h-4" />,
     badgeKey: 'pendingSubscriptions',
+    permission: PERMISSIONS.SUBSCRIPTION_MANAGE
   },
-  { label: 'Quản lý đề thi', to: '/admin/exams', icon: <FileText className="w-4 h-4" /> },
-  { label: 'Ngân hàng câu hỏi', to: '/admin/questions', icon: <BookOpen className="w-4 h-4" /> },
-  { label: 'Thư viện từ vựng', to: '/admin/vocab', icon: <Book className="w-4 h-4" /> },
-  { label: 'Quản lý ngữ pháp', to: '/admin/grammar', icon: <BookMarked className="w-4 h-4" /> },
-  { label: 'Thông báo', to: '/admin/notifications', icon: <Bell className="w-4 h-4" /> },
-  { label: 'Thùng rác', to: '/admin/trash', icon: <Trash2 className="w-4 h-4" /> },
+  { label: 'Quản lý đề thi', to: '/admin/exams', icon: <FileText className="w-4 h-4" />, permission: PERMISSIONS.EXAM_MANAGE },
+  { label: 'Ngân hàng câu hỏi', to: '/admin/questions', icon: <BookOpen className="w-4 h-4" />, permission: PERMISSIONS.QUESTION_MANAGE },
+  { label: 'Thư viện từ vựng', to: '/admin/vocab', icon: <Book className="w-4 h-4" />, permission: PERMISSIONS.VOCAB_MANAGE },
+  { label: 'Quản lý ngữ pháp', to: '/admin/grammar', icon: <BookMarked className="w-4 h-4" />, permission: PERMISSIONS.GRAMMAR_MANAGE },
+  { label: 'Thông báo', to: '/admin/notifications', icon: <Bell className="w-4 h-4" />, permission: PERMISSIONS.ROLE_MANAGE },
+  { label: 'Thùng rác', to: '/admin/trash', icon: <Trash2 className="w-4 h-4" />, permission: PERMISSIONS.ROLE_MANAGE },
 ];
 
 interface AdminSidebarProps {
@@ -46,6 +49,7 @@ interface AdminSidebarProps {
 function AdminSidebar({ onClose }: AdminSidebarProps) {
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const { hasPermission } = usePermission();
 
   const handleLogout = async () => {
     try {
@@ -96,7 +100,7 @@ function AdminSidebar({ onClose }: AdminSidebarProps) {
 
       {/* Nav */}
       <nav className="flex-1 p-3 space-y-1" aria-label="Admin navigation">
-        {NAV_ITEMS.map((item) => {
+        {NAV_ITEMS.filter(item => !item.permission || hasPermission(item.permission)).map((item) => {
           const badgeValue = getBadgeValue(item.badgeKey);
           return (
             <NavLink

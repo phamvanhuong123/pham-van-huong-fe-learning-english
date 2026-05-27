@@ -21,7 +21,7 @@ authorizedAxiosInstance.interceptors.request.use((config) => {
     const accessToken = useAuthStore.getState().accessToken;
     if (accessToken) {
         //Bearer định nghĩa loại token cho việc xác thực và uỷ quyền, có các loại như : Basic token, Digest token,OAuth token.
-        config.headers.Authorization = `Bearer ${accessToken}`
+        config.headers['Authorization'] = `Bearer ${accessToken}`
     }
     return config
 }, (error) => {
@@ -49,9 +49,8 @@ authorizedAxiosInstance.interceptors.response.use((response) => {
     }
     const originalRequest = error.config
     // console.log('originalRequest : ', originalRequest)
-    if (error?.response?.status === 410 && originalRequest) {
-        console.log((originalRequest as any)._retry)
-            ; (originalRequest as any)._retry = true
+    if (error?.response?.status === 410 && originalRequest && !(originalRequest as any)._retry) {
+        (originalRequest as any)._retry = true;
         if (!refreshTokenPromised) {
             // Trường hợp dùng cookie: refreshToken sẽ tự động được gửi đi (do withCredentials: true)
             // Không cần lấy từ localStorage nữa
@@ -67,7 +66,10 @@ authorizedAxiosInstance.interceptors.response.use((response) => {
                     setAuth(currentUser, accessToken)
                 }
 
-                authorizedAxiosInstance.defaults.headers.Authorization = `Bearer ${accessToken}`
+                // Cập nhật mặc định cho mọi request sau này
+                authorizedAxiosInstance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
+                // Cập nhật token mới vào request bị lỗi để gọi lại không bị dính token cũ
+                originalRequest.headers['Authorization'] = `Bearer ${accessToken}`
 
                 //Cho trường hợp cookie
             })

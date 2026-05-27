@@ -16,12 +16,15 @@ import type { ClientExam } from '@/types/exam.type';
 //   duration: number;
 // }
 
+import { useAuthStore } from '@/store/useAuthStore';
+
 interface ExamCardProps {
   exam: ClientExam;
 }
 
 export const ExamCard: React.FC<ExamCardProps> = ({ exam }) => {
   const navigate = useNavigate();
+  const { userInfo } = useAuthStore();
 
   const getDifficultyColor = (diff: string) => {
     switch(diff) {
@@ -64,12 +67,21 @@ export const ExamCard: React.FC<ExamCardProps> = ({ exam }) => {
         </div>
       </CardContent>
       <CardFooter className="pt-4 border-t border-gray-50">
-        <Button 
-          onClick={() => navigate(`/exams/${exam.id}`)}
-          className="w-full bg-white hover:bg-blue-50 text-blue-600 border border-blue-200 font-semibold group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm"
-        >
-          Xem chi tiết
-        </Button>
+        {exam.type === 'VIP' && !userInfo?.isVip ? (
+          <Button 
+            onClick={() => navigate('/upgrade')}
+            className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-semibold transition-all shadow-sm"
+          >
+            Nâng cấp VIP để làm bài
+          </Button>
+        ) : (
+          <Button 
+            onClick={() => navigate(`/exams/${exam.id}`)}
+            className="w-full bg-white hover:bg-blue-50 text-blue-600 border border-blue-200 font-semibold group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm"
+          >
+            Xem chi tiết
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );

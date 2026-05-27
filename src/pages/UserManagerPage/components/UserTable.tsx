@@ -2,7 +2,7 @@ import type { UserListDTO } from '@/services/adminService';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal, ShieldAlert, Key, UserCog, Eye, Ban } from 'lucide-react';
+import { MoreHorizontal, ShieldAlert, Key, UserCog, Eye, Ban, CheckCircle } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
@@ -152,5 +152,4 @@ export function UserTable({ users, pagination, isLoading, error, onPageChange, o
   );
 }
 
-// Temporary workaround for CheckCircle missing in imports
-import { CheckCircle } from 'lucide-react';
+

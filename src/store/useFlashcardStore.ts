@@ -12,11 +12,12 @@ interface FlashcardStore {
   setSession: (sessionId: string, cards: Vocab[]) => void;
   flipCard: () => void;
   nextCard: () => void;
+  requeueCard: (card: Vocab) => void;
   endSession: () => void;
   resetFlipped: () => void;
 }
 
-export const useFlashcardStore = create<FlashcardStore>((set, get) => ({
+export const useFlashcardStore = create<FlashcardStore>((set) => ({
   sessionId: null,
   cards: [],
   currentIndex: 0,
@@ -47,6 +48,11 @@ export const useFlashcardStore = create<FlashcardStore>((set, get) => ({
       isSessionActive: !isFinished
     };
   }),
+
+  requeueCard: (card) => set((state) => ({
+    cards: [...state.cards, card],
+    isSessionActive: true
+  })),
 
   endSession: () => set({
     sessionId: null,

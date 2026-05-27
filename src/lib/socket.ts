@@ -35,6 +35,11 @@ export const connectSocket = (token: string) => {
       description: data.body,
       duration: 5000,
     });
+    
+    // Invalidate queries để NotificationBell tải lại ngay lập tức
+    import('../main').then((module) => {
+      module.queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    });
   });
 
   // You can listen to other global events here if needed,
