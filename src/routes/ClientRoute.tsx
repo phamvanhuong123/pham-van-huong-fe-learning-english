@@ -5,11 +5,13 @@ import HomePage from '@/pages/HomePage';
 import ExamsPage from '@/pages/ExamsPage';
 import VocabPage from '@/pages/VocabPage';
 import GrammarPage from '@/pages/GrammarPage';
+import GrammarPracticePage from '@/pages/GrammarPracticePage';
 import HistoryPage from '@/pages/HistoryPage';
 import ExamDetailPage from '@/pages/ExamDetailPage';
 import { ClientExamWorkspacePage } from '@/pages/ClientExamWorkspacePage';
 import ScoreReportPage from '@/pages/ScoreReportPage';
 import ReviewModePage from '@/pages/ReviewModePage';
+import UpgradeVipPage from '@/pages/UpgradeVipPage';
 
 function ClientRoute() {
   return (
@@ -20,8 +22,10 @@ function ClientRoute() {
         <Route path="exams/:id" element={<ExamDetailPage />} />
         <Route path="vocab" element={<VocabPage />} />
         <Route path="grammar" element={<GrammarPage />} />
+        <Route path="grammar/:slug/practice" element={<GrammarPracticePage />} />
         <Route element={<ProtectedRoute />}>
           <Route path="history" element={<HistoryPage />} />
+          <Route path="pricing" element={<UpgradeVipPage />} />
           <Route path="results/:resultId" element={<ScoreReportPage />} />
         </Route>
       </Route>

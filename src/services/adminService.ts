@@ -153,5 +153,31 @@ export const adminService = {
   hardDeleteTrash: async (type: string, id: string) => {
     const res = await authorizedAxiosInstance.delete(`${API_ROOT}/admin/trash/${type}/${id}`);
     return res.data;
+  },
+
+  // Vocab (System)
+  getSystemVocabs: async (params: any) => {
+    const res = await authorizedAxiosInstance.get<{ data: any; meta: any }>(`${API_ROOT}/admin/vocab`, { params });
+    return res.data;
+  },
+  createSystemVocab: async (data: any) => {
+    const res = await authorizedAxiosInstance.post(`${API_ROOT}/admin/vocab`, data);
+    return res.data;
+  },
+  updateSystemVocab: async (id: string, data: any) => {
+    const res = await authorizedAxiosInstance.put(`${API_ROOT}/admin/vocab/${id}`, data);
+    return res.data;
+  },
+  deleteSystemVocab: async (id: string) => {
+    const res = await authorizedAxiosInstance.delete(`${API_ROOT}/admin/vocab/${id}`);
+    return res.data;
+  },
+  importSystemCsv: async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await authorizedAxiosInstance.post<{ data: any }>(`${API_ROOT}/admin/vocab/import`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return res.data;
   }
 };

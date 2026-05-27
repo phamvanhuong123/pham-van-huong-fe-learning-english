@@ -1,30 +1,35 @@
 import { useState } from 'react';
-import { useAdminVocabs, useDeleteAdminVocab } from '@/hooks/queries/useAdminVocabQuery';
-import VocabTable from '../VocabPage/components/VocabTable';
-import VocabFilters from '../VocabPage/components/VocabFilters';
-import VocabModal from './components/AdminVocabModal';
-import AdminVocabImportModal from './components/AdminVocabImportModal';
-import type { Vocab, VocabStatus } from '@/types/vocab.type';
+import VocabStatsBar from './VocabStatsBar';
+import VocabFilters from './VocabFilters';
+import VocabTable from './VocabTable';
+import VocabModal from './VocabModal';
+import VocabImportModal from './VocabImportModal';
+import { useVocabs, useDeleteVocab } from '@/hooks/queries/useVocabQuery';
+import type { VocabStatus, Vocab } from '@/types/vocab.type';
 import { toast } from 'sonner';
 
-export default function AdminVocabPage() {
+export default function VocabListTab() {
   const [search, setSearch] = useState('');
+  const [status, setStatus] = useState<VocabStatus | 'ALL'>('ALL');
   const [toeicTopic, setToeicTopic] = useState('');
-  const [status, setStatus] = useState<VocabStatus | 'ALL'>('ALL'); // Not strictly needed for system vocabs but kept for filter compatibility
-
+  
+  // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [editingVocab, setEditingVocab] = useState<Vocab | null>(null);
 
-  const { data: vocabsData, isLoading } = useAdminVocabs({
+  // Queries
+  const { data: vocabsData, isLoading } = useVocabs({
     search: search || undefined,
+    status: status !== 'ALL' ? status : undefined,
     toeicTopic: toeicTopic || undefined,
     page: 1,
-    limit: 100
+    limit: 100 // Tạm thời load 100 từ
   });
 
-  const { mutateAsync: deleteVocab } = useDeleteAdminVocab();
+  const { mutateAsync: deleteVocab } = useDeleteVocab();
 
+  // Handlers
   const handleAddClick = () => {
     setEditingVocab(null);
     setIsModalOpen(true);
@@ -40,27 +45,20 @@ export default function AdminVocabPage() {
   };
 
   const handleDeleteClick = async (id: string) => {
-    if (window.confirm('Xóa từ vựng hệ thống sẽ làm ảnh hưởng đến các người dùng đang tham chiếu (nếu có sau này). Bạn có chắc không?')) {
+    if (window.confirm('Bạn có chắc chắn muốn xóa từ vựng này không?')) {
       try {
         await deleteVocab(id);
         toast.success('Xóa từ vựng thành công');
       } catch (error) {
-        // Handled by interceptor
+        // Error handled by interceptor
       }
     }
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Từ vựng hệ thống</h1>
-          <p className="text-muted-foreground mt-2">
-            Quản lý kho từ vựng chung của hệ thống.
-          </p>
-        </div>
-      </div>
-
+      <VocabStatsBar />
+      
       <div className="bg-card rounded-lg shadow-sm border p-6">
         <VocabFilters 
           search={search}
@@ -87,7 +85,7 @@ export default function AdminVocabPage() {
         vocab={editingVocab} 
       />
 
-      <AdminVocabImportModal 
+      <VocabImportModal 
         isOpen={isImportModalOpen} 
         onClose={() => setIsImportModalOpen(false)} 
       />
