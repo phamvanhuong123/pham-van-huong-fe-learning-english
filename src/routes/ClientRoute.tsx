@@ -12,6 +12,7 @@ import { ClientExamWorkspacePage } from '@/pages/ClientExamWorkspacePage';
 import ScoreReportPage from '@/pages/ScoreReportPage';
 import ReviewModePage from '@/pages/ReviewModePage';
 import UpgradeVipPage from '@/pages/UpgradeVipPage';
+import ProfilePage from '@/pages/ProfilePage';
 
 function ClientRoute() {
   return (
@@ -25,6 +26,7 @@ function ClientRoute() {
         <Route path="grammar/:slug/practice" element={<GrammarPracticePage />} />
         <Route element={<ProtectedRoute />}>
           <Route path="history" element={<HistoryPage />} />
+          <Route path="profile" element={<ProfilePage />} />
           <Route path="pricing" element={<UpgradeVipPage />} />
           <Route path="results/:resultId" element={<ScoreReportPage />} />
         </Route>

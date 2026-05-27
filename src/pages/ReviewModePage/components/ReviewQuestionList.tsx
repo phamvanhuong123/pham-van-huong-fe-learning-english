@@ -66,7 +66,10 @@ export const ReviewQuestionList: React.FC<ReviewQuestionListProps> = ({ passageG
               <Badge variant="outline" className="text-xs font-normal text-gray-500 bg-gray-50">{q.part}</Badge>
             </div>
             {q.questionText && (
-              <p className="text-gray-800 font-medium mt-2 text-base leading-relaxed">{q.questionText}</p>
+              <div 
+                className="text-gray-800 font-medium mt-2 text-base leading-relaxed" 
+                dangerouslySetInnerHTML={{ __html: q.questionText }} 
+              />
             )}
           </div>
         </div>
@@ -85,7 +88,10 @@ export const ReviewQuestionList: React.FC<ReviewQuestionListProps> = ({ passageG
               <div className="flex items-center gap-2 text-blue-700 font-bold mb-2">
                 <FileText className="w-4 h-4" /> Giải thích chi tiết
               </div>
-              <div className="text-gray-700 whitespace-pre-wrap leading-relaxed">{q.explanation}</div>
+              <div 
+                className="text-gray-700 leading-relaxed" 
+                dangerouslySetInnerHTML={{ __html: q.explanation }} 
+              />
             </div>
           )}
 
@@ -127,16 +133,20 @@ export const ReviewQuestionList: React.FC<ReviewQuestionListProps> = ({ passageG
             )}
 
             {p.content && (
-              <div className="bg-white p-5 rounded-lg border border-gray-200 text-gray-800 leading-relaxed font-serif whitespace-pre-wrap shadow-sm">
-                {p.content}
-              </div>
+              <div 
+                className="bg-white p-5 rounded-lg border border-gray-200 text-gray-800 leading-relaxed font-serif shadow-sm"
+                dangerouslySetInnerHTML={{ __html: p.content }}
+              />
             )}
 
             {/* Transcript cho Audio */}
             {p.transcript && (
               <div className="mt-3 bg-yellow-50/50 p-4 rounded-lg border border-yellow-100 text-sm">
                 <h5 className="font-bold text-yellow-800 mb-2">Transcript / Dịch nghĩa:</h5>
-                <div className="text-yellow-900/80 whitespace-pre-wrap">{p.transcript}</div>
+                <div 
+                  className="text-yellow-900/80 leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: p.transcript }}
+                />
               </div>
             )}
           </div>

@@ -18,6 +18,7 @@ interface AuthState {
   accessToken: string | null;
   setAuth: (user: UserInfo, token: string) => void;
   clearAuth: () => void;
+  updateUserInfo: (partial: Partial<UserInfo>) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -34,6 +35,12 @@ export const useAuthStore = create<AuthState>()(
       clearAuth: () => {
         set({ userInfo: null, accessToken: null });
         disconnectSocket();
+      },
+
+      updateUserInfo: (partial) => {
+        set((state) => ({
+          userInfo: state.userInfo ? { ...state.userInfo, ...partial } : null
+        }));
       },
     }),
     {

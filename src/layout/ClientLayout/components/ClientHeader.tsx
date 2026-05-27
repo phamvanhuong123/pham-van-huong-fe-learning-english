@@ -16,6 +16,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { useAuthStore } from '@/store/useAuthStore';
 import { cn } from '@/lib/utils';
 import { NotificationBell } from './NotificationBell';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const navItems = [
   { label: 'Trang chủ', to: '/', icon: LayoutDashboard, end: true },
@@ -26,7 +27,8 @@ const navItems = [
 ];
 
 export function ClientHeader() {
-  const { userInfo, clearAuth } = useAuthStore();
+  const userInfo = useAuthStore(state => state.userInfo);
+  const clearAuth = useAuthStore(state => state.clearAuth);
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -116,8 +118,11 @@ export function ClientHeader() {
                     <User className="h-4 w-4 text-muted-foreground" />
                   )}
                 </div>
-                <span className="text-sm font-medium hidden md:inline-block">
-                  {userInfo.name || userInfo.email.split('@')[0]}
+                <span 
+                  className="text-sm font-medium hidden md:inline-block max-w-[120px] lg:max-w-[180px] truncate text-left"
+                  title={userInfo?.name || userInfo?.email}
+                >
+                  {userInfo?.name || userInfo?.email.split('@')[0]}
                 </span>
               </button>
 
@@ -130,9 +135,13 @@ export function ClientHeader() {
                     onClick={() => setUserMenuOpen(false)}
                   />
                   <div className="absolute right-0 mt-2 w-56 rounded-lg border bg-popover shadow-md z-50 p-1.5 flex flex-col gap-0.5">
-                    <div className="px-2 py-1.5 text-xs text-muted-foreground">
-                      Tài khoản:{' '}
-                      <span className="font-medium text-foreground">{userInfo.email}</span>
+                    <div className="px-2 py-1.5 text-xs text-muted-foreground w-full overflow-hidden flex flex-col gap-0.5">
+                      <span className="font-semibold text-foreground block truncate" title={userInfo.name || userInfo.email}>
+                        {userInfo.name || userInfo.email.split('@')[0]}
+                      </span>
+                      <span className="block truncate opacity-80" title={userInfo.email}>
+                        {userInfo.email}
+                      </span>
                     </div>
                     <div className="h-px bg-border my-1" />
 
