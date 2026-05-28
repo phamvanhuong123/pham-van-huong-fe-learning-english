@@ -12,6 +12,7 @@ import TrashManagerPage from '@/pages/TrashManagerPage';
 import AdminVocabPage from '@/pages/AdminVocabPage';
 import AdminGrammarPage from '@/pages/AdminGrammarPage';
 import UserDetailPage from '@/pages/UserDetailPage';
+import AdminResultDetailPage from '@/pages/AdminResultDetailPage';
 import AdminLogsPage from '@/pages/AdminLogsPage';
 import { PERMISSIONS } from '@/config/rbacConfig';
 
@@ -28,6 +29,7 @@ function DashboardRoute() {
         <Route element={<ProtectedRoute requiredPermissions={[PERMISSIONS.USER_MANAGE]} />}>
           <Route path="users" element={<UserManagerPage />} />
           <Route path="users/:id" element={<UserDetailPage />} />
+          <Route path="results/:id" element={<AdminResultDetailPage />} />
           <Route path="logs" element={<AdminLogsPage />} />
         </Route>
 

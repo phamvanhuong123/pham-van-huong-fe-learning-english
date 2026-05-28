@@ -30,10 +30,10 @@ function UserManagerPage() {
   };
 
   return (
-    <div className="p-8 space-y-6 animate-fade-in">
-      <div>
-        <h2 className="text-3xl font-bold tracking-tight">Quản Lý Người Dùng</h2>
-        <p className="text-muted-foreground mt-2">
+    <div className="space-y-6 animate-in fade-in duration-500">
+      <div className="flex flex-col gap-1">
+        <h2 className="text-2xl font-semibold tracking-tight text-slate-900">Người dùng</h2>
+        <p className="text-[14px] text-muted-foreground">
           Quản lý tài khoản, phân quyền và trạng thái người dùng trong hệ thống.
         </p>
       </div>

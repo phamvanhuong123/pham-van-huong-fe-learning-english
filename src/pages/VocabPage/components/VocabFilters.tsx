@@ -20,18 +20,18 @@ const TOPICS = ['Business', 'Office', 'Travel', 'Health', 'Finance', 'General'];
 export default function VocabFilters({ search, setSearch, status, setStatus, toeicTopic, setToeicTopic, onAddClick, onImportClick }: VocabFiltersProps) {
   return (
     <div className="flex flex-col sm:flex-row gap-4 mb-6">
-      <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input 
-          placeholder="Tìm kiếm từ vựng..." 
-          value={search} 
+      <div className="relative flex-1" >
+        <Search className="absolute left-3 top-[22px] -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
+        <Input
+          placeholder="Tìm kiếm từ vựng..."
+          value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="pl-9"
+          className="pl-9 h-10 bg-background focus-visible:ring-primary/20 transition-all rounded-full"
         />
       </div>
-      
+
       <Select value={status} onValueChange={(val: any) => setStatus(val)}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-[180px] h-10 bg-background rounded-full focus:ring-primary/20 transition-all">
           <SelectValue placeholder="Trạng thái" />
         </SelectTrigger>
         <SelectContent>
@@ -44,7 +44,7 @@ export default function VocabFilters({ search, setSearch, status, setStatus, toe
       </Select>
 
       <Select value={toeicTopic || "ALL"} onValueChange={(val) => setToeicTopic(val === "ALL" ? "" : val)}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-[180px] h-10 bg-background rounded-full focus:ring-primary/20 transition-all">
           <SelectValue placeholder="Chủ đề TOEIC" />
         </SelectTrigger>
         <SelectContent>

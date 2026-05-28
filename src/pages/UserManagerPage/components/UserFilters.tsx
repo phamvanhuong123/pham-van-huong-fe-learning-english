@@ -24,19 +24,19 @@ export function UserFilters({ search, onSearchChange, role, onRoleChange, status
   }, [localSearch, onSearchChange]);
 
   return (
-    <div className="flex flex-col md:flex-row gap-4 mb-6">
-      <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+    <div className="flex flex-col md:flex-row gap-4 mb-6 bg-zinc-50/50 dark:bg-zinc-900/20 p-4 rounded-xl border border-dashed">
+      <div className="relative w-full sm:max-w-md">
+        <Search className="absolute left-3 top-[23px] -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
         <Input
           placeholder="Tìm kiếm theo email, tên..."
           value={localSearch}
           onChange={(e) => setLocalSearch(e.target.value)}
-          className="pl-9 w-full bg-background"
+          className="pl-9 h-10 bg-background focus-visible:ring-primary/20 transition-all rounded-full"
         />
       </div>
-      <div className="flex gap-4">
+      <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
         <Select value={role} onValueChange={onRoleChange}>
-          <SelectTrigger className="w-[160px] bg-background">
+          <SelectTrigger className="w-[150px] h-10 bg-background focus:ring-primary/20 transition-all rounded-full">
             <SelectValue placeholder="Vai trò" />
           </SelectTrigger>
           <SelectContent>
@@ -47,9 +47,9 @@ export function UserFilters({ search, onSearchChange, role, onRoleChange, status
             <SelectItem value="STANDARD">Standard</SelectItem>
           </SelectContent>
         </Select>
-        
+
         <Select value={status} onValueChange={onStatusChange}>
-          <SelectTrigger className="w-[160px] bg-background">
+          <SelectTrigger className="w-[150px] h-10 bg-background focus:ring-primary/20 transition-all rounded-full">
             <SelectValue placeholder="Trạng thái" />
           </SelectTrigger>
           <SelectContent>

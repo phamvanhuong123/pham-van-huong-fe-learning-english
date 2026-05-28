@@ -10,8 +10,11 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Edit, Trash2, ChevronDown, ChevronRight, Headphones, ImageIcon, AlignLeft, ListCollapse } from 'lucide-react';
+import { Edit, Trash2, ChevronDown, ChevronRight, Headphones, ImageIcon, AlignLeft, ListCollapse, MoreVertical } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import { AdminEmptyState } from '@/components/admin/AdminEmptyState';
+import { AdminTableLoading } from '@/components/admin/AdminTableLoading';
 
 interface QuestionTableProps {
   questions: any[];
@@ -94,18 +97,33 @@ export function QuestionTable({
 
   if (isLoading) {
     return (
-      <div className="border border-border rounded-lg bg-card p-12 flex flex-col items-center justify-center text-muted-foreground">
-        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-        Đang tải dữ liệu câu hỏi...
+      <div className="border border-border rounded-xl bg-card overflow-hidden shadow-sm">
+        <Table>
+          <TableHeader className="bg-muted/50">
+            <TableRow>
+              <TableHead className="w-[40px]"><Checkbox disabled /></TableHead>
+              <TableHead>ID / #</TableHead>
+              <TableHead>Nội dung</TableHead>
+              <TableHead>Đề thi / Part</TableHead>
+              <TableHead>Độ khó</TableHead>
+              <TableHead>Thao tác</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <AdminTableLoading columns={6} rows={5} />
+          </TableBody>
+        </Table>
       </div>
     );
   }
 
   if (questions.length === 0) {
     return (
-      <div className="border border-border rounded-lg bg-card p-12 text-center text-muted-foreground">
-        Không tìm thấy câu hỏi nào phù hợp với bộ lọc hiện tại.
-      </div>
+      <AdminEmptyState 
+        title="Không tìm thấy câu hỏi" 
+        description="Không tìm thấy câu hỏi nào phù hợp với bộ lọc hiện tại." 
+        icon="search" 
+      />
     );
   }
 
@@ -177,26 +195,22 @@ export function QuestionTable({
                       )}
                     </TableCell>
                     <TableCell className="py-4">
-                      <div className="flex items-center justify-center gap-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full"
-                          onClick={() => onEdit(q.passageGroupId ? q.passageGroup : q, !!q.passageGroupId)}
-                          title="Chỉnh sửa"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full"
-                          onClick={() => onDelete(q.passageGroupId ? q.passageGroup : q, !!q.passageGroupId)}
-                          title="Xóa"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-muted/80">
+                            <MoreVertical className="w-4 h-4 text-muted-foreground" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-40">
+                          <DropdownMenuItem onClick={() => onEdit(q.passageGroupId ? q.passageGroup : q, !!q.passageGroupId)} className="cursor-pointer">
+                            <Edit className="w-4 h-4 mr-2" /> Chỉnh sửa
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => onDelete(q.passageGroupId ? q.passageGroup : q, !!q.passageGroupId)} className="text-destructive focus:text-destructive cursor-pointer">
+                            <Trash2 className="w-4 h-4 mr-2" /> Xóa
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 );

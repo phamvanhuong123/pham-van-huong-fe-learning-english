@@ -5,41 +5,59 @@ import { PERMISSIONS } from '@/config/rbacConfig';
 import { handleLogoutApi } from '@/services/authServices';
 import { toast } from 'sonner';
 import {
-  LayoutDashboard,
-  Users,
-  UserCheck,
-  CreditCard,
-  BookOpen,
-  Bell,
-  X,
-  ShieldCheck,
-  LogOut,
-  FileText,
-  Trash2,
-  Book,
-  BookMarked,
+  LayoutDashboard, Users, UserCheck, CreditCard,
+  BookOpen, X, ShieldCheck, LogOut,
+  FileText, Trash2, Book, BookMarked,
+  Activity
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
-const NAV_ITEMS = [
-  { label: 'Dashboard', to: '/admin/dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
-  { label: 'Người dùng', to: '/admin/users', icon: <Users className="w-4 h-4" />, permission: PERMISSIONS.USER_MANAGE },
-  { label: 'Quản lý vai trò', to: '/admin/roles', icon: <UserCheck className="w-4 h-4" />, permission: PERMISSIONS.ROLE_MANAGE },
+type NavItem = {
+  label: string;
+  to: string;
+  icon: React.ReactNode;
+  permission?: string;
+  badgeKey?: string;
+};
+
+type NavGroup = {
+  title: string;
+  items: NavItem[];
+};
+
+const NAV_GROUPS: NavGroup[] = [
   {
-    label: 'Đăng ký VIP',
-    to: '/admin/subscriptions',
-    icon: <CreditCard className="w-4 h-4" />,
-    badgeKey: 'pendingSubscriptions',
-    permission: PERMISSIONS.SUBSCRIPTION_MANAGE
+    title: 'Overview',
+    items: [
+      { label: 'Dashboard', to: '/admin/dashboard', icon: <LayoutDashboard className="w-[18px] h-[18px]" /> },
+      { label: 'Activity & Logs', to: '/admin/notifications', icon: <Activity className="w-[18px] h-[18px]" />, permission: PERMISSIONS.ROLE_MANAGE },
+    ]
   },
-  { label: 'Quản lý đề thi', to: '/admin/exams', icon: <FileText className="w-4 h-4" />, permission: PERMISSIONS.EXAM_MANAGE },
-  { label: 'Ngân hàng câu hỏi', to: '/admin/questions', icon: <BookOpen className="w-4 h-4" />, permission: PERMISSIONS.QUESTION_MANAGE },
-  { label: 'Thư viện từ vựng', to: '/admin/vocab', icon: <Book className="w-4 h-4" />, permission: PERMISSIONS.VOCAB_MANAGE },
-  { label: 'Quản lý ngữ pháp', to: '/admin/grammar', icon: <BookMarked className="w-4 h-4" />, permission: PERMISSIONS.GRAMMAR_MANAGE },
-  { label: 'Thông báo', to: '/admin/notifications', icon: <Bell className="w-4 h-4" />, permission: PERMISSIONS.ROLE_MANAGE },
-  { label: 'Thùng rác', to: '/admin/trash', icon: <Trash2 className="w-4 h-4" />, permission: PERMISSIONS.ROLE_MANAGE },
+  {
+    title: 'User Management',
+    items: [
+      { label: 'Người dùng', to: '/admin/users', icon: <Users className="w-[18px] h-[18px]" />, permission: PERMISSIONS.USER_MANAGE },
+      { label: 'Đăng ký VIP', to: '/admin/subscriptions', icon: <CreditCard className="w-[18px] h-[18px]" />, badgeKey: 'pendingSubscriptions', permission: PERMISSIONS.SUBSCRIPTION_MANAGE },
+      { label: 'Quản lý vai trò', to: '/admin/roles', icon: <UserCheck className="w-[18px] h-[18px]" />, permission: PERMISSIONS.ROLE_MANAGE },
+    ]
+  },
+  {
+    title: 'Content & Resources',
+    items: [
+      { label: 'Quản lý đề thi', to: '/admin/exams', icon: <FileText className="w-[18px] h-[18px]" />, permission: PERMISSIONS.EXAM_MANAGE },
+      { label: 'Ngân hàng câu hỏi', to: '/admin/questions', icon: <BookOpen className="w-[18px] h-[18px]" />, permission: PERMISSIONS.QUESTION_MANAGE },
+      { label: 'Thư viện từ vựng', to: '/admin/vocab', icon: <Book className="w-[18px] h-[18px]" />, permission: PERMISSIONS.VOCAB_MANAGE },
+      { label: 'Quản lý ngữ pháp', to: '/admin/grammar', icon: <BookMarked className="w-[18px] h-[18px]" />, permission: PERMISSIONS.GRAMMAR_MANAGE },
+    ]
+  },
+  {
+    title: 'System',
+    items: [
+      { label: 'Thùng rác', to: '/admin/trash', icon: <Trash2 className="w-[18px] h-[18px]" />, permission: PERMISSIONS.ROLE_MANAGE },
+    ]
+  }
 ];
 
 interface AdminSidebarProps {
@@ -65,85 +83,87 @@ function AdminSidebar({ onClose }: AdminSidebarProps) {
     }
   };
 
-  // Mock pending subscription counts since there is no api yet
-  const pendingCount = 5;
-
-  const getBadgeValue = (badgeKey?: string) => {
-    if (badgeKey === 'pendingSubscriptions') return pendingCount;
-    return 0;
-  };
+  const pendingCount = 5; // Mock
+  const getBadgeValue = (badgeKey?: string) => badgeKey === 'pendingSubscriptions' ? pendingCount : 0;
 
   return (
-    <aside className="flex flex-col h-full bg-card border-r border-border w-60">
-      {/* Logo */}
-      <div className="flex items-center gap-2 px-5 py-5 border-b border-border">
-        <div className="flex items-center justify-center w-8 h-8 bg-primary rounded-md">
-          <ShieldCheck className="w-5 h-5 text-primary-foreground" />
+    <aside className="flex flex-col h-full bg-[#FAFAFA] border-r border-border/60 w-[260px]">
+      {/* Brand Logo */}
+      <div className="flex items-center gap-3 px-6 h-16 border-b border-border/40 shrink-0">
+        <div className="flex items-center justify-center w-8 h-8 bg-black dark:bg-white rounded-md shadow-sm">
+          <ShieldCheck className="w-5 h-5 text-white dark:text-black" />
         </div>
-        <div className="text-left">
-          <p className="text-sm font-bold text-foreground leading-tight">TOEIC Master</p>
-          <p className="text-xs text-muted-foreground">Admin Panel</p>
+        <div className="flex-1 overflow-hidden">
+          <p className="text-[15px] font-semibold text-foreground truncate tracking-tight">TOEIC Master</p>
+          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">Admin Workspace</p>
         </div>
-        {/* Close button — mobile only */}
         {onClose && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="ml-auto h-8 w-8 lg:hidden"
-            onClick={onClose}
-            aria-label="Đóng menu"
-          >
+          <Button variant="ghost" size="icon" className="h-8 w-8 lg:hidden -mr-2" onClick={onClose}>
             <X className="w-4 h-4" />
           </Button>
         )}
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 p-3 space-y-1" aria-label="Admin navigation">
-        {NAV_ITEMS.filter(item => !item.permission || hasPermission(item.permission)).map((item) => {
-          const badgeValue = getBadgeValue(item.badgeKey);
+      {/* Navigation */}
+      <nav className="flex-1 overflow-y-auto px-3 py-6 space-y-8 custom-scrollbar">
+        {NAV_GROUPS.map((group, groupIndex) => {
+          const visibleItems = group.items.filter(item => !item.permission || hasPermission(item.permission));
+          if (visibleItems.length === 0) return null;
+
           return (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              onClick={onClose}
-              className={({ isActive }) =>
-                cn(
-                  'flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-colors duration-150 relative',
-                  isActive
-                    ? 'bg-primary/10 text-primary font-medium'
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground',
-                )
-              }
-            >
-              {item.icon}
-              <span className="flex-1 text-left">{item.label}</span>
-              {badgeValue > 0 && (
-                <Badge
-                  variant="destructive"
-                  className="h-5 min-w-5 px-1.5 text-xs rounded-full"
-                  aria-label={`${badgeValue} mục chờ xử lý`}
-                >
-                  {badgeValue > 99 ? '99+' : badgeValue}
-                </Badge>
-              )}
-            </NavLink>
+            <div key={groupIndex} className="space-y-2.5">
+              <h4 className="px-3 text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">
+                {group.title}
+              </h4>
+              <div className="space-y-1">
+                {visibleItems.map((item) => {
+                  const badgeValue = getBadgeValue(item.badgeKey);
+                  return (
+                    <NavLink
+                      key={item.to}
+                      to={item.to}
+                      onClick={onClose}
+                      className={({ isActive }) =>
+                        cn(
+                          'flex items-center gap-3 px-3 py-2 rounded-lg text-[14px] font-medium transition-all duration-200 group',
+                          isActive
+                            ? 'bg-white text-black shadow-sm ring-1 ring-border/50'
+                            : 'text-muted-foreground hover:bg-black/5 hover:text-foreground'
+                        )
+                      }
+                    >
+                      <div className={cn("transition-colors", "group-hover:text-foreground")}>
+                        {item.icon}
+                      </div>
+                      <span className="flex-1 truncate">{item.label}</span>
+                      {badgeValue > 0 && (
+                        <Badge
+                          variant="secondary"
+                          className="h-[22px] min-w-[22px] px-1.5 text-[11px] font-semibold rounded-full bg-primary/10 text-primary border-none"
+                        >
+                          {badgeValue > 99 ? '99+' : badgeValue}
+                        </Badge>
+                      )}
+                    </NavLink>
+                  );
+                })}
+              </div>
+            </div>
           );
         })}
       </nav>
 
-      {/* Footer */}
-      <div className="p-4 border-t border-border space-y-3">
-        <Button 
-          variant="ghost" 
-          className="w-full justify-start text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+      {/* Profile/Footer Area */}
+      <div className="p-4 border-t border-border/40 shrink-0 bg-white">
+        <Button
+          variant="ghost"
+          className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-black/5 h-10 px-3 rounded-lg"
           onClick={handleLogout}
           disabled={isLoggingOut}
         >
-          <LogOut className="w-4 h-4 mr-3" />
-          {isLoggingOut ? 'Đang xuất...' : 'Đăng xuất'}
+          <LogOut className="w-[18px] h-[18px] mr-3" />
+          <span className="text-[14px] font-medium">{isLoggingOut ? 'Đang xuất...' : 'Đăng xuất'}</span>
         </Button>
-        <p className="text-xs text-center text-muted-foreground">Admin Panel v1.0</p>
       </div>
     </aside>
   );

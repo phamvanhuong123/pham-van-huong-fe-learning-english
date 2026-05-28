@@ -147,15 +147,15 @@ export function QuestionBankContainer() {
     <div className="flex-1 flex flex-col min-h-0 space-y-6">
 
       {/* ── Filters Bar ── */}
-      <div className="flex-shrink-0 flex flex-col sm:flex-row gap-4 items-center justify-between bg-card p-4 rounded-lg border border-border shadow-sm">
+      <div className="flex-shrink-0 flex flex-col sm:flex-row gap-4 items-center justify-between bg-zinc-50/50 dark:bg-zinc-900/20 p-4 rounded-xl border border-dashed mb-2">
         <div className="flex flex-wrap w-full sm:w-auto items-center gap-3">
 
           {/* Search */}
           <div className="relative w-full sm:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
             <Input
               placeholder="Tìm theo nội dung câu hỏi..."
-              className="pl-9 h-10"
+              className="pl-9 h-10 bg-background focus-visible:ring-primary/20 transition-all rounded-full"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -165,7 +165,7 @@ export function QuestionBankContainer() {
 
           {/* Exam filter */}
           <Select value={examId} onValueChange={handleExamFilterChange}>
-            <SelectTrigger className="w-[180px] h-10">
+            <SelectTrigger className="w-[180px] h-10 bg-background focus:ring-primary/20 transition-all rounded-full">
               <SelectValue placeholder="Tất cả đề thi" />
             </SelectTrigger>
             <SelectContent>
@@ -182,7 +182,7 @@ export function QuestionBankContainer() {
             onValueChange={(v) => { setPart(v); setPage(1); }}
             disabled={examId !== 'ALL'}
           >
-            <SelectTrigger className="w-[140px] h-10">
+            <SelectTrigger className="w-[140px] h-10 bg-background focus:ring-primary/20 transition-all rounded-full">
               <SelectValue placeholder="Part" />
             </SelectTrigger>
             <SelectContent>
@@ -198,7 +198,7 @@ export function QuestionBankContainer() {
             value={difficulty}
             onValueChange={(v) => { setDifficulty(v); setPage(1); }}
           >
-            <SelectTrigger className="w-[140px] h-10">
+            <SelectTrigger className="w-[140px] h-10 bg-background focus:ring-primary/20 transition-all rounded-full">
               <SelectValue placeholder="Độ khó" />
             </SelectTrigger>
             <SelectContent>

@@ -1,7 +1,7 @@
 import { useDashboard } from '@/hooks/useDashboard';
 import { StatsCard } from './components/StatsCard';
-import { RecentActivity } from './components/RecentActivity';
-import { Users, FileText, CheckCircle } from 'lucide-react';
+import { OverviewChart } from './components/OverviewChart';
+import { Users, FileText, CheckCircle, Activity } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 function AdminDashboardPage() {
@@ -9,57 +9,52 @@ function AdminDashboardPage() {
 
   if (error) {
     return (
-      <div className="p-8 text-center text-rose-500">
+      <div className="p-12 text-center text-rose-500 bg-rose-50/50 dark:bg-rose-950/20 rounded-xl m-8 border border-dashed border-rose-200 shadow-sm">
+        <Activity className="w-12 h-12 mx-auto mb-4 opacity-50" />
+        <h3 className="text-lg font-semibold">Đã xảy ra lỗi</h3>
         <p>Lỗi khi tải dữ liệu trang tổng quan.</p>
       </div>
     );
   }
 
   return (
-    <div className="p-8 space-y-8 animate-fade-in">
-      <div>
-        <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-        <p className="text-muted-foreground mt-2">Tổng quan về hệ thống và các hoạt động gần đây.</p>
-      </div>
-
+    <div className="space-y-6 animate-in fade-in duration-500 max-w-7xl">
       {isLoading ? (
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-3">
           {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-32 w-full rounded-xl" />
+            <Skeleton key={i} className="h-[120px] w-full rounded-xl border shadow-sm" />
           ))}
         </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-3">
           <StatsCard 
-            title="Tổng Người Dùng" 
-            value={data?.stats?.totalUsers || 0} 
+            title="Total Users" 
+            value={data?.stats?.totalUsers?.toLocaleString() || 0} 
             icon={Users} 
-            color="text-blue-500"
-            description="Tài khoản đang hoạt động"
+            description="Active accounts in system"
+            trend="+12%"
           />
           <StatsCard 
-            title="Tổng Đề Thi" 
-            value={data?.stats?.totalExams || 0} 
+            title="Published Exams" 
+            value={data?.stats?.totalExams?.toLocaleString() || 0} 
             icon={FileText} 
-            color="text-indigo-500"
-            description="Tổng số đề thi trên hệ thống"
+            description="Available for testing"
           />
           <StatsCard 
-            title="Lượt Làm Bài" 
-            value={data?.stats?.totalResults || 0} 
+            title="Total Submissions" 
+            value={data?.stats?.totalResults?.toLocaleString() || 0} 
             icon={CheckCircle} 
-            color="text-emerald-500"
-            description="Tổng số bài thi đã được nộp"
+            description="Completed exams by users"
+            trend="+5%"
           />
         </div>
       )}
 
-      <div className="grid gap-4 md:grid-cols-4">
-        {/* Phần bên trái có thể để chart sau này, hiện tại RecentActivity chiếm 3 cột */}
+      <div>
         {isLoading ? (
-          <Skeleton className="col-span-3 h-[400px] rounded-xl" />
+          <Skeleton className="h-[450px] w-full rounded-xl border shadow-sm" />
         ) : (
-          <RecentActivity logs={data?.recentActivity || []} />
+          <OverviewChart data={data?.chartData} />
         )}
       </div>
     </div>

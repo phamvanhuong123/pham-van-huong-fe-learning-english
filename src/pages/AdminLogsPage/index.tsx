@@ -8,6 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
+import { AdminTableLoading } from '@/components/admin/AdminTableLoading';
+import { AdminEmptyState } from '@/components/admin/AdminEmptyState';
 
 function AdminLogsPage() {
   const [page, setPage] = useState(1);
@@ -39,21 +41,21 @@ function AdminLogsPage() {
         </p>
       </div>
 
-      <div className="flex gap-4">
-        <div className="relative w-full max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <div className="flex gap-4 items-center bg-zinc-50/50 dark:bg-zinc-900/20 p-4 rounded-xl border border-dashed mb-6">
+        <div className="relative w-full max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
           <Input
             placeholder="Lọc theo hành động (VD: user.ban)..."
             value={actionSearch}
             onChange={(e) => { setActionSearch(e.target.value); setPage(1); }}
-            className="pl-9 bg-background"
+            className="pl-9 h-10 bg-background focus-visible:ring-primary/20 transition-all rounded-full"
           />
         </div>
       </div>
 
-      <div className="rounded-md border bg-card">
+      <div className="border rounded-xl bg-card shadow-sm overflow-hidden">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted/50">
             <TableRow>
               <TableHead>Quản trị viên</TableHead>
               <TableHead>Hành động</TableHead>
@@ -64,24 +66,16 @@ function AdminLogsPage() {
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              Array.from({ length: 10 }).map((_, index) => (
-                <TableRow key={index}>
-                  <TableCell><Skeleton className="h-4 w-[150px]" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-[120px]" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-[250px]" /></TableCell>
-                  <TableCell className="text-right"><Skeleton className="h-4 w-[120px] ml-auto" /></TableCell>
-                </TableRow>
-              ))
+              <AdminTableLoading columns={5} rows={10} />
             ) : logs.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
-                  Không tìm thấy nhật ký nào.
+                <TableCell colSpan={5} className="h-40">
+                  <AdminEmptyState title="Không có nhật ký" description="Chưa có hành động nào được ghi nhận." icon="file" />
                 </TableCell>
               </TableRow>
             ) : (
               logs.map((log) => (
-                <TableRow key={log.id}>
+                <TableRow key={log.id} className="hover:bg-primary/5 transition-colors group">
                   <TableCell>
                     <div className="flex flex-col">
                       <span className="font-medium">{log.admin?.name || 'Hệ thống'}</span>

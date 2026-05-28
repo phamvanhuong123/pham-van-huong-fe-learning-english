@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { Check, X, Eye, AlertTriangle, ShieldBan } from 'lucide-react';
+import { Check, X, Eye, AlertTriangle, ShieldBan, MoreVertical, Edit2, Trash2 } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
 
 import SubscriptionStatusBadge from './SubscriptionStatusBadge';
@@ -12,6 +13,8 @@ import RejectDialog from './RejectDialog';
 import EditSubscriptionModal from './EditSubscriptionModal';
 import RevokeDialog from './RevokeDialog';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
+import { AdminEmptyState } from '@/components/admin/AdminEmptyState';
+import { AdminTableLoading } from '@/components/admin/AdminTableLoading';
 
 import type { Subscription } from '@/types/subscription.type';
 import { useApproveSubscription, useBanBankAccount, useDeleteSubscription } from '@/hooks/queries/useSubscriptionQuery';
@@ -98,18 +101,35 @@ export default function SubscriptionTable({ data, isLoading }: SubscriptionTable
   };
 
   if (isLoading) {
-    return <div className="py-12 text-center text-muted-foreground">Đang tải dữ liệu...</div>;
+    return (
+      <div className="border rounded-xl bg-card overflow-hidden shadow-sm">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-muted/50">
+              <TableHead>User</TableHead>
+              <TableHead>Gói VIP</TableHead>
+              <TableHead>Số tiền</TableHead>
+              <TableHead>Thông tin CK</TableHead>
+              <TableHead>Trạng thái</TableHead>
+              <TableHead>Rủi ro</TableHead>
+              <TableHead className="text-right">Hành động</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <AdminTableLoading columns={7} rows={5} />
+          </TableBody>
+        </Table>
+      </div>
+    );
   }
 
   if (data.length === 0) {
     return (
-      <div className="py-20 text-center border rounded-xl bg-zinc-50/50 dark:bg-zinc-900/20">
-        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
-          <Check className="w-8 h-8 text-zinc-400" />
-        </div>
-        <h3 className="text-lg font-medium text-foreground">Không có yêu cầu nào</h3>
-        <p className="text-muted-foreground text-sm mt-1">Mọi thứ đã được xử lý xong.</p>
-      </div>
+      <AdminEmptyState 
+        title="Không có yêu cầu nào" 
+        description="Mọi thứ đã được xử lý xong." 
+        icon="file" 
+      />
     );
   }
 
@@ -129,8 +149,8 @@ export default function SubscriptionTable({ data, isLoading }: SubscriptionTable
         </TableHeader>
         <TableBody>
           {data.map((sub) => (
-            <TableRow key={sub.id}>
-              <TableCell>
+            <TableRow key={sub.id} className="hover:bg-primary/5 transition-colors group">
+              <TableCell className="py-4">
                 <div className="font-medium text-sm">{sub.user?.email || 'N/A'}</div>
                 <div className="text-xs text-muted-foreground mt-0.5">
                   {format(new Date(sub.createdAt), 'dd/MM/yyyy HH:mm')}
@@ -183,68 +203,50 @@ export default function SubscriptionTable({ data, isLoading }: SubscriptionTable
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="h-8 shadow-sm"
+                    className="h-8 shadow-sm group-hover:border-primary/30 transition-colors"
                     onClick={() => setPreviewImage(sub.proofUrl)}
                   >
                     <Eye className="w-4 h-4 mr-1.5" />
                     Bill
                   </Button>
                   
-                  {sub.status === 'PENDING' && (
-                    <>
-                      <Button 
-                        variant="default" 
-                        size="sm"
-                        className="h-8 bg-emerald-600 hover:bg-emerald-700 shadow-sm"
-                        disabled={isApproving}
-                        onClick={() => handleApprove(sub.id)}
-                      >
-                        <Check className="w-4 h-4 mr-1.5" />
-                        Duyệt
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-muted/80">
+                        <MoreVertical className="w-4 h-4 text-muted-foreground" />
                       </Button>
-                      
-                      <Button 
-                        variant="destructive" 
-                        size="sm"
-                        className="h-8 shadow-sm"
-                        onClick={() => setRejectId(sub.id)}
-                      >
-                        <X className="w-4 h-4 mr-1.5" />
-                        Từ chối
-                      </Button>
-                      
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        className="h-8 shadow-sm"
-                        onClick={() => setEditSub(sub)}
-                      >
-                        Sửa
-                      </Button>
-                    </>
-                  )}
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40">
+                      {sub.status === 'PENDING' && (
+                        <>
+                          <DropdownMenuItem onClick={() => handleApprove(sub.id)} disabled={isApproving} className="text-emerald-600 focus:text-emerald-600 cursor-pointer">
+                            <Check className="w-4 h-4 mr-2" /> Duyệt
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setRejectId(sub.id)} className="text-destructive focus:text-destructive cursor-pointer">
+                            <X className="w-4 h-4 mr-2" /> Từ chối
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setEditSub(sub)} className="cursor-pointer">
+                            <Edit2 className="w-4 h-4 mr-2" /> Sửa
+                          </DropdownMenuItem>
+                        </>
+                      )}
 
-                  {sub.status === 'APPROVED' && (
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      className="h-8 shadow-sm"
-                      onClick={() => setRevokeSub(sub)}
-                    >
-                      Thu hồi
-                    </Button>
-                  )}
+                      {sub.status === 'APPROVED' && (
+                        <DropdownMenuItem onClick={() => setRevokeSub(sub)} className="text-amber-600 focus:text-amber-600 cursor-pointer">
+                          <X className="w-4 h-4 mr-2" /> Thu hồi
+                        </DropdownMenuItem>
+                      )}
 
-                  {sub.status !== 'APPROVED' && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 text-destructive hover:bg-destructive hover:text-white shadow-sm"
-                      onClick={() => handleDelete(sub.id)}
-                    >
-                      Xóa
-                    </Button>
-                  )}
+                      {sub.status !== 'APPROVED' && (
+                        <>
+                          {sub.status === 'PENDING' && <DropdownMenuSeparator />}
+                          <DropdownMenuItem onClick={() => handleDelete(sub.id)} className="text-destructive focus:text-destructive cursor-pointer">
+                            <Trash2 className="w-4 h-4 mr-2" /> Xóa
+                          </DropdownMenuItem>
+                        </>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
 
                   {sub.riskScore > 50 && (
                     <TooltipProvider>

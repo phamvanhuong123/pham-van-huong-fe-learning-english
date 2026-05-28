@@ -8,6 +8,10 @@ import { Plus, Search, Edit2, Trash2, BookOpen } from 'lucide-react';
 import { TopicModal } from './components/TopicModal';
 import { toast } from 'sonner';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import { MoreVertical } from 'lucide-react';
+import { AdminEmptyState } from '@/components/admin/AdminEmptyState';
+import { AdminTableLoading } from '@/components/admin/AdminTableLoading';
 
 function AdminGrammarPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -63,21 +67,21 @@ function AdminGrammarPage() {
         </Button>
       </div>
 
-      <div className="flex items-center gap-4 mb-6">
+      <div className="flex items-center gap-4 mb-6 bg-zinc-50/50 dark:bg-zinc-900/20 p-4 rounded-xl border border-dashed">
         <div className="relative w-full md:w-96">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
           <Input
-            placeholder="Tìm kiếm chủ đề..."
-            className="pl-9"
+            placeholder="Tìm kiếm chuyên đề..."
+            className="pl-9 h-10 bg-background focus-visible:ring-primary/20 transition-all rounded-full"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
       </div>
 
-      <div className="border rounded-lg bg-card">
+      <div className="border rounded-xl bg-card shadow-sm overflow-hidden">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted/50">
             <TableRow>
               <TableHead>Tên chủ đề</TableHead>
               <TableHead>Slug</TableHead>
@@ -87,20 +91,16 @@ function AdminGrammarPage() {
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={4} className="text-center py-10 text-muted-foreground">
-                  Đang tải dữ liệu...
-                </TableCell>
-              </TableRow>
+              <AdminTableLoading columns={4} rows={5} />
             ) : !data?.data || data.data.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="text-center py-10 text-muted-foreground">
-                  Không tìm thấy chủ đề nào.
+                <TableCell colSpan={4} className="h-40">
+                  <AdminEmptyState title="Không tìm thấy chủ đề" description="Chưa có chủ đề ngữ pháp nào." icon="book" />
                 </TableCell>
               </TableRow>
             ) : (
               data.data.map((topic: GrammarTopic) => (
-                <TableRow key={topic.id}>
+                <TableRow key={topic.id} className="hover:bg-primary/5 transition-colors group">
                   <TableCell className="font-medium">
                     {topic.name}
                     {topic.description && (
@@ -115,14 +115,22 @@ function AdminGrammarPage() {
                     </span>
                   </TableCell>
                   <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <Button variant="ghost" size="icon" onClick={() => handleEdit(topic)}>
-                        <Edit2 className="h-4 w-4 text-blue-500" />
-                      </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleDelete(topic.id, topic.name)}>
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
-                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-muted/80">
+                          <MoreVertical className="w-4 h-4 text-muted-foreground" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-40">
+                        <DropdownMenuItem onClick={() => handleEdit(topic)} className="cursor-pointer">
+                          <Edit2 className="w-4 h-4 mr-2 text-blue-500" /> Chỉnh sửa
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => handleDelete(topic.id, topic.name)} className="text-destructive focus:text-destructive cursor-pointer">
+                          <Trash2 className="w-4 h-4 mr-2" /> Xóa
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
               ))

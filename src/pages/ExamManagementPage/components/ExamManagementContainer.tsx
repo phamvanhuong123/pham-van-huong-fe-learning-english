@@ -8,11 +8,11 @@ import { toast } from 'sonner';
 import type { AdminExamItem, ExamCreateBody } from '@/types/exam.type';
 
 import { useExamStore } from '@/store/useExamStore';
-import { 
-  useExams, 
-  useCreateExam, 
-  useUpdateExam, 
-  useDeleteExam 
+import {
+  useExams,
+  useCreateExam,
+  useUpdateExam,
+  useDeleteExam
 } from '@/hooks/queries/useExamQuery';
 
 export function ExamManagementContainer() {
@@ -87,24 +87,24 @@ export function ExamManagementContainer() {
     }
   };
 
-  const filteredExams = exams.filter(e => 
+  const filteredExams = exams.filter(e =>
     e.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className="space-y-4 h-full flex flex-col">
       {/* Top Search and Add Controls */}
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-card p-4 rounded-md border border-border shadow-sm">
-        <div className="relative w-full sm:max-w-xs">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+      <div className="flex flex-col sm:flex-row gap-4 p-4 bg-zinc-50/50 dark:bg-zinc-900/20 rounded-xl border border-dashed mb-4 items-center justify-between">
+        <div className="relative w-full sm:max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
           <Input
             placeholder="Tìm kiếm đề thi..."
-            className="pl-9 h-10 hover:border-primary/50 transition-colors"
+            className="pl-9 h-10 bg-background focus-visible:ring-primary/20 transition-all"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        
+
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <Button variant="outline" size="icon" className="h-10 w-10 shrink-0">
             <Filter className="w-4 h-4" />
@@ -135,17 +135,17 @@ export function ExamManagementContainer() {
               Đã chọn {selectedIds.length} mục
             </span>
             <div className="flex items-center gap-2">
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 className="h-8 text-background hover:bg-background/10 hover:text-background"
                 onClick={() => setSelectedIds([])}
               >
                 Hủy
               </Button>
-              <Button 
-                variant="destructive" 
-                size="sm" 
+              <Button
+                variant="destructive"
+                size="sm"
                 className="h-8 font-bold"
                 onClick={() => setIsBulkDeleteOpen(true)}
               >

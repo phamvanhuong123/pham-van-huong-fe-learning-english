@@ -8,11 +8,14 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Edit, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { Edit, Eye, EyeOff, Trash2, MoreVertical } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
 import type { AdminExamItem } from '@/types/exam.type';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import { AdminEmptyState } from '@/components/admin/AdminEmptyState';
+import { AdminTableLoading } from '@/components/admin/AdminTableLoading';
 
 interface ExamTableProps {
   exams: AdminExamItem[];
@@ -53,17 +56,35 @@ export function ExamTable({
 
   if (isLoading) {
     return (
-      <div className="border border-border rounded-lg bg-card p-8 text-center text-muted-foreground shadow-sm">
-        Đang tải dữ liệu...
+      <div className="border border-border rounded-xl bg-card overflow-hidden shadow-sm">
+        <Table>
+          <TableHeader className="bg-muted/50">
+            <TableRow>
+              <TableHead className="w-10"><Checkbox disabled /></TableHead>
+              <TableHead>Mã đề</TableHead>
+              <TableHead>Tiêu đề</TableHead>
+              <TableHead>Phân loại</TableHead>
+              <TableHead>Câu hỏi</TableHead>
+              <TableHead>Độ khó</TableHead>
+              <TableHead>Trạng thái</TableHead>
+              <TableHead>Thao tác</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <AdminTableLoading columns={8} rows={5} />
+          </TableBody>
+        </Table>
       </div>
     );
   }
 
   if (exams.length === 0) {
     return (
-      <div className="border border-border rounded-lg bg-card p-12 text-center text-muted-foreground shadow-sm">
-        Không tìm thấy đề thi nào phù hợp.
-      </div>
+      <AdminEmptyState 
+        title="Không tìm thấy đề thi" 
+        description="Chưa có đề thi nào phù hợp với bộ lọc hiện tại." 
+        icon="file" 
+      />
     );
   }
 
@@ -155,39 +176,29 @@ export function ExamTable({
                   )}
                 </TableCell>
                 <TableCell className="py-4 text-center">
-                  <div className="flex items-center justify-center gap-1">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full"
-                      onClick={() => onEdit(e)}
-                      title="Chỉnh sửa"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className={`h-8 w-8 rounded-full ${
-                        e.isPublished 
-                        ? 'text-muted-foreground hover:text-amber-600 hover:bg-amber-500/10' 
-                        : 'text-muted-foreground hover:text-emerald-600 hover:bg-emerald-500/10'
-                      }`}
-                      onClick={() => onToggleStatus(e)}
-                      title={e.isPublished ? "Gỡ bài" : "Công khai bài"}
-                    >
-                      {e.isPublished ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full"
-                      onClick={() => onDelete(e)}
-                      title="Xóa đề thi"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-muted/80">
+                        <MoreVertical className="w-4 h-4 text-muted-foreground" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuItem onClick={() => onEdit(e)} className="cursor-pointer">
+                        <Edit className="w-4 h-4 mr-2" /> Chỉnh sửa
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onToggleStatus(e)} className={cn("cursor-pointer", e.isPublished ? "text-amber-600 focus:text-amber-600" : "text-emerald-600 focus:text-emerald-600")}>
+                        {e.isPublished ? (
+                          <><EyeOff className="w-4 h-4 mr-2" /> Gỡ bài</>
+                        ) : (
+                          <><Eye className="w-4 h-4 mr-2" /> Công khai bài</>
+                        )}
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => onDelete(e)} className="text-destructive focus:text-destructive cursor-pointer">
+                        <Trash2 className="w-4 h-4 mr-2" /> Xóa đề thi
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </TableCell>
               </TableRow>
             ))}

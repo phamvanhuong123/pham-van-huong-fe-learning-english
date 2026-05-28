@@ -83,7 +83,7 @@ export function PermissionMatrix({ roleId }: PermissionMatrixProps) {
   };
 
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="h-full flex flex-col shadow-sm border">
       <CardHeader>
         <CardTitle>Ma trận Phân quyền</CardTitle>
       </CardHeader>
@@ -91,16 +91,17 @@ export function PermissionMatrix({ roleId }: PermissionMatrixProps) {
         {Object.entries(groupedPerms).map(([group, perms]) => (
           <div key={group} className="space-y-3">
             <h4 className="font-semibold text-sm text-primary uppercase tracking-wider">{group}</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 border rounded-md p-4 bg-muted/20">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border border-dashed rounded-xl p-5 bg-zinc-50/50 dark:bg-zinc-900/20">
               {perms.map(perm => (
-                <div key={perm.id} className="flex items-start space-x-2">
+                <div key={perm.id} className="flex items-start space-x-3 p-2 hover:bg-muted/50 rounded-lg transition-colors group">
                   <Checkbox 
                     id={`perm-${perm.id}`} 
                     checked={selectedPerms.has(perm.id)}
                     onCheckedChange={() => handleToggle(perm.id)}
+                    className="mt-0.5"
                   />
-                  <div className="grid gap-1.5 leading-none">
-                    <Label htmlFor={`perm-${perm.id}`} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  <div className="grid gap-1.5 leading-none cursor-pointer" onClick={() => handleToggle(perm.id)}>
+                    <Label htmlFor={`perm-${perm.id}`} className="text-sm font-medium leading-none cursor-pointer group-hover:text-primary transition-colors">
                       {perm.description || perm.code}
                     </Label>
                     <p className="text-[10px] text-muted-foreground">{perm.code}</p>

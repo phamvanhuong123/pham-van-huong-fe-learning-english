@@ -72,24 +72,28 @@ export default function AdminVocabPage() {
         </div>
       </div>
 
-      <div className="bg-card rounded-lg shadow-sm border p-6">
-        <VocabFilters 
-          search={search}
-          setSearch={setSearch}
-          status={status}
-          setStatus={setStatus}
-          toeicTopic={toeicTopic}
-          setToeicTopic={setToeicTopic}
-          onAddClick={handleAddClick}
-          onImportClick={handleImportClick}
-        />
+      <div className="bg-card rounded-xl shadow-sm border overflow-hidden flex flex-col h-full">
+        <div className="bg-zinc-50/50 dark:bg-zinc-900/20 p-4 border-b border-dashed">
+          <VocabFilters 
+            search={search}
+            setSearch={setSearch}
+            status={status}
+            setStatus={setStatus}
+            toeicTopic={toeicTopic}
+            setToeicTopic={setToeicTopic}
+            onAddClick={handleAddClick}
+            onImportClick={handleImportClick}
+          />
+        </div>
         
-        <VocabTable 
-          vocabs={vocabsData?.data || []} 
-          isLoading={isLoading} 
-          onEdit={handleEditClick}
-          onDelete={handleDeleteClick}
-        />
+        <div className="p-4 flex-1">
+          <VocabTable 
+            vocabs={vocabsData?.data || []} 
+            isLoading={isLoading} 
+            onEdit={handleEditClick}
+            onDelete={handleDeleteClick}
+          />
+        </div>
       </div>
 
       <VocabModal 

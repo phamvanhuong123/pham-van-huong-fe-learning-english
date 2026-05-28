@@ -31,7 +31,7 @@ export function RoleList({ onSelectRole, selectedRoleId }: RoleListProps) {
       {roles.map(role => (
         <Card 
           key={role.id} 
-          className={`cursor-pointer transition-colors hover:border-primary/50 ${selectedRoleId === role.id ? 'border-primary bg-primary/5' : ''}`}
+          className={`cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 ${selectedRoleId === role.id ? 'border-primary shadow-sm bg-primary/5 ring-1 ring-primary/20' : 'hover:border-primary/50'}`}
           onClick={() => onSelectRole(role.id)}
         >
           <CardHeader className="p-4 pb-2">

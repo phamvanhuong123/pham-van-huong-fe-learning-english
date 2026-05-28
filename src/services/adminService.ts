@@ -22,6 +22,7 @@ export interface AdminLog {
 
 export interface DashboardData {
   stats: DashboardStats;
+  chartData?: { name: string; users: number; exams: number }[];
   recentActivity: AdminLog[];
 }
 
@@ -207,5 +208,15 @@ export const adminService = {
   unbanBankAccount: async (id: string) => {
     const res = await authorizedAxiosInstance.delete(`/admin/subscriptions/banned-accounts/${id}`);
     return res.data;
+  },
+
+  // Results
+  getUserResults: async (userId: string, params: { page?: number; limit?: number }) => {
+    const res = await authorizedAxiosInstance.get<{ data: { results: any[]; pagination: any } }>(`/admin/users/${userId}/results`, { params });
+    return res.data.data;
+  },
+  getAdminResultDetails: async (resultId: string) => {
+    const res = await authorizedAxiosInstance.get<{ data: any }>(`/admin/results/${resultId}`);
+    return res.data.data;
   }
 };

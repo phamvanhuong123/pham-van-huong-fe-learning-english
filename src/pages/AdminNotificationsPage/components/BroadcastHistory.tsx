@@ -6,7 +6,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { useState } from 'react';
-import { Target } from 'lucide-react';
+import { Target, MessageSquare } from 'lucide-react';
+import { AdminEmptyState } from '@/components/admin/AdminEmptyState';
+import { AdminTableLoading } from '@/components/admin/AdminTableLoading';
 
 export function BroadcastHistory() {
   const [page, setPage] = useState(1);
@@ -21,9 +23,9 @@ export function BroadcastHistory() {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-md border bg-card">
+      <div className="rounded-xl border shadow-sm bg-card overflow-hidden">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted/50">
             <TableRow>
               <TableHead>Tiêu đề</TableHead>
               <TableHead>Nội dung</TableHead>
@@ -34,26 +36,22 @@ export function BroadcastHistory() {
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              Array.from({ length: 5 }).map((_, index) => (
-                <TableRow key={index}>
-                  <TableCell><Skeleton className="h-4 w-[150px]" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-[250px]" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-[120px]" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
-                </TableRow>
-              ))
+              <AdminTableLoading columns={5} rows={5} />
             ) : broadcasts.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
-                  Chưa có thông báo nào được phát.
+                <TableCell colSpan={5} className="h-40">
+                  <AdminEmptyState 
+                    title="Chưa có thông báo" 
+                    description="Hiện chưa có thông báo nào được phát sóng." 
+                    icon="file" 
+                  />
                 </TableCell>
               </TableRow>
             ) : (
               broadcasts.map((b) => (
-                <TableRow key={b.id}>
-                  <TableCell className="font-medium max-w-[200px] truncate">{b.title}</TableCell>
-                  <TableCell className="max-w-[300px] truncate text-muted-foreground text-sm" title={b.body}>
+                <TableRow key={b.id} className="hover:bg-primary/5 transition-colors group">
+                  <TableCell className="font-medium max-w-[200px] py-4 truncate text-foreground">{b.title}</TableCell>
+                  <TableCell className="max-w-[300px] truncate text-muted-foreground text-sm py-4" title={b.body}>
                     {b.body}
                   </TableCell>
                   <TableCell>

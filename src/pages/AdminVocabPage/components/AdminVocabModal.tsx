@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useCreateAdminVocab, useUpdateAdminVocab } from '@/hooks/queries/useAdminVocabQuery';
 import type { Vocab, CreateVocabDto } from '@/types/vocab.type';
 import { toast } from 'sonner';
+import { Volume2 } from 'lucide-react';
+import { playVocabAudio } from '@/utils/audioHelper';
 
 interface AdminVocabModalProps {
   isOpen: boolean;
@@ -138,13 +140,53 @@ export default function AdminVocabModal({ isOpen, onClose, vocab }: AdminVocabMo
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="audioUrl">URL Audio</Label>
-              <Input 
-                id="audioUrl" 
-                type="url"
-                value={formData.audioUrl} 
-                onChange={(e) => setFormData({ ...formData, audioUrl: e.target.value })} 
-              />
+              <Label htmlFor="audioFile">Upload Audio (Tùy chọn)</Label>
+              <div className="flex flex-col gap-3">
+                <div className="relative group">
+                  <Input
+                    id="audioFile"
+                    type="file"
+                    accept="audio/*"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] || null;
+                      setFormData({ ...formData, audioFile: file, audioUrl: '' });
+                    }}
+                  />
+                  <div className="flex items-center gap-3 p-3 border-2 border-dashed border-muted-foreground/25 rounded-lg bg-muted/10 group-hover:bg-muted/40 group-hover:border-primary/50 transition-all">
+                    <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center text-primary shrink-0">
+                      <Volume2 className="h-5 w-5" />
+                    </div>
+                    <div className="flex flex-col overflow-hidden">
+                      <span className="text-sm font-medium text-foreground truncate">
+                        {formData.audioFile ? formData.audioFile.name : 'Chọn hoặc kéo thả file âm thanh'}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        Hỗ trợ MP3, WAV
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-[11px] text-muted-foreground leading-tight">
+                  Nếu không upload, hệ thống sẽ tự động tạo phát âm (TTS) dựa trên từ vựng.
+                </p>
+
+                {vocab?.audioUrl && !formData.audioFile && (
+                  <div className="flex items-center justify-between mt-1 bg-primary/5 p-2 px-3 rounded-lg border border-primary/20">
+                    <span className="text-xs font-semibold text-primary">Audio hiện tại</span>
+                    <Button 
+                      type="button" 
+                      variant="secondary" 
+                      size="sm" 
+                      className="h-8 flex items-center gap-2"
+                      onClick={() => playVocabAudio(vocab.audioUrl || null, formData.word || vocab.word)}
+                    >
+                      <Volume2 className="h-4 w-4" /> Nghe thử
+                    </Button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
