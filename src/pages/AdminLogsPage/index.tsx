@@ -3,7 +3,6 @@ import { useLogs } from '@/hooks/useLogs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 import { format } from 'date-fns';
@@ -14,7 +13,7 @@ import { AdminEmptyState } from '@/components/admin/AdminEmptyState';
 function AdminLogsPage() {
   const [page, setPage] = useState(1);
   const [actionSearch, setActionSearch] = useState('');
-  
+
   // Debounce search could be added here, but for simplicity we'll just use the raw value
   // In a real app, use a debounced value.
   const { data, isLoading, error } = useLogs({ page, limit: 15, action: actionSearch || undefined });

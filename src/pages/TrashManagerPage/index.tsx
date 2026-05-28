@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useTrash, useRestoreTrash, useHardDeleteTrash } from '@/hooks/useTrash';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';

@@ -3,6 +3,7 @@ import type { ReviewPassageGroup, ReviewQuestion, ReviewOption } from '@/types/r
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, XCircle, FileText, Check, X } from 'lucide-react';
 import { QuestionNoteEditor } from './QuestionNoteEditor';
+import { AIExplanationBox } from './AIExplanationBox';
 
 interface ReviewQuestionListProps {
   passageGroups: ReviewPassageGroup[];
@@ -42,7 +43,7 @@ export const ReviewQuestionList: React.FC<ReviewQuestionListProps> = ({ passageG
     );
   };
 
-  const renderQuestion = (q: ReviewQuestion) => {
+  const renderQuestion = (q: ReviewQuestion, passageContent?: string) => {
     const isAnsweredCorrectly = q.userAnswer?.isCorrect;
     const hasAnswer = !!q.userAnswer?.selectedLabel;
 
@@ -95,18 +96,8 @@ export const ReviewQuestionList: React.FC<ReviewQuestionListProps> = ({ passageG
             </div>
           )}
 
-          {/* AI Explanation Placeholder */}
-          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-4 border border-indigo-100/50 text-sm">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2 text-indigo-700 font-bold">
-                <span className="text-lg">✨</span> Giải thích bằng AI
-              </div>
-              <Badge variant="outline" className="bg-indigo-100 text-indigo-700 border-indigo-200">BETA</Badge>
-            </div>
-            <div className="text-indigo-900/70 italic text-center py-4 bg-white/40 rounded border border-indigo-50 border-dashed">
-              Tính năng đang được phát triển. AI sẽ giúp bạn phân tích từng câu hỏi một cách cá nhân hóa!
-            </div>
-          </div>
+          {/* AI Explanation Box */}
+          <AIExplanationBox question={q} passageContent={passageContent} />
 
           {/* Note Editor */}
           <QuestionNoteEditor questionId={q.id} initialNote={q.note} />
@@ -155,7 +146,7 @@ export const ReviewQuestionList: React.FC<ReviewQuestionListProps> = ({ passageG
 
       {/* Questions in group */}
       <div className="p-6">
-        {pg.questions.map(renderQuestion)}
+        {pg.questions.map(q => renderQuestion(q, pg.passages.map(p => p.content || '').join('\n')))}
       </div>
     </div>
   );
@@ -170,7 +161,7 @@ export const ReviewQuestionList: React.FC<ReviewQuestionListProps> = ({ passageG
         {standaloneQuestions.length > 0 && (
           <div className="bg-white border border-gray-200 rounded-md overflow-hidden shadow-sm p-5">
             <h3 className="font-bold text-lg text-gray-900 border-b pb-4 mb-4">Câu hỏi rời (Part 5)</h3>
-            {standaloneQuestions.map(renderQuestion)}
+            {standaloneQuestions.map(q => renderQuestion(q))}
           </div>
         )}
       </div>

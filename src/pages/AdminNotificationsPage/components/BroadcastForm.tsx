@@ -36,7 +36,6 @@ export function BroadcastForm() {
     sendBroadcast(data, {
       onSuccess: () => {
         reset();
-        // Cần reset lại giá trị của Select thủ công vì Select component không link native với react-hook-form theo cách register thông thường nếu không bọc Controller
         setValue('type', 'SYSTEM');
         setValue('targetRole', 'ALL');
       }
@@ -65,11 +64,11 @@ export function BroadcastForm() {
 
             <div className="space-y-2">
               <Label htmlFor="body" className="font-semibold text-foreground">Nội dung</Label>
-              <Textarea 
-                id="body" 
-                placeholder="Nhập nội dung..." 
-                className="min-h-[120px] resize-none focus-visible:ring-primary/20 transition-all" 
-                {...register('body')} 
+              <Textarea
+                id="body"
+                placeholder="Nhập nội dung..."
+                className="min-h-[120px] resize-none focus-visible:ring-primary/20 transition-all"
+                {...register('body')}
               />
               {errors.body && <p className="text-sm text-rose-500">{errors.body.message}</p>}
             </div>

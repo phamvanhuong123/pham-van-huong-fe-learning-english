@@ -1,11 +1,11 @@
-import { SearchX, FileQuestion, BookOpen, UserX, type LucideIcon } from 'lucide-react';
+import { SearchX, FileQuestion, BookOpen, UserX, type LucideIcon, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 interface AdminEmptyStateProps {
   title?: string;
   description?: string;
-  icon?: 'search' | 'file' | 'book' | 'user';
+  icon?: 'search' | 'file' | 'book' | 'user' | 'trash';
   action?: {
     label: string;
     onClick: () => void;
@@ -18,6 +18,7 @@ const iconMap: Record<string, LucideIcon> = {
   file: FileQuestion,
   book: BookOpen,
   user: UserX,
+  trash: Trash2
 };
 
 export function AdminEmptyState({
