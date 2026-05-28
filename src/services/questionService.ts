@@ -52,3 +52,17 @@ export const deleteQuestionApi = async (id: string) => {
 export const deleteQuestionGroupApi = async (groupId: string) => {
   return await authorizedAxiosInstance.delete(`${API_ROOT}/group/${groupId}`);
 };
+
+export const getNoteApi = async (id: string) => {
+  return await authorizedAxiosInstance.get(`${API_ROOT}/${id}/note`);
+};
+
+export const upsertNoteApi = async (id: string, data: { content: string }) => {
+  return await authorizedAxiosInstance.post(`${API_ROOT}/${id}/note`, data);
+};
+
+export const deleteNoteApi = async (id: string) => {
+  return await authorizedAxiosInstance.delete(`${API_ROOT}/${id}/note`);
+};
+
+

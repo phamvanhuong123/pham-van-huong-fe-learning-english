@@ -29,3 +29,7 @@ export const getProfileStatsApi = async () => {
 export const deleteAccountApi = async (data: any) => {
   return await authorizedAxiosInstance.delete(`${API_ROOT}`, { data });
 };
+
+export const getMyNotesApi = async () => {
+  return await authorizedAxiosInstance.get(`${API_ROOT}/notes`);
+};

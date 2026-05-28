@@ -13,6 +13,7 @@ import ScoreReportPage from '@/pages/ScoreReportPage';
 import ReviewModePage from '@/pages/ReviewModePage';
 import UpgradeVipPage from '@/pages/UpgradeVipPage';
 import ProfilePage from '@/pages/ProfilePage';
+import MyNotebookPage from '@/pages/MyNotebookPage';
 
 function ClientRoute() {
   return (
@@ -29,6 +30,7 @@ function ClientRoute() {
           <Route path="profile" element={<ProfilePage />} />
           <Route path="pricing" element={<UpgradeVipPage />} />
           <Route path="results/:resultId" element={<ScoreReportPage />} />
+          <Route path="my-notebook" element={<MyNotebookPage />} />
         </Route>
       </Route>
       <Route element={<ProtectedRoute />}>

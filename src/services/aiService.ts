@@ -23,3 +23,18 @@ export interface AIExplanationResponse {
 export const getAIExplanationApi = async (payload: ExplainQuestionPayload): Promise<AxiosResponse<IResponse<AIExplanationResponse>>> => {
   return await authorizedAxiosInstance.post(`${API_ROOT}/explain-question`, payload);
 };
+
+export interface AskFollowUpPayload {
+  questionContext?: string;
+  originalExplanation: string;
+  chatHistory?: { user: string; ai: string }[];
+  userQuestion: string;
+}
+
+export const askAIFollowUpApi = async (payload: AskFollowUpPayload): Promise<AxiosResponse<IResponse<AIExplanationResponse>>> => {
+  return await authorizedAxiosInstance.post(`${API_ROOT}/follow-up`, payload);
+};
+
+export const generateTakeawayApi = async (payload: { questionText?: string, explanation: string }): Promise<AxiosResponse<IResponse<{ content: string }>>> => {
+  return await authorizedAxiosInstance.post(`${API_ROOT}/takeaway`, payload);
+};

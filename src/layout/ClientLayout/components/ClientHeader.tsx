@@ -10,6 +10,7 @@ import {
   Menu,
   Crown,
   GraduationCap,
+  Bookmark,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -23,6 +24,7 @@ const navItems = [
   { label: 'Luyện đề', to: '/exams', icon: Library, end: false },
   { label: 'Từ vựng', to: '/vocab', icon: BookOpen, end: false },
   { label: 'Ngữ pháp', to: '/grammar', icon: GraduationCap, end: false },
+  { label: 'Sổ tay', to: '/my-notebook', icon: Bookmark, end: false },
   { label: 'Lịch sử', to: '/history', icon: History, end: false },
 ];
 
