@@ -5,6 +5,24 @@ interface ExamState {
   searchTerm: string;
   setSearchTerm: (term: string) => void;
 
+  page: number;
+  setPage: (page: number) => void;
+
+  limit: number;
+  setLimit: (limit: number) => void;
+
+  partFilter: string;
+  setPartFilter: (part: string) => void;
+
+  difficultyFilter: string;
+  setDifficultyFilter: (difficulty: string) => void;
+
+  typeFilter: string;
+  setTypeFilter: (type: string) => void;
+
+  statusFilter: string;
+  setStatusFilter: (status: string) => void;
+
   selectedIds: string[];
   setSelectedIds: (ids: string[]) => void;
   toggleSelectedId: (id: string) => void;
@@ -26,7 +44,25 @@ interface ExamState {
 
 export const useExamStore = create<ExamState>((set) => ({
   searchTerm: '',
-  setSearchTerm: (term) => set({ searchTerm: term }),
+  setSearchTerm: (term) => set({ searchTerm: term, page: 1 }), // Reset page on search
+
+  page: 1,
+  setPage: (page) => set({ page }),
+
+  limit: 10,
+  setLimit: (limit) => set({ limit, page: 1 }),
+
+  partFilter: 'ALL',
+  setPartFilter: (part) => set({ partFilter: part, page: 1 }),
+
+  difficultyFilter: 'ALL',
+  setDifficultyFilter: (difficulty) => set({ difficultyFilter: difficulty, page: 1 }),
+
+  typeFilter: 'ALL',
+  setTypeFilter: (type) => set({ typeFilter: type, page: 1 }),
+
+  statusFilter: 'ALL',
+  setStatusFilter: (status) => set({ statusFilter: status, page: 1 }),
 
   selectedIds: [],
   setSelectedIds: (ids) => set({ selectedIds: ids }),

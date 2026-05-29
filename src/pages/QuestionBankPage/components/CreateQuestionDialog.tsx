@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { uploadMediaApi } from '@/services/questionService';
+import { uploadMediaApi, getQuestionsByExamApi } from '@/services/questionService';
 import { Save, LayoutTemplate, Eye, PenLine } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -68,7 +68,9 @@ export function CreateQuestionDialog({
     }
   }, [isOpen]);
 
-  const handleExamSelect = (val: string) => {
+  const [_, setIsFetchingOrder] = useState(false);
+
+  const handleExamSelect = async (val: string) => {
     setExamId(val);
     const ex = exams.find(e => e.id === val);
     if (!ex) return;
@@ -77,15 +79,53 @@ export function CreateQuestionDialog({
     if (selectedPart === 'PART5') {
       setPassages([]);
     } else if (selectedPart === 'PART1') {
-      setPassages([{ mediaType: 'VIDEO', content: '', mediaUrl: '', order: 1 }]);
+      setPassages([
+        { mediaType: 'IMAGE', content: '', mediaUrl: '', order: 1 },
+        { mediaType: 'AUDIO', content: '', mediaUrl: '', order: 2 }
+      ]);
     } else if (['PART2', 'PART3', 'PART4'].includes(selectedPart)) {
       setPassages([{ mediaType: 'AUDIO', content: '', mediaUrl: '', order: 1 }]);
     } else {
       setPassages([{ mediaType: 'TEXT', content: '', mediaUrl: '', order: 1 }]);
     }
 
+    setIsFetchingOrder(true);
+    let nextOrder = 1;
+    try {
+      const res = await getQuestionsByExamApi(val);
+      const data = res.data?.data || res.data;
+      const standalone = data.standaloneQuestions || [];
+      const groups = data.questionGroups || [];
+
+      let maxOrder = 0;
+      standalone.forEach((q: any) => { if (q.order > maxOrder) maxOrder = q.order; });
+      groups.forEach((g: any) => {
+        g.questions?.forEach((q: any) => { if (q.order > maxOrder) maxOrder = q.order; });
+      });
+
+      const PART_ORDER_BOUNDS: Record<string, { min: number, max: number }> = {
+        PART1: { min: 1, max: 6 },
+        PART2: { min: 7, max: 31 },
+        PART3: { min: 32, max: 70 },
+        PART4: { min: 71, max: 100 },
+        PART5: { min: 101, max: 130 },
+        PART6: { min: 131, max: 146 },
+        PART7: { min: 147, max: 200 }
+      };
+
+      if (maxOrder > 0) {
+        nextOrder = maxOrder + 1;
+      } else if (selectedPart !== 'FULL' && PART_ORDER_BOUNDS[selectedPart]) {
+        nextOrder = PART_ORDER_BOUNDS[selectedPart].min;
+      }
+    } catch (e) {
+      console.error("Failed to fetch questions for exam", e);
+    } finally {
+      setIsFetchingOrder(false);
+    }
+
     setQuestions([{
-      order: 1,
+      order: nextOrder,
       questionText: '',
       difficulty: 'MEDIUM',
       explanation: '',
@@ -95,7 +135,10 @@ export function CreateQuestionDialog({
     setTimeout(() => setStep(2), 100);
   };
 
+  const [isSaving, setIsSaving] = useState(false);
+
   const handleSave = async () => {
+    setIsSaving(true);
     try {
       const isGroup = part !== 'PART5';
 
@@ -103,8 +146,15 @@ export function CreateQuestionDialog({
         if (['PART1', 'PART2', 'PART3', 'PART4'].includes(part) && !passages[0]?.mediaUrl && !passages[0]?.mediaFile) {
           return toast.error('Vui lòng chọn file Media bắt buộc');
         }
-        if (['PART6', 'PART7'].includes(part) && !passages[0]?.content) {
-          return toast.error('Vui lòng nhập nội dung đoạn văn');
+        if (['PART6', 'PART7'].includes(part)) {
+          const invalidPassage = passages.find(p => {
+            if (p.mediaType === 'TEXT' && (!p.content || p.content === '<p><br></p>')) return true;
+            if (p.mediaType === 'IMAGE' && !p.mediaUrl && !p.mediaFile) return true;
+            return false;
+          });
+          if (invalidPassage) {
+            return toast.error('Vui lòng nhập đầy đủ nội dung văn bản hoặc chọn hình ảnh cho các đoạn văn');
+          }
         }
         if (questions.length === 0) {
           return toast.error('Cần ít nhất 1 câu hỏi con');
@@ -128,7 +178,7 @@ export function CreateQuestionDialog({
               const res = await uploadMediaApi(formData);
               const url = res.data?.data?.url || res.data?.url;
               if (!url) throw new Error('Không nhận được URL sau upload');
-              // Giải phóng blob URL
+       
               if (p.previewUrl) URL.revokeObjectURL(p.previewUrl);
               return { ...p, mediaUrl: url, mediaFile: undefined, previewUrl: undefined };
             } catch (err: any) {
@@ -164,6 +214,8 @@ export function CreateQuestionDialog({
       await onSave(payload, isGroup);
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -255,10 +307,10 @@ export function CreateQuestionDialog({
 
 
         <SheetFooter className="px-6 py-4 border-t bg-muted/20 shrink-0 flex gap-2 sm:justify-end">
-          <Button variant="outline" className="h-11 rounded-md" onClick={onClose} disabled={isPending}>Hủy bỏ</Button>
+          <Button variant="outline" className="h-11 rounded-md" onClick={onClose} disabled={isPending || isSaving}>Hủy bỏ</Button>
           {step === 2 && (
-            <Button onClick={handleSave} disabled={isPending} className="min-w-[120px] h-11 rounded-md">
-              {isPending ? 'Đang lưu...' : (
+            <Button onClick={handleSave} disabled={isPending || isSaving} className="min-w-[120px] h-11 rounded-md">
+              {(isPending || isSaving) ? 'Đang xử lý...' : (
                 <><Save className="w-4 h-4 mr-2" /> Lưu dữ liệu</>
               )}
             </Button>

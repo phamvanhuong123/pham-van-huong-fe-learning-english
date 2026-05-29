@@ -3,9 +3,11 @@ import type { ReviewQuestion } from '@/types/result.type';
 
 interface ReviewQuestionPaletteProps {
   questions: ReviewQuestion[];
+  activePart?: string;
+  onNavigateToPart?: (part: string) => void;
 }
 
-export const ReviewQuestionPalette: React.FC<ReviewQuestionPaletteProps> = ({ questions }) => {
+export const ReviewQuestionPalette: React.FC<ReviewQuestionPaletteProps> = ({ questions, activePart, onNavigateToPart }) => {
   const handleScrollToQuestion = (order: number) => {
     const el = document.getElementById(`question-${order}`);
     if (el) {
@@ -16,8 +18,17 @@ export const ReviewQuestionPalette: React.FC<ReviewQuestionPaletteProps> = ({ qu
     }
   };
 
+  const handleQuestionClick = (q: ReviewQuestion) => {
+    if (onNavigateToPart && activePart && q.part && q.part !== activePart) {
+      onNavigateToPart(q.part);
+      setTimeout(() => handleScrollToQuestion(q.order), 150);
+    } else {
+      handleScrollToQuestion(q.order);
+    }
+  };
+
   return (
-    <div className="bg-white rounded-lg shadow-sm border p-4 sticky top-24 max-h-[calc(100vh-6rem)] flex flex-col">
+    <div className="bg-white rounded-lg shadow-sm border p-4 flex flex-col h-[calc(100vh-140px)]">
       <h3 className="font-bold text-gray-800 mb-4 border-b pb-2">Danh sách câu hỏi</h3>
 
       <div className="flex gap-4 mb-4 text-xs">
@@ -44,7 +55,7 @@ export const ReviewQuestionPalette: React.FC<ReviewQuestionPaletteProps> = ({ qu
             return (
               <button
                 key={q.id}
-                onClick={() => handleScrollToQuestion(q.order)}
+                onClick={() => handleQuestionClick(q)}
                 className={`
                   w-full h-9 flex items-center justify-center text-xs font-medium rounded-md border transition-all
                   hover:scale-105 active:scale-95

@@ -23,8 +23,22 @@ export function QuestionEditor({
   DEFAULT_OPTIONS
 }: QuestionEditorProps) {
 
+  const PART_ORDER_BOUNDS: Record<string, { min: number, max: number }> = {
+    PART1: { min: 1, max: 6 },
+    PART2: { min: 7, max: 31 },
+    PART3: { min: 32, max: 70 },
+    PART4: { min: 71, max: 100 },
+    PART5: { min: 101, max: 130 },
+    PART6: { min: 131, max: 146 },
+    PART7: { min: 147, max: 200 }
+  };
+
   const addQuestion = () => {
-    const nextOrder = questions.length > 0 ? Number(questions[questions.length - 1].order) + 1 : 1;
+    let nextOrder = part !== 'FULL' && PART_ORDER_BOUNDS[part] ? PART_ORDER_BOUNDS[part].min : 1;
+    if (questions.length > 0) {
+      nextOrder = Number(questions[questions.length - 1].order) + 1;
+    }
+    
     setQuestions([...questions, {
       order: nextOrder,
       questionText: '',
@@ -61,23 +75,25 @@ export function QuestionEditor({
               </Button>
             )}
 
-            {!['PART1', 'PART2'].includes(part) && (
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                <div className="md:col-span-2 space-y-2">
-                  <Label>Thứ tự (Câu số)</Label>
-                  <Input
-                    type="number"
-                    value={q.order}
-                    className="h-11 rounded-md hover:border-primary/50 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/10 transition-all"
-                    onChange={(e) => {
-                      const nQ = [...questions];
-                      nQ[qIdx].order = e.target.value;
-                      setQuestions(nQ);
-                    }}
-                  />
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+              <div className="md:col-span-2 space-y-2">
+                <Label>Thứ tự (Câu số)</Label>
+                <Input
+                  type="number"
+                  min={part === 'PART1' ? 1 : part === 'PART2' ? 7 : part === 'PART3' ? 32 : part === 'PART4' ? 71 : part === 'PART5' ? 101 : part === 'PART6' ? 131 : part === 'PART7' ? 147 : 1}
+                  max={part === 'PART1' ? 6 : part === 'PART2' ? 31 : part === 'PART3' ? 70 : part === 'PART4' ? 100 : part === 'PART5' ? 130 : part === 'PART6' ? 146 : part === 'PART7' ? 200 : undefined}
+                  value={q.order}
+                  className="h-11 rounded-md hover:border-primary/50 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/10 transition-all"
+                  onChange={(e) => {
+                    const nQ = [...questions];
+                    nQ[qIdx].order = e.target.value;
+                    setQuestions(nQ);
+                  }}
+                />
+              </div>
+              {part !== 'PART1' && part !== 'PART6' && (
                 <div className="md:col-span-10 space-y-2">
-                  <Label>Nội dung câu hỏi</Label>
+                  <Label>Nội dung câu hỏi {part === 'PART2' && <span className="text-muted-foreground font-normal text-xs">(Transcript dùng để hiển thị khi Xem lại bài)</span>}</Label>
                   <Input
                     placeholder="Nhập nội dung câu hỏi..."
                     value={q.questionText || ''}
@@ -89,8 +105,8 @@ export function QuestionEditor({
                     }}
                   />
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {q.options.map((opt: any, optIdx: number) => (

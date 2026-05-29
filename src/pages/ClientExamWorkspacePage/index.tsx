@@ -184,7 +184,7 @@ export const ClientExamWorkspacePage: React.FC = () => {
           {renderPartViewers()}
         </div>
 
-        <div className="w-[340px] hidden lg:block shrink-0">
+        <div className="w-[340px] hidden lg:block shrink-0 sticky top-[130px]">
           <QuestionPalette 
             questions={allQuestions} 
             activePart={activePart}

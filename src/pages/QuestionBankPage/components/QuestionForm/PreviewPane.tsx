@@ -23,42 +23,55 @@ export function PreviewPane({ part, passages, questions }: PreviewPaneProps) {
       {passages.length > 0 && (
         <div className="space-y-3">
           {/* ── PART 1 SPECIAL ── */}
-          {part === 'PART1' && passages.map((p, pIdx) => {
-            const mediaSrc = p.previewUrl || p.mediaUrl;
-            return (
-              <div key={pIdx} className="space-y-3">
-                <div className="rounded-lg border overflow-hidden bg-white shadow-sm">
-                  <div className="flex items-center gap-2 px-4 py-2.5 bg-muted/40 border-b">
-                    <ImageIcon className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Hình ảnh</span>
-                    {p.mediaFile && <span className="ml-auto text-[10px] font-bold text-amber-600 bg-amber-100 px-2 py-0.5 rounded-full">Chờ lưu</span>}
+          {part === 'PART1' && (
+            <div className="space-y-3">
+              {/* Hiển thị Hình ảnh */}
+              {(() => {
+                const imgP = passages.find(p => p.mediaType === 'IMAGE');
+                const mediaSrc = imgP?.previewUrl || imgP?.mediaUrl;
+                return (
+                  <div className="rounded-lg border overflow-hidden bg-white shadow-sm">
+                    <div className="flex items-center gap-2 px-4 py-2.5 bg-muted/40 border-b">
+                      <ImageIcon className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Hình ảnh</span>
+                      {imgP?.mediaFile && <span className="ml-auto text-[10px] font-bold text-amber-600 bg-amber-100 px-2 py-0.5 rounded-full">Chờ lưu</span>}
+                    </div>
+                    <div className="p-4">
+                      {mediaSrc ? (
+                        <img src={mediaSrc} className="w-full max-h-64 object-contain rounded bg-black/5" />
+                      ) : (
+                        <div className="flex flex-col items-center justify-center py-10 text-muted-foreground/40 gap-2">
+                          <ImageIcon className="w-10 h-10" /><p className="text-xs">Chưa chọn hình ảnh</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="p-4">
-                    {mediaSrc ? (
-                      <video src={mediaSrc} muted playsInline className="w-full max-h-64 object-contain rounded bg-black/5" />
-                    ) : (
-                      <div className="flex flex-col items-center justify-center py-10 text-muted-foreground/40 gap-2">
-                        <ImageIcon className="w-10 h-10" /><p className="text-xs">Chưa chọn file video</p>
-                      </div>
-                    )}
+                );
+              })()}
+
+              {/* Hiển thị Bài nghe */}
+              {(() => {
+                const audP = passages.find(p => p.mediaType === 'AUDIO' || p.mediaType === 'VIDEO');
+                const mediaSrc = audP?.previewUrl || audP?.mediaUrl;
+                return (
+                  <div className="rounded-lg border overflow-hidden bg-white shadow-sm">
+                    <div className="flex items-center gap-2 px-4 py-2.5 bg-muted/40 border-b">
+                      <Volume2 className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Bài nghe</span>
+                      {audP?.mediaFile && <span className="ml-auto text-[10px] font-bold text-amber-600 bg-amber-100 px-2 py-0.5 rounded-full">Chờ lưu</span>}
+                    </div>
+                    <div className="p-4">
+                      {mediaSrc ? <audio src={mediaSrc} controls className="w-full" /> : (
+                        <div className="flex flex-col items-center justify-center py-4 text-muted-foreground/40 gap-2">
+                          <Volume2 className="w-8 h-8" /><p className="text-xs">Chưa có bài nghe</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <div className="rounded-lg border overflow-hidden bg-white shadow-sm">
-                  <div className="flex items-center gap-2 px-4 py-2.5 bg-muted/40 border-b">
-                    <Volume2 className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Bài nghe</span>
-                  </div>
-                  <div className="p-4">
-                    {mediaSrc ? <audio src={mediaSrc} controls className="w-full" /> : (
-                      <div className="flex flex-col items-center justify-center py-4 text-muted-foreground/40 gap-2">
-                        <Volume2 className="w-8 h-8" /><p className="text-xs">Chưa có audio</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+                );
+              })()}
+            </div>
+          )}
 
           {/* ── PART 2, 3, 4: Audio / Video theo thứ tự ── */}
           {['PART2', 'PART3', 'PART4'].includes(part) && passages.map((p, pIdx) => {
@@ -85,7 +98,7 @@ export function PreviewPane({ part, passages, questions }: PreviewPaneProps) {
                       <summary className="cursor-pointer text-xs font-semibold text-slate-500 hover:text-slate-700 select-none">
                         📝 Xem Transcript / Lời thoại
                       </summary>
-                      <div className="mt-2 prose prose-sm max-w-none text-xs text-muted-foreground leading-relaxed p-3 bg-slate-50 rounded-md border border-slate-200"
+                      <div className="mt-2 prose prose-sm max-w-none text-xs text-muted-foreground leading-relaxed p-3 bg-slate-50 rounded-md border border-slate-200 break-words overflow-hidden"
                         dangerouslySetInnerHTML={{ __html: p.transcript }} />
                     </details>
                   )}
@@ -108,7 +121,7 @@ export function PreviewPane({ part, passages, questions }: PreviewPaneProps) {
                     const mediaSrc = p.previewUrl || p.mediaUrl;
                     if (p.mediaType === 'TEXT') {
                       return p.content && p.content !== '<p><br></p>' ? (
-                        <div key={pIdx} className="prose prose-sm max-w-none text-sm leading-relaxed text-foreground"
+                        <div key={pIdx} className="prose prose-sm max-w-none text-sm leading-relaxed text-foreground break-words overflow-hidden"
                           dangerouslySetInnerHTML={{ __html: p.content }} />
                       ) : (
                         <p key={pIdx} className="text-xs text-muted-foreground/40 italic text-center py-2">Chưa có nội dung đoạn văn</p>
@@ -139,7 +152,7 @@ export function PreviewPane({ part, passages, questions }: PreviewPaneProps) {
                       </summary>
                       <div className="mt-2 p-3 bg-blue-50 rounded-md border border-blue-100 space-y-3">
                         {allTranscripts.map((p, i) => (
-                          <div key={i} className="prose prose-sm max-w-none text-xs text-muted-foreground leading-relaxed"
+                          <div key={i} className="prose prose-sm max-w-none text-xs text-muted-foreground leading-relaxed break-words overflow-hidden"
                             dangerouslySetInnerHTML={{ __html: p.transcript! }} />
                         ))}
                       </div>
@@ -212,7 +225,7 @@ export function PreviewPane({ part, passages, questions }: PreviewPaneProps) {
                 <div className="flex items-start gap-2 p-3 rounded-md bg-amber-50 border border-amber-200">
                   <span className="text-xs font-bold text-amber-700 shrink-0 mt-0.5">💡</span>
                   <div 
-                    className="prose prose-sm max-w-none text-xs text-amber-900 leading-relaxed [&>p]:m-0"
+                    className="prose prose-sm max-w-none text-xs text-amber-900 leading-relaxed [&>p]:m-0 break-words overflow-hidden min-w-0 w-full"
                     dangerouslySetInnerHTML={{ __html: q.explanation }}
                   />
                 </div>

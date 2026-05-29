@@ -96,8 +96,10 @@ export const ReviewQuestionList: React.FC<ReviewQuestionListProps> = ({ passageG
             </div>
           )}
 
-          {/* AI Explanation Box */}
-          <AIExplanationBox question={q} passageContent={passageContent} />
+          {/* AI Explanation Box (Only for Reading: Part 5, 6, 7) */}
+          {!['PART1', 'PART2', 'PART3', 'PART4'].includes(q.part) && (
+            <AIExplanationBox question={q} passageContent={passageContent} />
+          )}
 
           {/* Note Editor */}
           <QuestionNoteEditor questionId={q.id} initialNote={q.note} />
@@ -120,7 +122,31 @@ export const ReviewQuestionList: React.FC<ReviewQuestionListProps> = ({ passageG
             )}
 
             {p.mediaType === 'AUDIO' && p.mediaUrl && (
-              <audio controls src={p.mediaUrl} className="w-full h-12" />
+              <audio controls src={p.mediaUrl} className="w-full" controlsList="nodownload noplaybackrate" />
+            )}
+
+            {p.mediaType === 'VIDEO' && p.mediaUrl && pg.questions[0]?.part === 'PART1' && (
+              <div className="space-y-4">
+                <video 
+                  src={p.mediaUrl} 
+                  className="w-full max-h-96 rounded-lg shadow-sm border border-gray-200 pointer-events-none" 
+                />
+                <audio 
+                  controls 
+                  src={p.mediaUrl} 
+                  className="w-full" 
+                  controlsList="nodownload noplaybackrate" 
+                />
+              </div>
+            )}
+
+            {p.mediaType === 'VIDEO' && p.mediaUrl && pg.questions[0]?.part !== 'PART1' && (
+              <audio 
+                controls 
+                src={p.mediaUrl} 
+                className="w-full" 
+                controlsList="nodownload noplaybackrate" 
+              />
             )}
 
             {p.content && (

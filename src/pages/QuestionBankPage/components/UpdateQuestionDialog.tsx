@@ -53,21 +53,49 @@ export function UpdateQuestionDialog({
   const isSingleQuestionPart = ['PART1', 'PART2', 'PART5'].includes(part);
 
   useEffect(() => {
-    if (isOpen && initialData) {
-      setExamId(initialData.examId);
-      setActiveTab('form');
+    let isMounted = true;
+    
+    const fetchGroupData = async (groupId: string) => {
+      try {
+        const { getGroupDetailApi } = await import('@/services/questionService');
+        const res = await getGroupDetailApi(groupId);
+        const data = res.data?.data || res.data;
+        if (isMounted && data) {
+          setExamId(data.examId);
+          setPassages(data.passages || []);
+          setQuestions(data.questions || []);
+        }
+      } catch (error) {
+        console.error('Failed to fetch group details', error);
+        toast.error('Lỗi khi tải chi tiết nhóm câu hỏi');
+      }
+    };
 
-      if (initialData.passages) {
-        setPassages(initialData.passages || []);
-        setQuestions(initialData.questions || []);
+    if (isOpen && initialData) {
+      setActiveTab('form');
+      
+      // Check if it's a group (has passages array but no questions array means it's the shallow pGroup from table)
+      // Or check if initialData has an examId but no questionText (meaning it's a group)
+      const isGroupData = initialData.passages !== undefined || initialData.type !== undefined;
+
+      if (isGroupData) {
+        // Fetch full detail for group
+        fetchGroupData(initialData.id);
       } else {
+        // Standalone question
+        setExamId(initialData.examId);
         setPassages([]);
         setQuestions([initialData]);
       }
     }
+    
+    return () => { isMounted = false; };
   }, [isOpen, initialData]);
 
+  const [isSaving, setIsSaving] = useState(false);
+
   const handleSave = async () => {
+    setIsSaving(true);
     try {
       const isGroup = part !== 'PART5';
 
@@ -75,8 +103,15 @@ export function UpdateQuestionDialog({
         if (['PART1', 'PART2', 'PART3', 'PART4'].includes(part) && !passages[0]?.mediaUrl && !passages[0]?.mediaFile) {
           return toast.error('Vui lòng chọn file Media bắt buộc');
         }
-        if (['PART6', 'PART7'].includes(part) && !passages[0]?.content) {
-          return toast.error('Vui lòng nhập nội dung đoạn văn');
+        if (['PART6', 'PART7'].includes(part)) {
+          const invalidPassage = passages.find(p => {
+            if (p.mediaType === 'TEXT' && (!p.content || p.content === '<p><br></p>')) return true;
+            if (p.mediaType === 'IMAGE' && !p.mediaUrl && !p.mediaFile) return true;
+            return false;
+          });
+          if (invalidPassage) {
+            return toast.error('Vui lòng nhập đầy đủ nội dung văn bản hoặc chọn hình ảnh cho các đoạn văn');
+          }
         }
         if (questions.length === 0) {
           return toast.error('Cần ít nhất 1 câu hỏi con');
@@ -136,6 +171,8 @@ export function UpdateQuestionDialog({
       await onSave(payload, isGroup);
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -217,9 +254,9 @@ export function UpdateQuestionDialog({
         </div>
 
         <SheetFooter className="px-6 py-4 border-t bg-muted/20 shrink-0 flex gap-2 sm:justify-end">
-          <Button variant="outline" className="h-11 rounded-md" onClick={onClose} disabled={isPending}>Hủy bỏ</Button>
-          <Button onClick={handleSave} disabled={isPending} className="min-w-[120px] h-11 rounded-md">
-            {isPending ? 'Đang lưu...' : (
+          <Button variant="outline" className="h-11 rounded-md" onClick={onClose} disabled={isPending || isSaving}>Hủy bỏ</Button>
+          <Button onClick={handleSave} disabled={isPending || isSaving} className="min-w-[120px] h-11 rounded-md">
+            {(isPending || isSaving) ? 'Đang xử lý...' : (
               <><Save className="w-4 h-4 mr-2" /> Lưu dữ liệu</>
             )}
           </Button>

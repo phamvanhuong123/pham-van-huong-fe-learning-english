@@ -1,6 +1,7 @@
 import { NavLink, useNavigate } from 'react-router';
 import { useState } from 'react';
 import { usePermission } from '@/hooks/usePermission';
+import { useDashboard } from '@/hooks/useDashboard';
 import { PERMISSIONS } from '@/config/rbacConfig';
 import { handleLogoutApi } from '@/services/authServices';
 import { toast } from 'sonner';
@@ -31,8 +32,8 @@ const NAV_GROUPS: NavGroup[] = [
   {
     title: 'Overview',
     items: [
-      { label: 'Dashboard', to: '/admin/dashboard', icon: <LayoutDashboard className="w-[18px] h-[18px]" /> },
-      { label: 'Activity & Logs', to: '/admin/notifications', icon: <Activity className="w-[18px] h-[18px]" />, permission: PERMISSIONS.ROLE_MANAGE },
+      { label: 'Tổng quan', to: '/admin/dashboard', icon: <LayoutDashboard className="w-[18px] h-[18px]" /> },
+      { label: 'Thông báo', to: '/admin/notifications', icon: <Activity className="w-[18px] h-[18px]" />, permission: PERMISSIONS.ROLE_MANAGE },
     ]
   },
   {
@@ -40,7 +41,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: 'Người dùng', to: '/admin/users', icon: <Users className="w-[18px] h-[18px]" />, permission: PERMISSIONS.USER_MANAGE },
       { label: 'Đăng ký VIP', to: '/admin/subscriptions', icon: <CreditCard className="w-[18px] h-[18px]" />, badgeKey: 'pendingSubscriptions', permission: PERMISSIONS.SUBSCRIPTION_MANAGE },
-      { label: 'Quản lý vai trò', to: '/admin/roles', icon: <UserCheck className="w-[18px] h-[18px]" />, permission: PERMISSIONS.ROLE_MANAGE },
+      // { label: 'Quản lý vai trò', to: '/admin/roles', icon: <UserCheck className="w-[18px] h-[18px]" />, permission: PERMISSIONS.ROLE_MANAGE },
     ]
   },
   {
@@ -83,7 +84,8 @@ function AdminSidebar({ onClose }: AdminSidebarProps) {
     }
   };
 
-  const pendingCount = 5; // Mock
+  const { data: dashboardData } = useDashboard();
+  const pendingCount = dashboardData?.stats?.pendingSubscriptions || 0;
   const getBadgeValue = (badgeKey?: string) => badgeKey === 'pendingSubscriptions' ? pendingCount : 0;
 
   return (

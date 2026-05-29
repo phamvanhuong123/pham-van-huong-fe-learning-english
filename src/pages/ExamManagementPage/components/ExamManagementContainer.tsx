@@ -14,10 +14,17 @@ import {
   useUpdateExam,
   useDeleteExam
 } from '@/hooks/queries/useExamQuery';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export function ExamManagementContainer() {
   const {
     searchTerm, setSearchTerm,
+    page, setPage,
+    limit,
+    partFilter, setPartFilter,
+    difficultyFilter, setDifficultyFilter,
+    typeFilter, setTypeFilter,
+    statusFilter, setStatusFilter,
     selectedIds, setSelectedIds,
     isDialogOpen, openAddDialog, openEditDialog, closeDialog, selectedExam,
     deletingExam, setDeletingExam,
@@ -87,39 +94,102 @@ export function ExamManagementContainer() {
     }
   };
 
-  const filteredExams = exams.filter(e =>
-    e.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredExams = exams.filter(e => {
+    const matchSearch = e.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchPart = partFilter === 'ALL' || e.part === partFilter;
+    const matchDifficulty = difficultyFilter === 'ALL' || e.difficulty === difficultyFilter;
+    const matchType = typeFilter === 'ALL' || e.type === typeFilter;
+    const matchStatus = statusFilter === 'ALL' || (statusFilter === 'PUBLISHED' ? e.isPublished : !e.isPublished);
+
+    return matchSearch && matchPart && matchDifficulty && matchType && matchStatus;
+  });
+
+  const totalItems = filteredExams.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / limit));
+  const paginatedExams = filteredExams.slice((page - 1) * limit, page * limit);
 
   return (
     <div className="space-y-4 h-full flex flex-col">
-      {/* Top Search and Add Controls */}
-      <div className="flex flex-col sm:flex-row gap-4 p-4 bg-zinc-50/50 dark:bg-zinc-900/20 rounded-xl border border-dashed mb-4 items-center justify-between">
-        <div className="relative w-full sm:max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
-          <Input
-            placeholder="Tìm kiếm đề thi..."
-            className="pl-9 h-10 bg-background focus-visible:ring-primary/20 transition-all"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+      {/* Top Controls */}
+      <div className="flex flex-col gap-4 p-4 bg-zinc-50/50 dark:bg-zinc-900/20 rounded-xl border border-dashed mb-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="relative w-full sm:max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
+            <Input
+              placeholder="Tìm kiếm đề thi..."
+              className="pl-9 h-10 bg-background focus-visible:ring-primary/20 transition-all"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+
+          <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+            <Button onClick={handleAdd} className="h-10 gap-2 w-full sm:w-auto shadow-md hover:shadow-lg transition-all bg-primary text-primary-foreground hover:bg-primary/95">
+              <Plus className="w-4 h-4" />
+              Thêm đề thi
+            </Button>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <Button variant="outline" size="icon" className="h-10 w-10 shrink-0">
-            <Filter className="w-4 h-4" />
-          </Button>
-          <Button onClick={handleAdd} className="h-10 gap-2 w-full sm:w-auto shadow-md hover:shadow-lg transition-all bg-primary text-primary-foreground hover:bg-primary/95">
-            <Plus className="w-4 h-4" />
-            Thêm đề thi
-          </Button>
+        {/* Filters */}
+        <div className="flex flex-wrap items-center gap-3">
+          <Select value={partFilter} onValueChange={setPartFilter}>
+            <SelectTrigger className="w-[140px] h-9">
+              <SelectValue placeholder="Phần thi" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">Tất cả phần thi</SelectItem>
+              <SelectItem value="PART1">Part 1</SelectItem>
+              <SelectItem value="PART2">Part 2</SelectItem>
+              <SelectItem value="PART3">Part 3</SelectItem>
+              <SelectItem value="PART4">Part 4</SelectItem>
+              <SelectItem value="PART5">Part 5</SelectItem>
+              <SelectItem value="PART6">Part 6</SelectItem>
+              <SelectItem value="PART7">Part 7</SelectItem>
+              <SelectItem value="FULL">Full Test</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={difficultyFilter} onValueChange={setDifficultyFilter}>
+            <SelectTrigger className="w-[130px] h-9">
+              <SelectValue placeholder="Độ khó" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">Mọi độ khó</SelectItem>
+              <SelectItem value="EASY">Dễ</SelectItem>
+              <SelectItem value="MEDIUM">Vừa</SelectItem>
+              <SelectItem value="HARD">Khó</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <SelectTrigger className="w-[130px] h-9">
+              <SelectValue placeholder="Loại đề" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">Mọi loại đề</SelectItem>
+              <SelectItem value="FREE">Miễn phí</SelectItem>
+              <SelectItem value="VIP">VIP</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-[140px] h-9">
+              <SelectValue placeholder="Trạng thái" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">Mọi trạng thái</SelectItem>
+              <SelectItem value="PUBLISHED">Đã công khai</SelectItem>
+              <SelectItem value="DRAFT">Bản nháp</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
       {/* Main Table */}
       <div className="flex-1 min-h-0 relative">
         <ExamTable
-          exams={filteredExams}
+          exams={paginatedExams}
           isLoading={isLoading}
           onEdit={handleEdit}
           onToggleStatus={handleToggleStatus}
@@ -155,6 +225,39 @@ export function ExamManagementContainer() {
           </div>
         )}
       </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 0 && (
+        <div className="flex items-center justify-between pt-2 border-t border-border/50 shrink-0">
+          <p className="text-sm text-muted-foreground">
+            Hiển thị <span className="font-medium text-foreground">{paginatedExams.length}</span> trên tổng số{' '}
+            <span className="font-medium text-foreground">{totalItems}</span> đề thi
+          </p>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPage(Math.max(1, page - 1))}
+              disabled={page === 1}
+              className="h-8 px-3"
+            >
+              Trang trước
+            </Button>
+            <div className="flex items-center justify-center min-w-[3rem] text-sm font-medium">
+              {page} / {totalPages}
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPage(Math.min(totalPages, page + 1))}
+              disabled={page === totalPages}
+              className="h-8 px-3"
+            >
+              Trang sau
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Form modal */}
       <ExamFormDialog

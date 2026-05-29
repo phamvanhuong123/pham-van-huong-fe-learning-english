@@ -57,12 +57,12 @@ authorizedAxiosInstance.interceptors.response.use((response) => {
             refreshTokenPromised = refreshTokenApi().then((res: any) => {
                 //Gán accessToken vào localStorage
                 // console.log('đã gọi refreshToken')
-                const { accessToken } = res.data
-
-                // Update Zustand store
+                const { accessToken, user } = res.data
                 const setAuth = useAuthStore.getState().setAuth
                 const currentUser = useAuthStore.getState().userInfo
-                if (currentUser) {
+                if (user) {
+                    setAuth(user, accessToken)
+                } else if (currentUser) {
                     setAuth(currentUser, accessToken)
                 }
 

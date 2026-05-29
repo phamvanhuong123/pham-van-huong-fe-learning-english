@@ -169,11 +169,7 @@ export function QuestionTable({
                     </TableCell>
                     <TableCell className="py-4">
                       <div className="max-w-[400px]">
-                        {q.passageGroupId && (
-                          <Badge variant="outline" className="mb-2 bg-indigo-500/5 text-indigo-600 border-indigo-500/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-tight flex items-center w-fit gap-1">
-                            <ListCollapse className="w-3 h-3" /> Thuộc nhóm đoạn văn
-                          </Badge>
-                        )}
+                        {/* Badge 'Thuộc nhóm đoạn văn' removed per user request */}
                         <p className="text-sm font-medium text-foreground truncate" title={q.questionText || "Câu hỏi không có text (Part 1/2)"}>
                           {q.questionText || <span className="italic text-muted-foreground">Không có văn bản câu hỏi</span>}
                         </p>

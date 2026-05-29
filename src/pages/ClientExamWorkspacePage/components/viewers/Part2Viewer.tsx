@@ -12,7 +12,7 @@ interface Part2ViewerProps {
 export const Part2Viewer: React.FC<Part2ViewerProps> = ({ passageGroup, question }) => {
   const { answers, selectAnswer, toggleBookmark, bookmarks } = useClientExamStore();
 
-  const audioPassage = passageGroup?.passages.find(p => p.mediaType === 'AUDIO' || p.mediaType === 'audio');
+  const audioPassage = passageGroup?.passages.find(p => p.mediaType === 'AUDIO' || p.mediaType === 'audio' || p.mediaType === 'VIDEO' || p.mediaType === 'video');
   const isBookmarked = bookmarks.includes(question.id);
 
   return (
@@ -39,13 +39,22 @@ export const Part2Viewer: React.FC<Part2ViewerProps> = ({ passageGroup, question
       </div>
 
       {audioPassage?.mediaUrl && (
-        <div className="mb-4 w-full bg-slate-50 p-1.5 rounded-lg border border-slate-100 shadow-inner">
-          <audio
-            controls
-            controlsList="nodownload noplaybackrate"
-            className="w-full outline-none custom-audio h-7"
-            src={audioPassage.mediaUrl}
-          />
+        <div className="mb-4 w-full bg-slate-50 p-1.5 rounded-lg border border-slate-100 shadow-inner overflow-hidden">
+          {audioPassage.mediaType?.toUpperCase() === 'VIDEO' ? (
+            <audio
+              controls
+              controlsList="nodownload noplaybackrate"
+              className="w-full"
+              src={audioPassage.mediaUrl}
+            />
+          ) : (
+            <audio
+              controls
+              controlsList="nodownload noplaybackrate"
+              className="w-full"
+              src={audioPassage.mediaUrl}
+            />
+          )}
         </div>
       )}
 
@@ -78,14 +87,7 @@ export const Part2Viewer: React.FC<Part2ViewerProps> = ({ passageGroup, question
               )}>
                 {opt.label}
               </div>
-              {opt.text && (
-                <span className={cn(
-                  "font-medium text-[12px]",
-                  isSelected ? "text-slate-900" : "text-slate-600"
-                )}>
-                  {opt.text}
-                </span>
-              )}
+              {/* Trong Part 2 thực tế không hiển thị text của đáp án */}
             </label>
           );
         })}
