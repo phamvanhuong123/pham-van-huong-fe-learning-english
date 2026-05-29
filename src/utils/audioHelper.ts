@@ -1,6 +1,6 @@
 const fallbackToTTS = (word: string) => {
   if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel(); // Hủy bài đọc cũ nếu đang chạy
+    window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(word);
     utterance.lang = 'en-US';
     utterance.rate = 0.9;

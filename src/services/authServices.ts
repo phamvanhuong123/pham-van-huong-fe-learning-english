@@ -2,9 +2,9 @@ import axios from 'axios';
 import type { LoginPayload, RegisterRequest } from '../types/auth.type';
 import { useAuthStore } from '../store/useAuthStore';
 
-const API_ROOT = import.meta.env.VITE_API_ROOT || 'http://localhost:5000/api/v1/auth';
+let API_ROOT = import.meta.env.VITE_API_ROOT || 'http://localhost:5000/api/v1';
 
-
+API_ROOT += '/auth';
 export const loginApi = async (data: LoginPayload) => {
     return await axios.post(`${API_ROOT}/login`, data, {
         withCredentials: true

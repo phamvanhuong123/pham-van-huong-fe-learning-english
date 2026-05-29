@@ -35,14 +35,14 @@ const LoginPage = () => {
     try {
       setIsLoading(true);
       const res = await loginApi({ email: data.email, password: data.password });
-      
+
       const { user, accessToken } = res.data;
-      
+
       // Lưu vào Zustand store (và localStorage qua persist)
       setAuth(user, accessToken);
-      
+
       toast.success('Đăng nhập thành công!');
-      
+
       if (user.role === "superAdmin" || user.role === "ADMIN" || data.email.includes("admin")) {
         console.log(user)
         navigate('/admin/dashboard');
@@ -70,12 +70,12 @@ const LoginPage = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 text-left">
           <div className="space-y-1">
             <Label htmlFor="email" className="font-semibold text-[10px] text-muted-foreground tracking-wide uppercase">Email</Label>
-            <Input 
-              id="email" 
-              type="email" 
-              placeholder="m@example.com" 
+            <Input
+              id="email"
+              type="email"
+              placeholder="m@example.com"
               className="h-9 bg-slate-50/50 dark:bg-slate-900/30 border-border/80 focus-visible:ring-primary/20 focus-visible:border-primary text-sm transition-all duration-150"
-              {...register('email')} 
+              {...register('email')}
             />
             {errors.email && <p className="text-[11px] text-destructive mt-0.5 font-medium">{errors.email.message}</p>}
           </div>
@@ -86,16 +86,16 @@ const LoginPage = () => {
                 Quên mật khẩu?
               </Link>
             </div>
-            <Input 
-              id="password" 
-              type="password" 
+            <Input
+              id="password"
+              type="password"
               className="h-9 bg-slate-50/50 dark:bg-slate-900/30 border-border/80 focus-visible:ring-primary/20 focus-visible:border-primary text-sm transition-all duration-150"
-              {...register('password')} 
+              {...register('password')}
             />
             {errors.password && <p className="text-[11px] text-destructive mt-0.5 font-medium">{errors.password.message}</p>}
           </div>
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-sm hover:scale-[1.01] active:scale-[0.99] transition-all duration-150 py-3.5 mt-2 rounded-md text-sm"
             disabled={isLoading}
           >
