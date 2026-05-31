@@ -1,15 +1,16 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { grammarService } from '@/services/grammarService';
-import type { CreateGrammarTopicInput, UpdateGrammarTopicInput } from '@/types/grammar.type';
+import type { CreateGrammarTopicInput, UpdateGrammarTopicInput, CreateGrammarQuestionInput, UpdateGrammarQuestionInput } from '@/types/grammar.type';
 
 export const grammarKeys = {
   all: ['grammar'] as const,
   adminTopics: (params?: any) => [...grammarKeys.all, 'admin', params] as const,
   adminTopic: (id: string) => [...grammarKeys.all, 'admin', id] as const,
+  topicQuestions: (topicId: string) => [...grammarKeys.all, 'admin', topicId, 'questions'] as const,
   clientTopics: () => [...grammarKeys.all, 'client'] as const,
 };
 
-// ─── ADMIN HOOKS ──────────────────────────────────────────────
+
 export const useGetAdminGrammarTopics = (params?: { page?: number; limit?: number; search?: string }) => {
   return useQuery({
     queryKey: grammarKeys.adminTopics(params),
@@ -39,7 +40,7 @@ export const useUpdateGrammarTopic = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateGrammarTopicInput }) => grammarService.updateTopic(id, data),
-    onSuccess: (data, variables) => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: grammarKeys.adminTopics() });
       queryClient.invalidateQueries({ queryKey: grammarKeys.adminTopic(variables.id) });
     },
@@ -52,6 +53,48 @@ export const useDeleteGrammarTopic = () => {
     mutationFn: (id: string) => grammarService.deleteTopic(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: grammarKeys.adminTopics() });
+    },
+  });
+};
+
+// ─── ADMIN QUESTION HOOKS ──────────────────────────────────────
+export const useGetTopicQuestions = (topicId: string) => {
+  return useQuery({
+    queryKey: grammarKeys.topicQuestions(topicId),
+    queryFn: () => grammarService.getTopicQuestions(topicId),
+    enabled: !!topicId,
+  });
+};
+
+export const useCreateGrammarQuestion = (topicId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateGrammarQuestionInput) => grammarService.createTopicQuestion(topicId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: grammarKeys.topicQuestions(topicId) });
+      queryClient.invalidateQueries({ queryKey: grammarKeys.adminTopics() }); // cập nhật _count
+    },
+  });
+};
+
+export const useUpdateGrammarQuestion = (topicId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ questionId, data }: { questionId: string; data: UpdateGrammarQuestionInput }) =>
+      grammarService.updateTopicQuestion(questionId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: grammarKeys.topicQuestions(topicId) });
+    },
+  });
+};
+
+export const useDeleteGrammarQuestion = (topicId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (questionId: string) => grammarService.deleteTopicQuestion(questionId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: grammarKeys.topicQuestions(topicId) });
+      queryClient.invalidateQueries({ queryKey: grammarKeys.adminTopics() }); // cập nhật _count
     },
   });
 };
@@ -87,3 +130,5 @@ export const useEndPracticeSession = () => {
     },
   });
 };
+
+

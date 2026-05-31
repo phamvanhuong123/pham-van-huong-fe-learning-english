@@ -6,9 +6,9 @@ import { PERMISSIONS } from '@/config/rbacConfig';
 import { handleLogoutApi } from '@/services/authServices';
 import { toast } from 'sonner';
 import {
-  LayoutDashboard, Users, UserCheck, CreditCard,
+  LayoutDashboard, Users, CreditCard,
   BookOpen, X, ShieldCheck, LogOut,
-  FileText, Trash2, Book, BookMarked,
+  FileText, Trash2, BookMarked,
   Activity
 } from 'lucide-react';
 import { cn } from '@/lib/utils';

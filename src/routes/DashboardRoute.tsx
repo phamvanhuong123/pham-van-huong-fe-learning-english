@@ -11,10 +11,12 @@ import AdminNotificationsPage from '@/pages/AdminNotificationsPage';
 import TrashManagerPage from '@/pages/TrashManagerPage';
 import AdminVocabPage from '@/pages/AdminVocabPage';
 import AdminGrammarPage from '@/pages/AdminGrammarPage';
+import AdminGrammarDetailPage from '@/pages/AdminGrammarDetailPage';
 import UserDetailPage from '@/pages/UserDetailPage';
 import AdminResultDetailPage from '@/pages/AdminResultDetailPage';
 import AdminLogsPage from '@/pages/AdminLogsPage';
 import { PERMISSIONS } from '@/config/rbacConfig';
+
 
 function DashboardRoute() {
   return (
@@ -55,6 +57,7 @@ function DashboardRoute() {
 
         <Route element={<ProtectedRoute requiredPermissions={[PERMISSIONS.GRAMMAR_MANAGE]} />}>
           <Route path="grammar" element={<AdminGrammarPage />} />
+          <Route path="grammar/:topicId" element={<AdminGrammarDetailPage />} />
         </Route>
 
         {/* Notifications and Trash could require specific permissions, but for now we can group them under SYSTEM or SUPERADMIN */}

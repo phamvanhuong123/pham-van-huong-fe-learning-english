@@ -41,6 +41,11 @@ export interface ResultRecord {
     difficulty: QuestionDifficulty;
     duration: number;
   };
+  grammarTopic?: {
+    id: string;
+    name: string;
+    slug: string;
+  };
 }
 
 export interface ResultPagination {
@@ -97,7 +102,7 @@ export interface ReviewPassageGroup {
 export interface ReviewDetailsResponse {
   id: string;
   title: string;
-  part: ExamPart;
+  part: ExamPart | null;
   duration: number;
   resultSummary: Omit<ResultRecord, 'userId' | 'examId' | 'status' | 'startedAt' | 'submittedAt' | 'exam'>;
   passageGroups: ReviewPassageGroup[];

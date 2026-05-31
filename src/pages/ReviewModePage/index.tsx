@@ -115,7 +115,7 @@ function ReviewModePage() {
       return sortedPassageGroups.map(pg => <ReviewPart34Viewer key={pg.id} passageGroup={pg} />);
     }
 
-    if (part === 'PART5') {
+    if (['PART5', 'GRAMMAR'].includes(part)) {
       return sortedQuestions.map(q => <ReviewPart5Viewer key={q.id} question={q} />);
     }
 
