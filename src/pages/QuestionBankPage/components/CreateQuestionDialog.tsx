@@ -234,7 +234,7 @@ export function CreateQuestionDialog({
           </SheetDescription>
         </SheetHeader>
 
-        {/* TAB BAR - Chỉ hiện ở step 2 */}
+        {/* TAB BAR*/}
         {step === 2 && (
           <div className="flex border-b bg-card shrink-0 px-6">
             <button

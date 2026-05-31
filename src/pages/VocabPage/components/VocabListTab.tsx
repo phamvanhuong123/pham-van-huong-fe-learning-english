@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import VocabStatsBar from './VocabStatsBar';
 import VocabFilters from './VocabFilters';
 import VocabTable from './VocabTable';
 import VocabModal from './VocabModal';
@@ -67,11 +66,6 @@ export default function VocabListTab() {
 
   return (
     <div className="space-y-6">
-      <VocabStatsBar
-        activeStatus={status}
-        onStatusClick={setStatus}
-      />
-
       <div className="bg-card rounded-lg shadow-sm border p-6">
         <VocabFilters
           search={search}

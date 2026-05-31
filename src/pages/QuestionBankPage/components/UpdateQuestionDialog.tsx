@@ -44,7 +44,6 @@ export function UpdateQuestionDialog({
   const [examId, setExamId] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'form' | 'preview'>('form');
 
-  // Data State
   const [passages, setPassages] = useState<any[]>([]);
   const [questions, setQuestions] = useState<any[]>([]);
 
@@ -74,15 +73,13 @@ export function UpdateQuestionDialog({
     if (isOpen && initialData) {
       setActiveTab('form');
       
-      // Check if it's a group (has passages array but no questions array means it's the shallow pGroup from table)
-      // Or check if initialData has an examId but no questionText (meaning it's a group)
       const isGroupData = initialData.passages !== undefined || initialData.type !== undefined;
 
       if (isGroupData) {
-        // Fetch full detail for group
+  
         fetchGroupData(initialData.id);
       } else {
-        // Standalone question
+    
         setExamId(initialData.examId);
         setPassages([]);
         setQuestions([initialData]);

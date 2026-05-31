@@ -5,10 +5,14 @@ import { getReviewDetailsApi } from '@/services/resultService';
 import { useResultStore } from '@/store/useResultStore';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
-import { ReviewQuestionList } from './components/ReviewQuestionList';
 import { ReviewQuestionPalette } from './components/ReviewQuestionPalette';
 import { ExamToolbar } from '@/pages/ClientExamWorkspacePage/components/ExamToolbar';
 
+import { ReviewPart1Viewer } from './components/viewers/ReviewPart1Viewer';
+import { ReviewPart2Viewer } from './components/viewers/ReviewPart2Viewer';
+import { ReviewPart34Viewer } from './components/viewers/ReviewPart34Viewer';
+import { ReviewPart5Viewer } from './components/viewers/ReviewPart5Viewer';
+import { ReviewPart67Viewer } from './components/viewers/ReviewPart67Viewer';
 function ReviewModePage() {
   const { resultId } = useParams<{ resultId: string }>();
   const navigate = useNavigate();
@@ -46,7 +50,7 @@ function ReviewModePage() {
     const groups: Record<string, { passageGroups: typeof currentReview.passageGroups, questions: typeof currentReview.questions }> = {};
 
     currentReview.passageGroups.forEach(pg => {
-      const part = pg.part || 'OTHER';
+      const part = pg.questions[0]?.part || 'OTHER';
       if (!groups[part]) groups[part] = { passageGroups: [], questions: [] };
       groups[part].passageGroups.push(pg);
     });
@@ -81,8 +85,46 @@ function ReviewModePage() {
 
   const { title, resultSummary } = currentReview;
 
-  const currentPassageGroups = groupedData?.[activePart]?.passageGroups || [];
-  const currentQuestions = groupedData?.[activePart]?.questions || [];
+
+
+  const renderPartViewers = () => {
+    if (!groupedData || !activePart || !groupedData[activePart]) return null;
+
+    const data = groupedData[activePart];
+    const part = activePart;
+
+    // Sắp xếp các cụm passage dựa theo thứ tự câu hỏi đầu tiên
+    const sortedPassageGroups = [...data.passageGroups].sort((a, b) => {
+      const aOrder = a.questions[0]?.order || 0;
+      const bOrder = b.questions[0]?.order || 0;
+      return aOrder - bOrder;
+    });
+
+    // Sắp xếp các câu hỏi riêng lẻ (Part 5)
+    const sortedQuestions = [...data.questions].sort((a, b) => a.order - b.order);
+
+    if (['PART1', 'PART2'].includes(part)) {
+      const Viewer = part === 'PART1' ? ReviewPart1Viewer : ReviewPart2Viewer;
+      return sortedPassageGroups.map(pg => {
+        const pgQs = [...pg.questions].sort((a, b) => a.order - b.order);
+        return pgQs.map(q => <Viewer key={q.id} passageGroup={pg} question={q} />);
+      });
+    }
+
+    if (['PART3', 'PART4'].includes(part)) {
+      return sortedPassageGroups.map(pg => <ReviewPart34Viewer key={pg.id} passageGroup={pg} />);
+    }
+
+    if (part === 'PART5') {
+      return sortedQuestions.map(q => <ReviewPart5Viewer key={q.id} question={q} />);
+    }
+
+    if (['PART6', 'PART7'].includes(part)) {
+      return sortedPassageGroups.map(pg => <ReviewPart67Viewer key={pg.id} passageGroup={pg} part={part} />);
+    }
+
+    return <div>Unsupported Part format: {part}</div>;
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
@@ -128,14 +170,14 @@ function ReviewModePage() {
       <main className="flex-1 container mx-auto px-4 py-6 flex gap-6 items-start relative">
 
         {/* Left: Questions & Passages */}
-        <div className="flex-1 min-w-0">
-          <ReviewQuestionList passageGroups={currentPassageGroups} standaloneQuestions={currentQuestions} />
+        <div className="flex-1 min-w-0 max-w-5xl mx-auto xl:max-w-none">
+          {renderPartViewers()}
         </div>
 
         {/* Right: Navigation Palette */}
         <div className="w-80 shrink-0 hidden lg:block sticky top-[100px]">
-          <ReviewQuestionPalette 
-            questions={allQuestions} 
+          <ReviewQuestionPalette
+            questions={allQuestions}
             activePart={activePart}
             onNavigateToPart={(p) => setActivePart(p)}
           />

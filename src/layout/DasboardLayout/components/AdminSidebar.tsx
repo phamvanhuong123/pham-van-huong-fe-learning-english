@@ -49,7 +49,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: 'Quản lý đề thi', to: '/admin/exams', icon: <FileText className="w-[18px] h-[18px]" />, permission: PERMISSIONS.EXAM_MANAGE },
       { label: 'Ngân hàng câu hỏi', to: '/admin/questions', icon: <BookOpen className="w-[18px] h-[18px]" />, permission: PERMISSIONS.QUESTION_MANAGE },
-      { label: 'Thư viện từ vựng', to: '/admin/vocab', icon: <Book className="w-[18px] h-[18px]" />, permission: PERMISSIONS.VOCAB_MANAGE },
+      // { label: 'Thư viện từ vựng', to: '/admin/vocab', icon: <Book className="w-[18px] h-[18px]" />, permission: PERMISSIONS.VOCAB_MANAGE },
       { label: 'Quản lý ngữ pháp', to: '/admin/grammar', icon: <BookMarked className="w-[18px] h-[18px]" />, permission: PERMISSIONS.GRAMMAR_MANAGE },
     ]
   },

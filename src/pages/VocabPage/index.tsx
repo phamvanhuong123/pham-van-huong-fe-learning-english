@@ -1,8 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import VocabListTab from './components/VocabListTab';
 import FlashcardTab from './components/FlashcardTab';
-import VocabInContextTab from './components/VocabInContextTab';
-import { BookOpen, Layers, MessageSquareText } from 'lucide-react';
+import { BookOpen, Layers } from 'lucide-react';
 
 function VocabPage() {
   return (
@@ -20,9 +19,6 @@ function VocabPage() {
           <TabsTrigger value="flashcard" className="flex items-center gap-2 px-6">
             <Layers className="h-4 w-4" /> Ôn tập Flashcard
           </TabsTrigger>
-          <TabsTrigger value="context" className="flex items-center gap-2 px-6">
-            <MessageSquareText className="h-4 w-4" /> Học qua ngữ cảnh
-          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="list" className="m-0">
@@ -33,9 +29,6 @@ function VocabPage() {
           <FlashcardTab />
         </TabsContent>
 
-        <TabsContent value="context" className="m-0 mt-6">
-          <VocabInContextTab />
-        </TabsContent>
       </Tabs>
     </div>
   );

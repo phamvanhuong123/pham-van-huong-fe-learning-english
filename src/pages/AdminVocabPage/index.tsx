@@ -16,7 +16,7 @@ export default function AdminVocabPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [editingVocab, setEditingVocab] = useState<Vocab | null>(null);
-  
+
   const [confirmState, setConfirmState] = useState<{
     isOpen: boolean;
     vocabId: string | null;
@@ -74,7 +74,7 @@ export default function AdminVocabPage() {
 
       <div className="bg-card rounded-xl shadow-sm border overflow-hidden flex flex-col h-full">
         <div className="bg-zinc-50/50 dark:bg-zinc-900/20 p-4 border-b border-dashed">
-          <VocabFilters 
+          <VocabFilters
             search={search}
             setSearch={setSearch}
             status={status}
@@ -85,26 +85,26 @@ export default function AdminVocabPage() {
             onImportClick={handleImportClick}
           />
         </div>
-        
+
         <div className="p-4 flex-1">
-          <VocabTable 
-            vocabs={vocabsData?.data || []} 
-            isLoading={isLoading} 
+          <VocabTable
+            vocabs={vocabsData?.data || []}
+            isLoading={isLoading}
             onEdit={handleEditClick}
             onDelete={handleDeleteClick}
           />
         </div>
       </div>
 
-      <VocabModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        vocab={editingVocab} 
+      <VocabModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        vocab={editingVocab}
       />
 
-      <AdminVocabImportModal 
-        isOpen={isImportModalOpen} 
-        onClose={() => setIsImportModalOpen(false)} 
+      <AdminVocabImportModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
       />
 
       <ConfirmDialog
