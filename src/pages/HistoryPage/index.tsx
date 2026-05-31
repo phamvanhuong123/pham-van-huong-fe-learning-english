@@ -77,13 +77,19 @@ function HistoryPage() {
                         <TableCell className="font-medium text-gray-900">
                           {record.submittedAt ? format(new Date(record.submittedAt), 'dd/MM/yyyy HH:mm', { locale: vi }) : 'N/A'}
                         </TableCell>
-                        <TableCell className="max-w-50 truncate" title={record.exam?.title}>
-                          {record.exam?.title || 'Unknown Exam'}
+                        <TableCell className="max-w-50 truncate" title={record.exam?.title || record.grammarTopic?.name}>
+                          {record.exam?.title || record.grammarTopic?.name || 'Unknown Exam'}
                         </TableCell>
                         <TableCell>
-                          <Badge variant="outline" className="bg-white">
-                            {record.exam?.part === 'FULL' ? 'Full Test' : record.exam?.part}
-                          </Badge>
+                          {record.grammarTopic ? (
+                            <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                              Ngữ pháp
+                            </Badge>
+                          ) : (
+                            <Badge variant="outline" className="bg-white">
+                              {record.exam?.part === 'FULL' ? 'Full Test' : record.exam?.part}
+                            </Badge>
+                          )}
                         </TableCell>
                         <TableCell className="text-center">
                           {record.isFullTest ? (

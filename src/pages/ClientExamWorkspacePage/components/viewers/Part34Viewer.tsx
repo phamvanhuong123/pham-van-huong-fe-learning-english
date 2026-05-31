@@ -11,7 +11,7 @@ interface Part34ViewerProps {
 export const Part34Viewer: React.FC<Part34ViewerProps> = ({ passageGroup }) => {
   const { answers, selectAnswer, toggleBookmark, bookmarks } = useClientExamStore();
 
-  const audioPassage = passageGroup.passages.find(p => p.mediaType === 'AUDIO' || p.mediaType === 'audio');
+  const audioPassage = passageGroup?.passages.find(p => p.mediaType === 'AUDIO' || p.mediaType === 'audio' || p.mediaType === 'VIDEO' || p.mediaType === 'video');
   const imagePassage = passageGroup.passages.find(p => p.mediaType === 'IMAGE' || p.mediaType === 'image');
 
   // Lấy ra danh sách các câu hỏi trong nhóm này (ví dụ: 32-34)
@@ -35,13 +35,22 @@ export const Part34Viewer: React.FC<Part34ViewerProps> = ({ passageGroup }) => {
         )}
 
         {audioPassage?.mediaUrl && (
-          <div className="max-w-sm mx-auto w-full bg-slate-50 p-1 rounded-lg border border-slate-100 shadow-inner">
-            <audio
-              controls
-              controlsList="nodownload noplaybackrate"
-              className="w-full outline-none custom-audio h-6"
-              src={audioPassage.mediaUrl}
-            />
+          <div className="max-w-sm mx-auto w-full bg-slate-50 p-1 rounded-lg border border-slate-100 shadow-inner overflow-hidden">
+            {audioPassage.mediaType?.toUpperCase() === 'VIDEO' ? (
+              <audio
+                controls
+                controlsList="nodownload noplaybackrate"
+                className="w-full"
+                src={audioPassage.mediaUrl}
+              />
+            ) : (
+              <audio
+                controls
+                controlsList="nodownload noplaybackrate"
+                className="w-full"
+                src={audioPassage.mediaUrl}
+              />
+            )}
           </div>
         )}
       </div>

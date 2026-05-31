@@ -23,6 +23,12 @@ export interface Vocab {
   createdAt: string;
   updatedAt: string;
   schedule?: VocabSchedule;
+  previewIntervals?: {
+    again: string;
+    hard: string;
+    good: string;
+    easy: string;
+  };
 }
 
 export interface CreateVocabDto {

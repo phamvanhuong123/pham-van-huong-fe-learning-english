@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { useGetAdminGrammarTopics, useDeleteGrammarTopic } from '@/hooks/queries/useGrammarQuery';
 import type { GrammarTopic } from '@/types/grammar.type';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Search, Edit2, Trash2, BookOpen } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, BookOpen, Eye } from 'lucide-react';
 import { TopicModal } from './components/TopicModal';
 import { toast } from 'sonner';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
@@ -14,6 +15,7 @@ import { AdminEmptyState } from '@/components/admin/AdminEmptyState';
 import { AdminTableLoading } from '@/components/admin/AdminTableLoading';
 
 function AdminGrammarPage() {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTopic, setEditingTopic] = useState<GrammarTopic | null>(null);
@@ -121,7 +123,11 @@ function AdminGrammarPage() {
                           <MoreVertical className="w-4 h-4 text-muted-foreground" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-40">
+                      <DropdownMenuContent align="end" className="w-44">
+                        <DropdownMenuItem onClick={() => navigate(`/admin/grammar/${topic.id}`)} className="cursor-pointer">
+                          <Eye className="w-4 h-4 mr-2 text-primary" /> Xem câu hỏi
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => handleEdit(topic)} className="cursor-pointer">
                           <Edit2 className="w-4 h-4 mr-2 text-blue-500" /> Chỉnh sửa
                         </DropdownMenuItem>

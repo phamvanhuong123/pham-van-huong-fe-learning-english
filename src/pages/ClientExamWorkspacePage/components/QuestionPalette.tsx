@@ -47,7 +47,7 @@ export const QuestionPalette: React.FC<QuestionPaletteProps> = ({ questions, act
   const progressPercent = questions.length > 0 ? (answeredCount / questions.length) * 100 : 0;
 
   return (
-    <div className="bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 sticky top-20 flex flex-col h-[calc(100vh-6.5rem)] overflow-hidden">
+    <div className="bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 flex flex-col h-[calc(100vh-140px)] overflow-hidden">
       
       {/* Top Header Section */}
       <div className="p-3 border-b border-slate-100 flex-shrink-0 bg-slate-50/50">

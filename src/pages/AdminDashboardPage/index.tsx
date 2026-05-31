@@ -28,23 +28,23 @@ function AdminDashboardPage() {
       ) : (
         <div className="grid gap-6 md:grid-cols-3">
           <StatsCard 
-            title="Total Users" 
+            title="Tổng số người dùng" 
             value={data?.stats?.totalUsers?.toLocaleString() || 0} 
             icon={Users} 
-            description="Active accounts in system"
+            description="Tài khoản đang hoạt động"
             trend="+12%"
           />
           <StatsCard 
-            title="Published Exams" 
+            title="Đề thi đã phát hành" 
             value={data?.stats?.totalExams?.toLocaleString() || 0} 
             icon={FileText} 
-            description="Available for testing"
+            description="Đang mở cho học viên"
           />
           <StatsCard 
-            title="Total Submissions" 
+            title="Lượt làm bài" 
             value={data?.stats?.totalResults?.toLocaleString() || 0} 
             icon={CheckCircle} 
-            description="Completed exams by users"
+            description="Tổng bài thi đã hoàn thành"
             trend="+5%"
           />
         </div>

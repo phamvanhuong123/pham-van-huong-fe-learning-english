@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { toast } from 'sonner';
 
 const forgotPasswordSchema = z.object({
   email: z.string().email("Email không hợp lệ"),
@@ -32,7 +33,7 @@ const ForgotPasswordPage = () => {
       setSuccessMsg("Một link đặt lại mật khẩu đã được gửi đến email của bạn. Vui lòng kiểm tra hộp thư.");
     },
     onError: (error: any) => {
-      // toast error is handled by axios interceptor usually, or we can handle here
+      toast.error(error?.response?.data?.message || 'Có lỗi xảy ra, vui lòng thử lại sau.');
     }
   });
 

@@ -55,3 +55,34 @@ export interface CreateGrammarTopicInput {
 }
 
 export interface UpdateGrammarTopicInput extends Partial<CreateGrammarTopicInput> {}
+
+// ─── Admin Grammar Question Types ─────────────────────────────────
+export interface AdminGrammarQuestionOption {
+  id: string;
+  label: 'A' | 'B' | 'C' | 'D';
+  text: string;
+  isCorrect: boolean;
+}
+
+export interface AdminGrammarQuestion {
+  id: string;
+  questionText: string | null;
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD';
+  explanation: string | null;
+  order: number;
+  options: AdminGrammarQuestionOption[];
+}
+
+export interface CreateGrammarQuestionInput {
+  questionText: string;
+  difficulty?: 'EASY' | 'MEDIUM' | 'HARD';
+  explanation?: string | null;
+  options: {
+    label: 'A' | 'B' | 'C' | 'D';
+    text: string;
+    isCorrect: boolean;
+  }[];
+}
+
+export interface UpdateGrammarQuestionInput extends Partial<CreateGrammarQuestionInput> {}
+

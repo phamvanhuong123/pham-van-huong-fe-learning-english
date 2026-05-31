@@ -1,9 +1,8 @@
-import { Bell, Check, Trash2, Clock } from 'lucide-react';
+import { Bell, Check, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useNotifications, useMarkAsRead, useMarkAllAsRead } from '@/hooks/queries/useNotificationQuery';
@@ -30,20 +29,20 @@ export function NotificationBell() {
         <Button variant="ghost" size="icon" className="relative rounded-full hover:bg-muted">
           <Bell className="h-5 w-5 text-muted-foreground" />
           {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white shadow-sm">
+            <span className="absolute top-0 right-0 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white shadow-sm ring-2 ring-background border-none">
               {unreadCount > 99 ? '99+' : unreadCount}
             </span>
           )}
         </Button>
       </DropdownMenuTrigger>
-      
+
       <DropdownMenuContent align="end" className="w-[380px] p-0 shadow-lg border-muted">
         <div className="flex items-center justify-between border-b px-4 py-3 bg-muted/20">
           <h3 className="font-semibold text-sm">Thông báo</h3>
           {unreadCount > 0 && (
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               className="text-xs h-7 text-primary hover:text-primary/80 px-2"
               onClick={() => markAllAsRead.mutate()}
             >

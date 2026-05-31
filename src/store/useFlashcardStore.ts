@@ -2,14 +2,13 @@ import { create } from 'zustand';
 import type { Vocab } from '@/types/vocab.type';
 
 interface FlashcardStore {
-  sessionId: string | null;
   cards: Vocab[];
   currentIndex: number;
   isFlipped: boolean;
   completedCount: number;
   isSessionActive: boolean;
 
-  setSession: (sessionId: string, cards: Vocab[]) => void;
+  setSession: (cards: Vocab[]) => void;
   flipCard: () => void;
   nextCard: () => void;
   requeueCard: (card: Vocab) => void;
@@ -18,15 +17,13 @@ interface FlashcardStore {
 }
 
 export const useFlashcardStore = create<FlashcardStore>((set) => ({
-  sessionId: null,
   cards: [],
   currentIndex: 0,
   isFlipped: false,
   completedCount: 0,
   isSessionActive: false,
 
-  setSession: (sessionId, cards) => set({
-    sessionId,
+  setSession: (cards) => set({
     cards,
     currentIndex: 0,
     isFlipped: false,
@@ -49,13 +46,16 @@ export const useFlashcardStore = create<FlashcardStore>((set) => ({
     };
   }),
 
-  requeueCard: (card) => set((state) => ({
-    cards: [...state.cards, card],
-    isSessionActive: true
-  })),
+  requeueCard: (card) => set((state) => {
+    // Để mô phỏng "Learning Step" của Anki, ta đẩy thẻ bị sai (Lại) xuống cuối hàng đợi
+    // thay vì cho nó hiện ngay lập tức
+    return {
+      cards: [...state.cards, card],
+      isSessionActive: true
+    };
+  }),
 
   endSession: () => set({
-    sessionId: null,
     cards: [],
     currentIndex: 0,
     isFlipped: false,

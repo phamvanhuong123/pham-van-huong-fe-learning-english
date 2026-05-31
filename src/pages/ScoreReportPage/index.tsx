@@ -79,7 +79,7 @@ function ScoreReportPage() {
 
         {/* Exam Title */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">{exam?.title || 'Đề thi TOEIC'}</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{exam?.title || currentResult.grammarTopic?.name || 'Đề thi TOEIC'}</h1>
           <div className="text-gray-500 flex items-center gap-4 flex-wrap">
             <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> {timeString}</span>
             <span className="flex items-center gap-1"><CheckCircle className="w-4 h-4" /> {correctQ}/{totalQ} câu đúng</span>

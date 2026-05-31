@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { AlertTriangle, CheckCircle } from 'lucide-react';
 
 const resetPasswordSchema = z.object({
-  newPassword: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+  newPassword: z.string().min(8, "Mật khẩu phải có ít nhất 8 ký tự").regex(/\d/, "Mật khẩu phải chứa ít nhất 1 chữ số"),
   confirmPassword: z.string()
 }).refine(data => data.newPassword === data.confirmPassword, {
   message: "Mật khẩu xác nhận không khớp",

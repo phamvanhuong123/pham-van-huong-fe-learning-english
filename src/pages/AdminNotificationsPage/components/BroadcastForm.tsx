@@ -73,36 +73,18 @@ export function BroadcastForm() {
               {errors.body && <p className="text-sm text-rose-500">{errors.body.message}</p>}
             </div>
 
-            <div className="grid grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="font-semibold text-foreground">Loại thông báo</Label>
-                <Select value={watch('type')} onValueChange={(val) => setValue('type', val)}>
-                  <SelectTrigger className="focus:ring-primary/20 transition-all">
-                    <SelectValue placeholder="Chọn loại..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SYSTEM">Hệ thống (SYSTEM)</SelectItem>
-                    <SelectItem value="SUBSCRIPTION">Gói cước (SUBSCRIPTION)</SelectItem>
-                    <SelectItem value="EXAM_REMINDER">Nhắc nhở thi (EXAM_REMINDER)</SelectItem>
-                    <SelectItem value="VOCAB_REMINDER">Nhắc từ vựng (VOCAB_REMINDER)</SelectItem>
-                    <SelectItem value="STREAK_REMINDER">Nhắc chuỗi (STREAK_REMINDER)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label className="font-semibold text-foreground">Đối tượng nhận</Label>
-                <Select value={watch('targetRole')} onValueChange={(val) => setValue('targetRole', val)}>
-                  <SelectTrigger className="focus:ring-primary/20 transition-all">
-                    <SelectValue placeholder="Chọn đối tượng..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="ALL">Tất cả người dùng (ALL)</SelectItem>
-                    <SelectItem value="STANDARD">Tài khoản thường (STANDARD)</SelectItem>
-                    <SelectItem value="VIP">Tài khoản VIP (VIP)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="space-y-2">
+              <Label className="font-semibold text-foreground">Đối tượng nhận</Label>
+              <Select value={watch('targetRole')} onValueChange={(val) => setValue('targetRole', val)}>
+                <SelectTrigger className="focus:ring-primary/20 transition-all">
+                  <SelectValue placeholder="Chọn đối tượng..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ALL">Tất cả người dùng (ALL)</SelectItem>
+                  <SelectItem value="STANDARD">Tài khoản thường (STANDARD)</SelectItem>
+                  <SelectItem value="VIP">Tài khoản VIP (VIP)</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </CardContent>
           <CardFooter className="bg-muted/10 py-5 border-t border-dashed">

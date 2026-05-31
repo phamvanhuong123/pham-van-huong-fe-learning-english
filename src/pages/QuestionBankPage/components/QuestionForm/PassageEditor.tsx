@@ -39,15 +39,14 @@ export function PassageEditor({ part, passages, setPassages }: PassageEditorProp
                 const newP = [...passages];
                 newP[pIdx].mediaType = v;
                 setPassages(newP);
-              }} disabled={part === 'PART6'}>
+              }}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {part === 'PART1' && <SelectItem value="VIDEO">Video (chứa ảnh + tiếng)</SelectItem>}
-                  {['PART6', 'PART7'].includes(part) && <SelectItem value="TEXT">Văn bản</SelectItem>}
-                  {['PART2', 'PART3', 'PART4'].includes(part) && <SelectItem value="AUDIO">Âm thanh</SelectItem>}
-                  {['PART7'].includes(part) && <SelectItem value="IMAGE">Hình ảnh</SelectItem>}
+                  {['PART1', 'PART6', 'PART7'].includes(part) && <SelectItem value="TEXT">Văn bản</SelectItem>}
+                  {['PART1', 'PART2', 'PART3', 'PART4'].includes(part) && <SelectItem value="AUDIO">Âm thanh</SelectItem>}
+                  {['PART1', 'PART6', 'PART7'].includes(part) && <SelectItem value="IMAGE">Hình ảnh</SelectItem>}
                   {['PART2', 'PART3', 'PART4'].includes(part) && <SelectItem value="VIDEO">Video</SelectItem>}
                 </SelectContent>
               </Select>
@@ -84,7 +83,7 @@ export function PassageEditor({ part, passages, setPassages }: PassageEditorProp
             )}
           </div>
 
-          {(p.mediaType === 'TEXT' || part === 'PART6' || part === 'PART7') && (
+          {p.mediaType === 'TEXT' && (
             <div className="space-y-2">
               <Label>Nội dung đoạn văn</Label>
               <ReactQuill
