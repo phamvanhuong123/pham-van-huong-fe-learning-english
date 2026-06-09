@@ -1,11 +1,11 @@
-import { useDashboard } from '@/hooks/useDashboard';
-import { StatsCard } from './components/StatsCard';
-import { OverviewChart } from './components/OverviewChart';
-import { Users, FileText, CheckCircle, Activity } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { useDashboard } from '@/hooks/useDashboard'
+import { StatsCard } from './components/StatsCard'
+import { OverviewChart } from './components/OverviewChart'
+import { Users, FileText, CheckCircle, Activity } from 'lucide-react'
+import { Skeleton } from '@/components/ui/skeleton'
 
 function AdminDashboardPage() {
-  const { data, isLoading, error } = useDashboard();
+  const { data, isLoading, error } = useDashboard()
 
   if (error) {
     return (
@@ -14,7 +14,7 @@ function AdminDashboardPage() {
         <h3 className="text-lg font-semibold">Đã xảy ra lỗi</h3>
         <p>Lỗi khi tải dữ liệu trang tổng quan.</p>
       </div>
-    );
+    )
   }
 
   return (
@@ -27,23 +27,23 @@ function AdminDashboardPage() {
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-3">
-          <StatsCard 
-            title="Tổng số người dùng" 
-            value={data?.stats?.totalUsers?.toLocaleString() || 0} 
-            icon={Users} 
+          <StatsCard
+            title="Tổng số người dùng"
+            value={data?.stats?.totalUsers?.toLocaleString() || 0}
+            icon={Users}
             description="Tài khoản đang hoạt động"
             trend="+12%"
           />
-          <StatsCard 
-            title="Đề thi đã phát hành" 
-            value={data?.stats?.totalExams?.toLocaleString() || 0} 
-            icon={FileText} 
+          <StatsCard
+            title="Đề thi đã phát hành"
+            value={data?.stats?.totalExams?.toLocaleString() || 0}
+            icon={FileText}
             description="Đang mở cho học viên"
           />
-          <StatsCard 
-            title="Lượt làm bài" 
-            value={data?.stats?.totalResults?.toLocaleString() || 0} 
-            icon={CheckCircle} 
+          <StatsCard
+            title="Lượt làm bài"
+            value={data?.stats?.totalResults?.toLocaleString() || 0}
+            icon={CheckCircle}
             description="Tổng bài thi đã hoàn thành"
             trend="+5%"
           />
@@ -58,7 +58,7 @@ function AdminDashboardPage() {
         )}
       </div>
     </div>
-  );
+  )
 }
 
-export default AdminDashboardPage;
+export default AdminDashboardPage

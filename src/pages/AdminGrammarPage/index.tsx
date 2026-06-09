@@ -1,68 +1,83 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router';
-import { useGetAdminGrammarTopics, useDeleteGrammarTopic } from '@/hooks/queries/useGrammarQuery';
-import type { GrammarTopic } from '@/types/grammar.type';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Search, Edit2, Trash2, BookOpen, Eye } from 'lucide-react';
-import { TopicModal } from './components/TopicModal';
-import { toast } from 'sonner';
-import { ConfirmDialog } from '@/components/common/ConfirmDialog';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { MoreVertical } from 'lucide-react';
-import { AdminEmptyState } from '@/components/admin/AdminEmptyState';
-import { AdminTableLoading } from '@/components/admin/AdminTableLoading';
+import { useState } from 'react'
+import { useNavigate } from 'react-router'
+import { useGetAdminGrammarTopics, useDeleteGrammarTopic } from '@/hooks/queries/useGrammarQuery'
+import type { GrammarTopic } from '@/types/grammar.type'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { Plus, Search, Edit2, Trash2, BookOpen, Eye } from 'lucide-react'
+import { TopicModal } from './components/TopicModal'
+import { toast } from 'sonner'
+import { ConfirmDialog } from '@/components/common/ConfirmDialog'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu'
+import { MoreVertical } from 'lucide-react'
+import { AdminEmptyState } from '@/components/admin/AdminEmptyState'
+import { AdminTableLoading } from '@/components/admin/AdminTableLoading'
 
 function AdminGrammarPage() {
-  const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingTopic, setEditingTopic] = useState<GrammarTopic | null>(null);
-  
-  const [confirmState, setConfirmState] = useState<{
-    isOpen: boolean;
-    topicId: string | null;
-    topicName: string;
-  }>({ isOpen: false, topicId: null, topicName: '' });
+  const navigate = useNavigate()
+  const [searchTerm, setSearchTerm] = useState('')
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingTopic, setEditingTopic] = useState<GrammarTopic | null>(null)
 
-  const { data, isLoading } = useGetAdminGrammarTopics({ search: searchTerm, limit: 100 });
-  const deleteTopic = useDeleteGrammarTopic();
+  const [confirmState, setConfirmState] = useState<{
+    isOpen: boolean
+    topicId: string | null
+    topicName: string
+  }>({ isOpen: false, topicId: null, topicName: '' })
+
+  const { data, isLoading } = useGetAdminGrammarTopics({ search: searchTerm, limit: 100 })
+  const deleteTopic = useDeleteGrammarTopic()
 
   const handleCreate = () => {
-    setEditingTopic(null);
-    setIsModalOpen(true);
-  };
+    setEditingTopic(null)
+    setIsModalOpen(true)
+  }
 
   const handleEdit = (topic: GrammarTopic) => {
-    setEditingTopic(topic);
-    setIsModalOpen(true);
-  };
+    setEditingTopic(topic)
+    setIsModalOpen(true)
+  }
 
   const handleDelete = (id: string, name: string) => {
-    setConfirmState({ isOpen: true, topicId: id, topicName: name });
-  };
+    setConfirmState({ isOpen: true, topicId: id, topicName: name })
+  }
 
   const executeDelete = () => {
-    if (!confirmState.topicId) return;
+    if (!confirmState.topicId) return
     deleteTopic.mutate(confirmState.topicId, {
       onSuccess: () => {
-        toast.success('Đã xóa chủ đề');
-        setConfirmState({ isOpen: false, topicId: null, topicName: '' });
+        toast.success('Đã xóa chủ đề')
+        setConfirmState({ isOpen: false, topicId: null, topicName: '' })
       },
       onError: () => {
-        toast.error('Không thể xóa chủ đề này');
-        setConfirmState({ isOpen: false, topicId: null, topicName: '' });
-      }
-    });
-  };
+        toast.error('Không thể xóa chủ đề này')
+        setConfirmState({ isOpen: false, topicId: null, topicName: '' })
+      },
+    })
+  }
 
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Quản lý Ngữ pháp</h1>
-          <p className="text-sm text-muted-foreground mt-1">Danh sách các chủ đề ngữ pháp trên hệ thống.</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Danh sách các chủ đề ngữ pháp trên hệ thống.
+          </p>
         </div>
         <Button onClick={handleCreate}>
           <Plus className="mr-2 h-4 w-4" /> Thêm chủ đề mới
@@ -97,7 +112,11 @@ function AdminGrammarPage() {
             ) : !data?.data || data.data.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} className="h-40">
-                  <AdminEmptyState title="Không tìm thấy chủ đề" description="Chưa có chủ đề ngữ pháp nào." icon="book" />
+                  <AdminEmptyState
+                    title="Không tìm thấy chủ đề"
+                    description="Chưa có chủ đề ngữ pháp nào."
+                    icon="book"
+                  />
                 </TableCell>
               </TableRow>
             ) : (
@@ -106,7 +125,9 @@ function AdminGrammarPage() {
                   <TableCell className="font-medium">
                     {topic.name}
                     {topic.description && (
-                      <p className="text-xs text-muted-foreground line-clamp-1 mt-1">{topic.description}</p>
+                      <p className="text-xs text-muted-foreground line-clamp-1 mt-1">
+                        {topic.description}
+                      </p>
                     )}
                   </TableCell>
                   <TableCell className="text-muted-foreground">{topic.slug}</TableCell>
@@ -124,15 +145,24 @@ function AdminGrammarPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-44">
-                        <DropdownMenuItem onClick={() => navigate(`/admin/grammar/${topic.id}`)} className="cursor-pointer">
+                        <DropdownMenuItem
+                          onClick={() => navigate(`/admin/grammar/${topic.id}`)}
+                          className="cursor-pointer"
+                        >
                           <Eye className="w-4 h-4 mr-2 text-primary" /> Xem câu hỏi
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => handleEdit(topic)} className="cursor-pointer">
+                        <DropdownMenuItem
+                          onClick={() => handleEdit(topic)}
+                          className="cursor-pointer"
+                        >
                           <Edit2 className="w-4 h-4 mr-2 text-blue-500" /> Chỉnh sửa
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => handleDelete(topic.id, topic.name)} className="text-destructive focus:text-destructive cursor-pointer">
+                        <DropdownMenuItem
+                          onClick={() => handleDelete(topic.id, topic.name)}
+                          className="text-destructive focus:text-destructive cursor-pointer"
+                        >
                           <Trash2 className="w-4 h-4 mr-2" /> Xóa
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -145,22 +175,18 @@ function AdminGrammarPage() {
         </Table>
       </div>
 
-      <TopicModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        topic={editingTopic}
-      />
+      <TopicModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} topic={editingTopic} />
 
       <ConfirmDialog
         open={confirmState.isOpen}
-        onOpenChange={(isOpen) => setConfirmState(prev => ({ ...prev, isOpen }))}
+        onOpenChange={(isOpen) => setConfirmState((prev) => ({ ...prev, isOpen }))}
         onConfirm={executeDelete}
         title="Xác nhận xóa"
         description={`Bạn có chắc muốn xóa chủ đề "${confirmState.topicName}"? Các câu hỏi bên trong cũng sẽ bị ảnh hưởng.`}
         variant="destructive"
       />
     </div>
-  );
+  )
 }
 
-export default AdminGrammarPage;
+export default AdminGrammarPage

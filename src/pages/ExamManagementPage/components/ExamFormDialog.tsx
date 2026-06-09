@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 import {
   Sheet,
   SheetContent,
@@ -6,33 +6,55 @@ import {
   SheetTitle,
   SheetFooter,
   SheetDescription,
-} from '@/components/ui/sheet';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from '@/components/ui/sheet'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import type { AdminExamItem, ExamCreateBody, ExamPart, ExamType, QuestionDifficulty } from '@/types/exam.type';
-import { Loader2, Save, Sparkles, Pencil, Info, Settings2, Clock, Layers, Trophy, CheckCircle2 } from 'lucide-react';
+} from '@/components/ui/select'
+import type {
+  AdminExamItem,
+  ExamCreateBody,
+  ExamPart,
+  ExamType,
+  QuestionDifficulty,
+} from '@/types/exam.type'
+import {
+  Loader2,
+  Save,
+  Sparkles,
+  Pencil,
+  Info,
+  Settings2,
+  Clock,
+  Layers,
+  Trophy,
+  CheckCircle2,
+} from 'lucide-react'
 
 interface ExamFormDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (data: ExamCreateBody) => Promise<void>;
-  initialData?: AdminExamItem | null;
-  isPending: boolean;
-  allExams?: AdminExamItem[];
+  isOpen: boolean
+  onClose: () => void
+  onSave: (data: ExamCreateBody) => Promise<void>
+  initialData?: AdminExamItem | null
+  isPending: boolean
+  allExams?: AdminExamItem[]
 }
 
-const PART_ORDER: Record<string, number> = { 
-  PART1: 1, PART2: 2, PART3: 3, PART4: 4, 
-  PART5: 5, PART6: 6, PART7: 7 
-};
+const PART_ORDER: Record<string, number> = {
+  PART1: 1,
+  PART2: 2,
+  PART3: 3,
+  PART4: 4,
+  PART5: 5,
+  PART6: 6,
+  PART7: 7,
+}
 
 export function ExamFormDialog({
   isOpen,
@@ -42,12 +64,12 @@ export function ExamFormDialog({
   isPending,
   allExams = [],
 }: ExamFormDialogProps) {
-  const [title, setTitle] = useState('');
-  const [part, setPart] = useState<ExamPart>('PART5');
-  const [difficulty, setDifficulty] = useState<QuestionDifficulty>('EASY');
-  const [type, setType] = useState<ExamType>('FREE');
-  const [duration, setDuration] = useState(15);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [title, setTitle] = useState('')
+  const [part, setPart] = useState<ExamPart>('PART5')
+  const [difficulty, setDifficulty] = useState<QuestionDifficulty>('EASY')
+  const [type, setType] = useState<ExamType>('FREE')
+  const [duration, setDuration] = useState(15)
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
   const [selectedComponents, setSelectedComponents] = useState<Record<string, string>>({
     PART1: '',
@@ -57,9 +79,11 @@ export function ExamFormDialog({
     PART5: '',
     PART6: '',
     PART7: '',
-  });
+  })
 
-  const availableExams = allExams.filter((e) => e.part !== 'FULL' && (!e.parentExamId || e.parentExamId === initialData?.id));
+  const availableExams = allExams.filter(
+    (e) => e.part !== 'FULL' && (!e.parentExamId || e.parentExamId === initialData?.id)
+  )
 
   const examsByPart: Record<string, AdminExamItem[]> = {
     PART1: availableExams.filter((e) => e.part === 'PART1'),
@@ -69,71 +93,111 @@ export function ExamFormDialog({
     PART5: availableExams.filter((e) => e.part === 'PART5'),
     PART6: availableExams.filter((e) => e.part === 'PART6'),
     PART7: availableExams.filter((e) => e.part === 'PART7'),
-  };
+  }
 
   useEffect(() => {
     if (isOpen) {
       if (initialData) {
-        setTitle(initialData.title || '');
-        setPart(initialData.part || 'PART5');
-        setDifficulty(initialData.difficulty || 'EASY');
-        setType(initialData.type || 'FREE');
-        setDuration(initialData.duration || 15);
+        setTitle(initialData.title || '')
+        setPart(initialData.part || 'PART5')
+        setDifficulty(initialData.difficulty || 'EASY')
+        setType(initialData.type || 'FREE')
+        setDuration(initialData.duration || 15)
         if (initialData.part === 'FULL' && initialData.childExams) {
-          const comp: Record<string, string> = { 
-            PART1: '', PART2: '', PART3: '', PART4: '',
-            PART5: '', PART6: '', PART7: '' 
-          };
-          initialData.childExams.forEach((c) => { comp[c.part] = c.id; });
-          setSelectedComponents(comp);
+          const comp: Record<string, string> = {
+            PART1: '',
+            PART2: '',
+            PART3: '',
+            PART4: '',
+            PART5: '',
+            PART6: '',
+            PART7: '',
+          }
+          initialData.childExams.forEach((c) => {
+            comp[c.part] = c.id
+          })
+          setSelectedComponents(comp)
         }
       } else {
-        setTitle('');
-        setPart('PART5');
-        setDifficulty('EASY');
-        setType('FREE');
-        setDuration(15);
-        setSelectedComponents({ 
-          PART1: '', PART2: '', PART3: '', PART4: '',
-          PART5: '', PART6: '', PART7: '' 
-        });
+        setTitle('')
+        setPart('PART5')
+        setDifficulty('EASY')
+        setType('FREE')
+        setDuration(15)
+        setSelectedComponents({
+          PART1: '',
+          PART2: '',
+          PART3: '',
+          PART4: '',
+          PART5: '',
+          PART6: '',
+          PART7: '',
+        })
       }
-      setErrors({});
+      setErrors({})
     }
-  }, [isOpen, initialData]);
+  }, [isOpen, initialData])
 
   const validate = () => {
-    const newErrors: Record<string, string> = {};
-    if (!title.trim()) newErrors.title = 'Tiêu đề không được để trống';
-    if (duration <= 0) newErrors.duration = 'Thời gian phải lớn hơn 0';
+    const newErrors: Record<string, string> = {}
+    if (!title.trim()) newErrors.title = 'Tiêu đề không được để trống'
+    if (duration <= 0) newErrors.duration = 'Thời gian phải lớn hơn 0'
     if (part === 'FULL') {
-      const chosen = Object.values(selectedComponents).filter((val) => val && val !== 'none');
+      const chosen = Object.values(selectedComponents).filter((val) => val && val !== 'none')
       if (chosen.length === 0) {
-        newErrors.components = 'Vui lòng chọn ít nhất 1 đề thành phần';
+        newErrors.components = 'Vui lòng chọn ít nhất 1 đề thành phần'
       }
     }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSave = () => {
-    if (!validate()) return;
+    if (!validate()) return
     const childrenIdExam =
       part === 'FULL'
         ? Object.values(selectedComponents).filter((val) => val && val !== 'none')
-        : undefined;
-    onSave({ title: title.trim(), part, difficulty, type, duration, childrenIdExam });
-  };
+        : undefined
+    onSave({ title: title.trim(), part, difficulty, type, duration, childrenIdExam })
+  }
 
   const partLabels: Record<string, { label: string; color: string; desc: string }> = {
-    PART1: { label: 'Part 1', color: 'bg-orange-100 text-orange-700 border-orange-200', desc: 'Photos (6 tranh ảnh)' },
-    PART2: { label: 'Part 2', color: 'bg-yellow-100 text-yellow-700 border-yellow-200', desc: 'Question-Response (25 câu)' },
-    PART3: { label: 'Part 3', color: 'bg-indigo-100 text-indigo-700 border-indigo-200', desc: 'Conversations (39 câu)' },
-    PART4: { label: 'Part 4', color: 'bg-cyan-100 text-cyan-700 border-cyan-200', desc: 'Talks (30 câu)' },
-    PART5: { label: 'Part 5', color: 'bg-blue-100 text-blue-700 border-blue-200', desc: 'Incomplete Sentences (30 câu)' },
-    PART6: { label: 'Part 6', color: 'bg-purple-100 text-purple-700 border-purple-200', desc: 'Text Completion (16 câu)' },
-    PART7: { label: 'Part 7', color: 'bg-green-100 text-green-700 border-green-200', desc: 'Reading (54 câu)' },
-  };
+    PART1: {
+      label: 'Part 1',
+      color: 'bg-orange-100 text-orange-700 border-orange-200',
+      desc: 'Photos (6 tranh ảnh)',
+    },
+    PART2: {
+      label: 'Part 2',
+      color: 'bg-yellow-100 text-yellow-700 border-yellow-200',
+      desc: 'Question-Response (25 câu)',
+    },
+    PART3: {
+      label: 'Part 3',
+      color: 'bg-indigo-100 text-indigo-700 border-indigo-200',
+      desc: 'Conversations (39 câu)',
+    },
+    PART4: {
+      label: 'Part 4',
+      color: 'bg-cyan-100 text-cyan-700 border-cyan-200',
+      desc: 'Talks (30 câu)',
+    },
+    PART5: {
+      label: 'Part 5',
+      color: 'bg-blue-100 text-blue-700 border-blue-200',
+      desc: 'Incomplete Sentences (30 câu)',
+    },
+    PART6: {
+      label: 'Part 6',
+      color: 'bg-purple-100 text-purple-700 border-purple-200',
+      desc: 'Text Completion (16 câu)',
+    },
+    PART7: {
+      label: 'Part 7',
+      color: 'bg-green-100 text-green-700 border-green-200',
+      desc: 'Reading (54 câu)',
+    },
+  }
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -141,13 +205,18 @@ export function ExamFormDialog({
         <SheetHeader className="px-4 sm:px-6 py-4 sm:py-5 border-b bg-muted/30 flex-shrink-0">
           <SheetTitle className="text-xl font-bold flex items-center gap-2">
             {initialData ? (
-              <><Pencil className="w-5 h-5 text-primary" /> Chỉnh sửa đề thi</>
+              <>
+                <Pencil className="w-5 h-5 text-primary" /> Chỉnh sửa đề thi
+              </>
             ) : (
-              <><Sparkles className="w-5 h-5 text-primary" /> Tạo đề thi mới</>
+              <>
+                <Sparkles className="w-5 h-5 text-primary" /> Tạo đề thi mới
+              </>
             )}
           </SheetTitle>
           <SheetDescription>
-            Điền đầy đủ thông tin bên dưới để {initialData ? 'cập nhật' : 'tạo mới'} đề thi vào hệ thống.
+            Điền đầy đủ thông tin bên dưới để {initialData ? 'cập nhật' : 'tạo mới'} đề thi vào hệ
+            thống.
           </SheetDescription>
         </SheetHeader>
 
@@ -203,8 +272,12 @@ export function ExamFormDialog({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="FREE" className="text-emerald-600">Miễn phí (FREE)</SelectItem>
-                    <SelectItem value="VIP" className="text-amber-600">Dành cho VIP</SelectItem>
+                    <SelectItem value="FREE" className="text-emerald-600">
+                      Miễn phí (FREE)
+                    </SelectItem>
+                    <SelectItem value="VIP" className="text-amber-600">
+                      Dành cho VIP
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -218,73 +291,95 @@ export function ExamFormDialog({
                 <Layers className="w-5 h-5 text-primary" /> Ghép đề thành phần
               </h3>
               <p className="text-xs text-muted-foreground bg-blue-50 border border-blue-100 px-4 py-3 rounded-lg leading-relaxed">
-                Chọn các đề lẻ đã tạo để ghép thành đề FULL. Khi học viên thi, hệ thống sẽ tự động gộp câu hỏi theo thứ tự từ Part 1 đến Part 7.
+                Chọn các đề lẻ đã tạo để ghép thành đề FULL. Khi học viên thi, hệ thống sẽ tự động
+                gộp câu hỏi theo thứ tự từ Part 1 đến Part 7.
               </p>
 
               {errors.components && (
                 <p className="text-xs text-red-500 font-medium">{errors.components}</p>
               )}
 
-              {[...(['PART1', 'PART2', 'PART3', 'PART4', 'PART5', 'PART6', 'PART7'] as const)].sort((a, b) => PART_ORDER[a] - PART_ORDER[b]).map((p) => (
-                <div key={p} className="space-y-2">
-                  <Label className="text-sm font-medium flex items-center gap-2">
-                    <span className={`text-xs font-bold px-2 py-0.5 rounded border ${partLabels[p].color}`}>
-                      {partLabels[p].label}
-                    </span>
-                    <span className="text-muted-foreground font-normal">{partLabels[p].desc}</span>
-                  </Label>
-                  <Select
-                    value={selectedComponents[p]}
-                    onValueChange={(val) => {
-                      setSelectedComponents((prev) => ({ ...prev, [p]: val }));
-                      setErrors((prev) => { const n = { ...prev }; delete n.components; return n; });
-                    }}
-                  >
-                    <SelectTrigger className={`hover:border-primary/50 transition-colors ${selectedComponents[p] && selectedComponents[p] !== 'none' ? 'border-green-400 bg-green-50/30' : ''}`}>
-                      <SelectValue placeholder={`Chọn đề ${partLabels[p].label}...`} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">— Không chọn —</SelectItem>
-                      {examsByPart[p].map((ex) => (
-                        <SelectItem key={ex.id} value={ex.id}>
-                          <span className="flex items-center gap-2">
-                            {ex.isPublished && <CheckCircle2 className="w-3 h-3 text-green-500" />}
-                            {ex.title}
-                            <span className="text-xs text-muted-foreground">({ex.questionCount} câu)</span>
-                          </span>
-                        </SelectItem>
-                      ))}
-                      {examsByPart[p].length === 0 && (
-                        <div className="text-xs text-muted-foreground px-4 py-3 text-center">
-                          Chưa có đề {partLabels[p].label} nào. Hãy tạo trước.
-                        </div>
-                      )}
-                    </SelectContent>
-                  </Select>
-                </div>
-              ))}
+              {[...(['PART1', 'PART2', 'PART3', 'PART4', 'PART5', 'PART6', 'PART7'] as const)]
+                .sort((a, b) => PART_ORDER[a] - PART_ORDER[b])
+                .map((p) => (
+                  <div key={p} className="space-y-2">
+                    <Label className="text-sm font-medium flex items-center gap-2">
+                      <span
+                        className={`text-xs font-bold px-2 py-0.5 rounded border ${partLabels[p].color}`}
+                      >
+                        {partLabels[p].label}
+                      </span>
+                      <span className="text-muted-foreground font-normal">
+                        {partLabels[p].desc}
+                      </span>
+                    </Label>
+                    <Select
+                      value={selectedComponents[p]}
+                      onValueChange={(val) => {
+                        setSelectedComponents((prev) => ({ ...prev, [p]: val }))
+                        setErrors((prev) => {
+                          const n = { ...prev }
+                          delete n.components
+                          return n
+                        })
+                      }}
+                    >
+                      <SelectTrigger
+                        className={`hover:border-primary/50 transition-colors ${selectedComponents[p] && selectedComponents[p] !== 'none' ? 'border-green-400 bg-green-50/30' : ''}`}
+                      >
+                        <SelectValue placeholder={`Chọn đề ${partLabels[p].label}...`} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">— Không chọn —</SelectItem>
+                        {examsByPart[p].map((ex) => (
+                          <SelectItem key={ex.id} value={ex.id}>
+                            <span className="flex items-center gap-2">
+                              {ex.isPublished && (
+                                <CheckCircle2 className="w-3 h-3 text-green-500" />
+                              )}
+                              {ex.title}
+                              <span className="text-xs text-muted-foreground">
+                                ({ex.questionCount} câu)
+                              </span>
+                            </span>
+                          </SelectItem>
+                        ))}
+                        {examsByPart[p].length === 0 && (
+                          <div className="text-xs text-muted-foreground px-4 py-3 text-center">
+                            Chưa có đề {partLabels[p].label} nào. Hãy tạo trước.
+                          </div>
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                ))}
 
               {/* Tổng kết câu hỏi */}
               {Object.values(selectedComponents).some((val) => val && val !== 'none') && (
                 <div className="bg-muted/40 rounded-lg p-4 text-sm space-y-1">
                   <p className="font-medium text-muted-foreground mb-2"> Tổng kết đề FULL:</p>
-                  {(['PART1', 'PART2', 'PART3', 'PART4', 'PART5', 'PART6', 'PART7'] as const).map((p) => {
-                    const exam = allExams.find((e) => e.id === selectedComponents[p]);
-                    if (!exam) return null;
-                    return (
-                      <div key={p} className="flex justify-between text-xs">
-                        <span className="text-muted-foreground">{partLabels[p].label}: {exam.title}</span>
-                        <span className="font-medium">{exam.questionCount} câu</span>
-                      </div>
-                    );
-                  })}
+                  {(['PART1', 'PART2', 'PART3', 'PART4', 'PART5', 'PART6', 'PART7'] as const).map(
+                    (p) => {
+                      const exam = allExams.find((e) => e.id === selectedComponents[p])
+                      if (!exam) return null
+                      return (
+                        <div key={p} className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">
+                            {partLabels[p].label}: {exam.title}
+                          </span>
+                          <span className="font-medium">{exam.questionCount} câu</span>
+                        </div>
+                      )
+                    }
+                  )}
                   <div className="border-t pt-2 flex justify-between font-semibold text-xs">
                     <span>Tổng cộng</span>
                     <span>
                       {Object.values(selectedComponents).reduce((sum, id) => {
-                        const exam = allExams.find((e) => e.id === id);
-                        return sum + (exam?.questionCount ?? 0);
-                      }, 0)} câu
+                        const exam = allExams.find((e) => e.id === id)
+                        return sum + (exam?.questionCount ?? 0)
+                      }, 0)}{' '}
+                      câu
                     </span>
                   </div>
                 </div>
@@ -301,7 +396,10 @@ export function ExamFormDialog({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Độ khó mục tiêu</Label>
-                <Select value={difficulty} onValueChange={(val: QuestionDifficulty) => setDifficulty(val)}>
+                <Select
+                  value={difficulty}
+                  onValueChange={(val: QuestionDifficulty) => setDifficulty(val)}
+                >
                   <SelectTrigger className="h-10 hover:border-primary/50 transition-colors">
                     <SelectValue />
                   </SelectTrigger>
@@ -334,7 +432,8 @@ export function ExamFormDialog({
                   <Info className="w-4 h-4 text-blue-600" />
                 </div>
                 <p className="text-xs text-blue-700 leading-relaxed italic mt-0.5 animate-pulse">
-                  Mẹo: Sau khi tạo đề thi, bạn có thể chuyển sang trang <b>Ngân hàng câu hỏi</b> để import hàng loạt câu hỏi bằng file JSON hoặc thêm thủ công.
+                  Mẹo: Sau khi tạo đề thi, bạn có thể chuyển sang trang <b>Ngân hàng câu hỏi</b> để
+                  import hàng loạt câu hỏi bằng file JSON hoặc thêm thủ công.
                 </p>
               </div>
             )}
@@ -345,15 +444,24 @@ export function ExamFormDialog({
           <Button variant="ghost" onClick={onClose} disabled={isPending} className="hover:bg-muted">
             Hủy bỏ
           </Button>
-          <Button onClick={handleSave} disabled={isPending} className="min-w-[140px] bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all">
+          <Button
+            onClick={handleSave}
+            disabled={isPending}
+            className="min-w-[140px] bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all"
+          >
             {isPending ? (
-              <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Đang lưu...</>
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Đang lưu...
+              </>
             ) : (
-              <><Save className="w-4 h-4 mr-2" /> {initialData ? 'Cập nhật đề thi' : 'Tạo đề thi ngay'}</>
+              <>
+                <Save className="w-4 h-4 mr-2" />{' '}
+                {initialData ? 'Cập nhật đề thi' : 'Tạo đề thi ngay'}
+              </>
             )}
           </Button>
         </SheetFooter>
       </SheetContent>
     </Sheet>
-  );
+  )
 }

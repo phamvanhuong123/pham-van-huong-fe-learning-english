@@ -1,50 +1,72 @@
-import { useState, useEffect } from 'react';
-import { useAuthStore } from '@/store/useAuthStore';
-import { useMySubscriptions } from '@/hooks/queries/useSubscriptionQuery';
-import { Crown, Calendar, Sparkles, CreditCard, Eye, Clock, CheckCircle2, XCircle, ShieldAlert } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router';
-import ProofPreviewModal from '@/pages/SubscriptionManagerPage/components/ProofPreviewModal';
-import { format } from 'date-fns';
+import { useState, useEffect } from 'react'
+import { useAuthStore } from '@/store/useAuthStore'
+import { useMySubscriptions } from '@/hooks/queries/useSubscriptionQuery'
+import {
+  Crown,
+  Calendar,
+  Sparkles,
+  CreditCard,
+  Eye,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  ShieldAlert,
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { useNavigate } from 'react-router'
+import ProofPreviewModal from '@/pages/SubscriptionManagerPage/components/ProofPreviewModal'
+import { format } from 'date-fns'
 
-import { getProfileApi } from '@/services/profileService';
+import { getProfileApi } from '@/services/profileService'
 
 export default function SubscriptionTab() {
-  const { userInfo } = useAuthStore();
-  const { data: subsData, isLoading } = useMySubscriptions();
-  const navigate = useNavigate();
+  const { userInfo } = useAuthStore()
+  const { data: subsData, isLoading } = useMySubscriptions()
+  const navigate = useNavigate()
 
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [vipExpiresAt, setVipExpiresAt] = useState<string | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null)
+  const [vipExpiresAt, setVipExpiresAt] = useState<string | null>(null)
 
   useEffect(() => {
-    getProfileApi().then(res => {
-      setVipExpiresAt(res.data.data.vipExpiresAt);
-    }).catch(console.error);
-  }, []);
+    getProfileApi()
+      .then((res) => {
+        setVipExpiresAt(res.data.data.vipExpiresAt)
+      })
+      .catch(console.error)
+  }, [])
 
   // Is VIP if authStore says so (covers Admin) or if vipExpiresAt is valid
-  const isVip = userInfo?.isVip || (vipExpiresAt && new Date(vipExpiresAt) > new Date());
+  const isVip = userInfo?.isVip || (vipExpiresAt && new Date(vipExpiresAt) > new Date())
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'APPROVED': return <CheckCircle2 className="w-4 h-4 text-emerald-500" />;
-      case 'PENDING': return <Clock className="w-4 h-4 text-amber-500" />;
-      case 'REJECTED': return <XCircle className="w-4 h-4 text-rose-500" />;
-      case 'REVOKED': return <ShieldAlert className="w-4 h-4 text-destructive" />;
-      default: return null;
+      case 'APPROVED':
+        return <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+      case 'PENDING':
+        return <Clock className="w-4 h-4 text-amber-500" />
+      case 'REJECTED':
+        return <XCircle className="w-4 h-4 text-rose-500" />
+      case 'REVOKED':
+        return <ShieldAlert className="w-4 h-4 text-destructive" />
+      default:
+        return null
     }
-  };
+  }
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case 'APPROVED': return 'Đã duyệt';
-      case 'PENDING': return 'Đang xử lý';
-      case 'REJECTED': return 'Từ chối';
-      case 'REVOKED': return 'Thu hồi';
-      default: return status;
+      case 'APPROVED':
+        return 'Đã duyệt'
+      case 'PENDING':
+        return 'Đang xử lý'
+      case 'REJECTED':
+        return 'Từ chối'
+      case 'REVOKED':
+        return 'Thu hồi'
+      default:
+        return status
     }
-  };
+  }
 
   return (
     <div className="p-6 md:p-8 animate-in fade-in duration-500">
@@ -63,16 +85,20 @@ export default function SubscriptionTab() {
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Crown className="w-6 h-6 text-yellow-400" />
-                      <span className="text-yellow-400 font-bold tracking-widest uppercase text-sm">PRO Member</span>
+                      <span className="text-yellow-400 font-bold tracking-widest uppercase text-sm">
+                        PRO Member
+                      </span>
                     </div>
-                    <h3 className="text-3xl font-bold">{userInfo.name || userInfo.email}</h3>
+                    <h3 className="text-3xl font-bold">{userInfo?.name || userInfo?.email}</h3>
                   </div>
                   <Sparkles className="w-8 h-8 text-yellow-300 opacity-80" />
                 </div>
 
                 <div className="flex items-end justify-between">
                   <div>
-                    <p className="text-indigo-200 text-sm mb-1 uppercase tracking-wider font-semibold">Hạn sử dụng</p>
+                    <p className="text-indigo-200 text-sm mb-1 uppercase tracking-wider font-semibold">
+                      Hạn sử dụng
+                    </p>
                     <div className="flex items-center gap-2">
                       <Calendar className="w-5 h-5 text-indigo-100" />
                       <span className="text-xl font-mono tracking-wider font-medium">
@@ -80,7 +106,10 @@ export default function SubscriptionTab() {
                       </span>
                     </div>
                   </div>
-                  <Button onClick={() => navigate('/pricing')} className="bg-white/20 hover:bg-white/30 text-white border-none backdrop-blur-md">
+                  <Button
+                    onClick={() => navigate('/pricing')}
+                    className="bg-white/20 hover:bg-white/30 text-white border-none backdrop-blur-md"
+                  >
                     Gia hạn
                   </Button>
                 </div>
@@ -92,10 +121,14 @@ export default function SubscriptionTab() {
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <Crown className="w-6 h-6 text-slate-400" />
-                    <span className="text-slate-500 font-bold tracking-widest uppercase text-sm">Tài khoản Thường</span>
+                    <span className="text-slate-500 font-bold tracking-widest uppercase text-sm">
+                      Tài khoản Thường
+                    </span>
                   </div>
                   <h3 className="text-2xl font-bold mb-2">Chưa đăng ký gói VIP</h3>
-                  <p className="text-slate-500 text-sm max-w-md">Nâng cấp VIP ngay để mở khóa toàn bộ đề thi, tính năng giải thích chi tiết</p>
+                  <p className="text-slate-500 text-sm max-w-md">
+                    Nâng cấp VIP ngay để mở khóa toàn bộ đề thi, tính năng giải thích chi tiết
+                  </p>
                 </div>
 
                 <Button
@@ -127,7 +160,9 @@ export default function SubscriptionTab() {
                   <CreditCard className="w-8 h-8 text-muted-foreground opacity-50" />
                 </div>
                 <h4 className="text-lg font-medium mb-1">Chưa có giao dịch nào</h4>
-                <p className="text-muted-foreground text-sm max-w-sm">Bạn chưa thực hiện bất kỳ giao dịch nâng cấp VIP nào trên hệ thống.</p>
+                <p className="text-muted-foreground text-sm max-w-sm">
+                  Bạn chưa thực hiện bất kỳ giao dịch nâng cấp VIP nào trên hệ thống.
+                </p>
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -162,16 +197,23 @@ export default function SubscriptionTab() {
                         <td className="p-4">
                           <div className="flex items-center gap-1.5 font-medium">
                             {getStatusIcon(sub.status)}
-                            <span className={
-                              sub.status === 'APPROVED' ? 'text-emerald-600' :
-                                sub.status === 'PENDING' ? 'text-amber-600' :
-                                  'text-rose-600'
-                            }>
+                            <span
+                              className={
+                                sub.status === 'APPROVED'
+                                  ? 'text-emerald-600'
+                                  : sub.status === 'PENDING'
+                                    ? 'text-amber-600'
+                                    : 'text-rose-600'
+                              }
+                            >
                               {getStatusText(sub.status)}
                             </span>
                           </div>
                           {sub.rejectionReason && (
-                            <p className="text-xs text-rose-500 mt-1 max-w-[200px] truncate" title={sub.rejectionReason}>
+                            <p
+                              className="text-xs text-rose-500 mt-1 max-w-[200px] truncate"
+                              title={sub.rejectionReason}
+                            >
                               Lý do: {sub.rejectionReason}
                             </p>
                           )}
@@ -202,5 +244,5 @@ export default function SubscriptionTab() {
         imageUrl={previewImage}
       />
     </div>
-  );
+  )
 }

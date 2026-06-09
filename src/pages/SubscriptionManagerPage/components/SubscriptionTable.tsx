@@ -1,68 +1,86 @@
-import { useState } from 'react';
-import { format } from 'date-fns';
-import { Check, X, Eye, AlertTriangle, ShieldBan, MoreVertical, Edit2, Trash2 } from 'lucide-react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { toast } from 'sonner';
+import { useState } from 'react'
+import { format } from 'date-fns'
+import { Check, X, Eye, AlertTriangle, ShieldBan, MoreVertical, Edit2, Trash2 } from 'lucide-react'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu'
+import { toast } from 'sonner'
 
-import SubscriptionStatusBadge from './SubscriptionStatusBadge';
-import ProofPreviewModal from './ProofPreviewModal';
-import RejectDialog from './RejectDialog';
-import EditSubscriptionModal from './EditSubscriptionModal';
-import RevokeDialog from './RevokeDialog';
-import { ConfirmDialog } from '@/components/common/ConfirmDialog';
-import { AdminEmptyState } from '@/components/admin/AdminEmptyState';
-import { AdminTableLoading } from '@/components/admin/AdminTableLoading';
+import SubscriptionStatusBadge from './SubscriptionStatusBadge'
+import ProofPreviewModal from './ProofPreviewModal'
+import RejectDialog from './RejectDialog'
+import EditSubscriptionModal from './EditSubscriptionModal'
+import RevokeDialog from './RevokeDialog'
+import { ConfirmDialog } from '@/components/common/ConfirmDialog'
+import { AdminEmptyState } from '@/components/admin/AdminEmptyState'
+import { AdminTableLoading } from '@/components/admin/AdminTableLoading'
 
-import type { Subscription } from '@/types/subscription.type';
-import { useApproveSubscription, useBanBankAccount, useDeleteSubscription } from '@/hooks/queries/useSubscriptionQuery';
+import type { Subscription } from '@/types/subscription.type'
+import {
+  useApproveSubscription,
+  useBanBankAccount,
+  useDeleteSubscription,
+} from '@/hooks/queries/useSubscriptionQuery'
 
 interface SubscriptionTableProps {
-  data: Subscription[];
-  isLoading: boolean;
+  data: Subscription[]
+  isLoading: boolean
 }
 
 export default function SubscriptionTable({ data, isLoading }: SubscriptionTableProps) {
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [rejectId, setRejectId] = useState<string | null>(null);
-  const [editSub, setEditSub] = useState<Subscription | null>(null);
-  const [revokeSub, setRevokeSub] = useState<Subscription | null>(null);
-  
-  const [confirmState, setConfirmState] = useState<{
-    isOpen: boolean;
-    title: string;
-    description: string;
-    onConfirm: () => void;
-    variant: 'default' | 'destructive';
-  }>({ isOpen: false, title: '', description: '', onConfirm: () => {}, variant: 'default' });
+  const [previewImage, setPreviewImage] = useState<string | null>(null)
+  const [rejectId, setRejectId] = useState<string | null>(null)
+  const [editSub, setEditSub] = useState<Subscription | null>(null)
+  const [revokeSub, setRevokeSub] = useState<Subscription | null>(null)
 
-  const { mutateAsync: approveSubscription, isPending: isApproving } = useApproveSubscription();
-  const { mutateAsync: banBankAccount } = useBanBankAccount();
-  const { mutateAsync: deleteSubscription } = useDeleteSubscription();
+  const [confirmState, setConfirmState] = useState<{
+    isOpen: boolean
+    title: string
+    description: string
+    onConfirm: () => void
+    variant: 'default' | 'destructive'
+  }>({ isOpen: false, title: '', description: '', onConfirm: () => {}, variant: 'default' })
+
+  const { mutateAsync: approveSubscription, isPending: isApproving } = useApproveSubscription()
+  const { mutateAsync: banBankAccount } = useBanBankAccount()
+  const { mutateAsync: deleteSubscription } = useDeleteSubscription()
 
   const handleApprove = (id: string) => {
     setConfirmState({
       isOpen: true,
       title: 'Xác nhận Duyệt',
-      description: 'Bạn có chắc chắn muốn duyệt yêu cầu này? User sẽ được cộng thời gian VIP tương ứng.',
+      description:
+        'Bạn có chắc chắn muốn duyệt yêu cầu này? User sẽ được cộng thời gian VIP tương ứng.',
       variant: 'default',
       onConfirm: async () => {
         try {
-          await approveSubscription(id);
-          toast.success('Đã duyệt yêu cầu thành công');
+          await approveSubscription(id)
+          toast.success('Đã duyệt yêu cầu thành công')
         } catch (error: any) {
-          toast.error(error?.response?.data?.message || 'Có lỗi xảy ra');
+          toast.error(error?.response?.data?.message || 'Có lỗi xảy ra')
         } finally {
-          setConfirmState(prev => ({ ...prev, isOpen: false }));
+          setConfirmState((prev) => ({ ...prev, isOpen: false }))
         }
-      }
-    });
-  };
+      },
+    })
+  }
 
   const handleBanAccount = (bankAccountNo: string | null) => {
-    if (!bankAccountNo) return;
+    if (!bankAccountNo) return
     setConfirmState({
       isOpen: true,
       title: 'Xác nhận Cấm STK',
@@ -70,35 +88,36 @@ export default function SubscriptionTable({ data, isLoading }: SubscriptionTable
       variant: 'destructive',
       onConfirm: async () => {
         try {
-          await banBankAccount({ bankAccountNo, reason: 'Gian lận hóa đơn' });
-          toast.success(`Đã cấm STK ${bankAccountNo}`);
+          await banBankAccount({ bankAccountNo, reason: 'Gian lận hóa đơn' })
+          toast.success(`Đã cấm STK ${bankAccountNo}`)
         } catch (error: any) {
-          toast.error(error?.response?.data?.message || 'Có lỗi xảy ra');
+          toast.error(error?.response?.data?.message || 'Có lỗi xảy ra')
         } finally {
-          setConfirmState(prev => ({ ...prev, isOpen: false }));
+          setConfirmState((prev) => ({ ...prev, isOpen: false }))
         }
-      }
-    });
-  };
+      },
+    })
+  }
 
   const handleDelete = (id: string) => {
     setConfirmState({
       isOpen: true,
       title: 'Xác nhận Xóa',
-      description: 'Bạn có chắc chắn muốn xóa vĩnh viễn yêu cầu này không? Hành động này không thể hoàn tác!',
+      description:
+        'Bạn có chắc chắn muốn xóa vĩnh viễn yêu cầu này không? Hành động này không thể hoàn tác!',
       variant: 'destructive',
       onConfirm: async () => {
         try {
-          await deleteSubscription(id);
-          toast.success('Đã xóa yêu cầu thành công');
+          await deleteSubscription(id)
+          toast.success('Đã xóa yêu cầu thành công')
         } catch (error: any) {
-          toast.error(error?.response?.data?.message || 'Có lỗi xảy ra');
+          toast.error(error?.response?.data?.message || 'Có lỗi xảy ra')
         } finally {
-          setConfirmState(prev => ({ ...prev, isOpen: false }));
+          setConfirmState((prev) => ({ ...prev, isOpen: false }))
         }
-      }
-    });
-  };
+      },
+    })
+  }
 
   if (isLoading) {
     return (
@@ -120,17 +139,17 @@ export default function SubscriptionTable({ data, isLoading }: SubscriptionTable
           </TableBody>
         </Table>
       </div>
-    );
+    )
   }
 
   if (data.length === 0) {
     return (
-      <AdminEmptyState 
-        title="Không có yêu cầu nào" 
-        description="Mọi thứ đã được xử lý xong." 
-        icon="file" 
+      <AdminEmptyState
+        title="Không có yêu cầu nào"
+        description="Mọi thứ đã được xử lý xong."
+        icon="file"
       />
-    );
+    )
   }
 
   return (
@@ -157,7 +176,9 @@ export default function SubscriptionTable({ data, isLoading }: SubscriptionTable
                 </div>
               </TableCell>
               <TableCell>
-                <span className="font-semibold text-primary">{sub.plan.replace('VIP_', '').replace('_', ' ')}</span>
+                <span className="font-semibold text-primary">
+                  {sub.plan.replace('VIP_', '').replace('_', ' ')}
+                </span>
               </TableCell>
               <TableCell className="font-mono text-sm">
                 {sub.amount?.toLocaleString('vi-VN')}đ
@@ -181,16 +202,26 @@ export default function SubscriptionTable({ data, isLoading }: SubscriptionTable
                       </TooltipTrigger>
                       <TooltipContent className="w-64 p-3 space-y-1">
                         <p className="font-semibold text-sm border-b pb-1 mb-2">Phát hiện rủi ro</p>
-                        {Array.isArray(sub.riskFlags) && sub.riskFlags.map((flag: string, idx: number) => (
-                          <div key={idx} className="text-xs flex items-start gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1 shrink-0" />
-                            {flag === 'DUPLICATE_PROOF' && 'Ảnh hóa đơn này đã được dùng cho giao dịch khác (có thể là giả mạo).'}
-                            {flag === 'BANNED_BANK_ACCOUNT' && 'Số tài khoản ngân hàng này nằm trong danh sách đen.'}
-                            {flag === 'MULTIPLE_PENDING' && 'User này đang spam nhiều yêu cầu cùng lúc.'}
-                            {flag === 'SUSPICIOUS_IP' && 'Phát hiện nhiều tài khoản dùng chung IP để gửi yêu cầu.'}
-                            {!['DUPLICATE_PROOF', 'BANNED_BANK_ACCOUNT', 'MULTIPLE_PENDING', 'SUSPICIOUS_IP'].includes(flag) && flag}
-                          </div>
-                        ))}
+                        {Array.isArray(sub.riskFlags) &&
+                          sub.riskFlags.map((flag: string, idx: number) => (
+                            <div key={idx} className="text-xs flex items-start gap-1.5">
+                              <span className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1 shrink-0" />
+                              {flag === 'DUPLICATE_PROOF' &&
+                                'Ảnh hóa đơn này đã được dùng cho giao dịch khác (có thể là giả mạo).'}
+                              {flag === 'BANNED_BANK_ACCOUNT' &&
+                                'Số tài khoản ngân hàng này nằm trong danh sách đen.'}
+                              {flag === 'MULTIPLE_PENDING' &&
+                                'User này đang spam nhiều yêu cầu cùng lúc.'}
+                              {flag === 'SUSPICIOUS_IP' &&
+                                'Phát hiện nhiều tài khoản dùng chung IP để gửi yêu cầu.'}
+                              {![
+                                'DUPLICATE_PROOF',
+                                'BANNED_BANK_ACCOUNT',
+                                'MULTIPLE_PENDING',
+                                'SUSPICIOUS_IP',
+                              ].includes(flag) && flag}
+                            </div>
+                          ))}
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -200,16 +231,16 @@ export default function SubscriptionTable({ data, isLoading }: SubscriptionTable
               </TableCell>
               <TableCell className="text-right">
                 <div className="flex items-center justify-end gap-2">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+                  <Button
+                    variant="outline"
+                    size="sm"
                     className="h-8 shadow-sm group-hover:border-primary/30 transition-colors"
                     onClick={() => setPreviewImage(sub.proofUrl)}
                   >
                     <Eye className="w-4 h-4 mr-1.5" />
                     Bill
                   </Button>
-                  
+
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-muted/80">
@@ -219,20 +250,33 @@ export default function SubscriptionTable({ data, isLoading }: SubscriptionTable
                     <DropdownMenuContent align="end" className="w-40">
                       {sub.status === 'PENDING' && (
                         <>
-                          <DropdownMenuItem onClick={() => handleApprove(sub.id)} disabled={isApproving} className="text-emerald-600 focus:text-emerald-600 cursor-pointer">
+                          <DropdownMenuItem
+                            onClick={() => handleApprove(sub.id)}
+                            disabled={isApproving}
+                            className="text-emerald-600 focus:text-emerald-600 cursor-pointer"
+                          >
                             <Check className="w-4 h-4 mr-2" /> Duyệt
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => setRejectId(sub.id)} className="text-destructive focus:text-destructive cursor-pointer">
+                          <DropdownMenuItem
+                            onClick={() => setRejectId(sub.id)}
+                            className="text-destructive focus:text-destructive cursor-pointer"
+                          >
                             <X className="w-4 h-4 mr-2" /> Từ chối
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => setEditSub(sub)} className="cursor-pointer">
+                          <DropdownMenuItem
+                            onClick={() => setEditSub(sub)}
+                            className="cursor-pointer"
+                          >
                             <Edit2 className="w-4 h-4 mr-2" /> Sửa
                           </DropdownMenuItem>
                         </>
                       )}
 
                       {sub.status === 'APPROVED' && (
-                        <DropdownMenuItem onClick={() => setRevokeSub(sub)} className="text-amber-600 focus:text-amber-600 cursor-pointer">
+                        <DropdownMenuItem
+                          onClick={() => setRevokeSub(sub)}
+                          className="text-amber-600 focus:text-amber-600 cursor-pointer"
+                        >
                           <X className="w-4 h-4 mr-2" /> Thu hồi
                         </DropdownMenuItem>
                       )}
@@ -240,7 +284,10 @@ export default function SubscriptionTable({ data, isLoading }: SubscriptionTable
                       {sub.status !== 'APPROVED' && (
                         <>
                           {sub.status === 'PENDING' && <DropdownMenuSeparator />}
-                          <DropdownMenuItem onClick={() => handleDelete(sub.id)} className="text-destructive focus:text-destructive cursor-pointer">
+                          <DropdownMenuItem
+                            onClick={() => handleDelete(sub.id)}
+                            className="text-destructive focus:text-destructive cursor-pointer"
+                          >
                             <Trash2 className="w-4 h-4 mr-2" /> Xóa
                           </DropdownMenuItem>
                         </>
@@ -252,9 +299,9 @@ export default function SubscriptionTable({ data, isLoading }: SubscriptionTable
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <Button 
-                            variant="outline" 
-                            size="icon" 
+                          <Button
+                            variant="outline"
+                            size="icon"
                             className="h-8 w-8 text-destructive border-destructive/30 hover:bg-destructive/10"
                             onClick={() => handleBanAccount(sub.bankAccountNo)}
                           >
@@ -272,16 +319,16 @@ export default function SubscriptionTable({ data, isLoading }: SubscriptionTable
         </TableBody>
       </Table>
 
-      <ProofPreviewModal 
-        isOpen={!!previewImage} 
-        onClose={() => setPreviewImage(null)} 
-        imageUrl={previewImage} 
+      <ProofPreviewModal
+        isOpen={!!previewImage}
+        onClose={() => setPreviewImage(null)}
+        imageUrl={previewImage}
       />
 
-      <RejectDialog 
-        isOpen={!!rejectId} 
-        onClose={() => setRejectId(null)} 
-        subscriptionId={rejectId} 
+      <RejectDialog
+        isOpen={!!rejectId}
+        onClose={() => setRejectId(null)}
+        subscriptionId={rejectId}
       />
 
       <EditSubscriptionModal
@@ -298,12 +345,12 @@ export default function SubscriptionTable({ data, isLoading }: SubscriptionTable
 
       <ConfirmDialog
         open={confirmState.isOpen}
-        onOpenChange={(isOpen) => setConfirmState(prev => ({ ...prev, isOpen }))}
+        onOpenChange={(isOpen) => setConfirmState((prev) => ({ ...prev, isOpen }))}
         onConfirm={confirmState.onConfirm}
         title={confirmState.title}
         description={confirmState.description}
         variant={confirmState.variant}
       />
     </div>
-  );
+  )
 }

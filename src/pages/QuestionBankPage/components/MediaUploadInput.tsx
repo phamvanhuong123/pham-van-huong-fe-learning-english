@@ -1,27 +1,27 @@
-import { useRef, useState } from 'react';
-import { UploadCloud, X, Loader2, PlayCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
-import { deleteMediaApi } from '@/services/questionService';
-import { cn } from '@/lib/utils';
+import { useRef, useState } from 'react'
+import { UploadCloud, X, Loader2, PlayCircle } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
+import { deleteMediaApi } from '@/services/questionService'
+import { cn } from '@/lib/utils'
 
-export type MediaType = 'AUDIO' | 'IMAGE' | 'VIDEO';
+export type MediaType = 'AUDIO' | 'IMAGE' | 'VIDEO'
 
 interface MediaUploadInputProps {
   /** URL Cloudinary đã upload (existing) */
-  value?: string;
+  value?: string
   /** File object chờ upload (chưa lên Cloudinary) */
-  pendingFile?: File;
+  pendingFile?: File
   /** Blob URL để preview file chờ */
-  pendingPreviewUrl?: string;
+  pendingPreviewUrl?: string
   /** Callback khi user chọn file mới (chưa upload, chỉ lưu tạm) */
-  onFileSelect: (file: File, previewUrl: string) => void;
+  onFileSelect: (file: File, previewUrl: string) => void
   /** Callback khi xoá file đã có URL trên Cloudinary */
-  onDeleteUploaded: (url: string) => void;
+  onDeleteUploaded: (url: string) => void
   /** Callback khi huỷ file đang chờ (chưa upload) */
-  onClearPending: () => void;
-  mediaType: MediaType;
-  className?: string;
+  onClearPending: () => void
+  mediaType: MediaType
+  className?: string
 }
 
 export function MediaUploadInput({
@@ -34,59 +34,60 @@ export function MediaUploadInput({
   mediaType,
   className,
 }: MediaUploadInputProps) {
-  const [isDeleting, setIsDeleting] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [isDeleting, setIsDeleting] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const acceptMap: Record<MediaType, string> = {
     AUDIO: 'audio/*',
     IMAGE: 'image/*',
     VIDEO: 'video/*',
-  };
+  }
 
-  const mediaLabel = mediaType === 'AUDIO' ? 'âm thanh' : mediaType === 'IMAGE' ? 'hình ảnh' : 'video';
+  const mediaLabel =
+    mediaType === 'AUDIO' ? 'âm thanh' : mediaType === 'IMAGE' ? 'hình ảnh' : 'video'
 
   // URL hiển thị preview: ưu tiên blob URL (pending), sau đó mới dùng URL Cloudinary
-  const previewSrc = pendingPreviewUrl || value;
+  const previewSrc = pendingPreviewUrl || value
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const file = e.target.files?.[0]
+    if (!file) return
 
     // Tạo blob URL để preview cục bộ, KHÔNG upload ngay
-    const blobUrl = URL.createObjectURL(file);
-    onFileSelect(file, blobUrl);
+    const blobUrl = URL.createObjectURL(file)
+    onFileSelect(file, blobUrl)
 
     // Reset input để có thể chọn lại cùng file
-    if (inputRef.current) inputRef.current.value = '';
-  };
+    if (inputRef.current) inputRef.current.value = ''
+  }
 
   const handleClear = async (e: React.MouseEvent) => {
-    e.stopPropagation();
+    e.stopPropagation()
 
     if (pendingFile) {
       // File chưa upload → chỉ xoá khỏi state, không tốn API
-      if (pendingPreviewUrl) URL.revokeObjectURL(pendingPreviewUrl);
-      onClearPending();
-      return;
+      if (pendingPreviewUrl) URL.revokeObjectURL(pendingPreviewUrl)
+      onClearPending()
+      return
     }
 
     if (value) {
       // File đã upload → gọi API xoá Cloudinary
       try {
-        setIsDeleting(true);
-        await deleteMediaApi(value);
-        onDeleteUploaded(value);
-        toast.success('Đã xoá file khỏi hệ thống');
+        setIsDeleting(true)
+        await deleteMediaApi(value)
+        onDeleteUploaded(value)
+        toast.success('Đã xoá file khỏi hệ thống')
       } catch (err: any) {
         // Nếu backend chưa có API → fallback: chỉ xoá khỏi state, không crash
-        console.warn('Delete media API chưa sẵn sàng, chỉ xoá cục bộ:', err);
-        onDeleteUploaded(value);
-        toast.info('Đã xoá khỏi form (file trên server sẽ được dọn dẹp sau)');
+        console.warn('Delete media API chưa sẵn sàng, chỉ xoá cục bộ:', err)
+        onDeleteUploaded(value)
+        toast.info('Đã xoá khỏi form (file trên server sẽ được dọn dẹp sau)')
       } finally {
-        setIsDeleting(false);
+        setIsDeleting(false)
       }
     }
-  };
+  }
 
   return (
     <div className={cn('relative w-full', className)}>
@@ -102,7 +103,11 @@ export function MediaUploadInput({
 
           {mediaType === 'IMAGE' && (
             <div className="aspect-video relative bg-black/5 flex items-center justify-center">
-              <img src={previewSrc} alt="Uploaded preview" className="max-h-[300px] w-auto object-contain" />
+              <img
+                src={previewSrc}
+                alt="Uploaded preview"
+                className="max-h-[300px] w-auto object-contain"
+              />
             </div>
           )}
           {mediaType === 'AUDIO' && (
@@ -129,7 +134,11 @@ export function MediaUploadInput({
               onClick={handleClear}
               disabled={isDeleting}
             >
-              {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" />}
+              {isDeleting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <X className="w-4 h-4" />
+              )}
             </Button>
           </div>
         </div>
@@ -155,5 +164,5 @@ export function MediaUploadInput({
         </div>
       )}
     </div>
-  );
+  )
 }

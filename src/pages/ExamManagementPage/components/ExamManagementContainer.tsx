@@ -1,112 +1,132 @@
-import { ExamTable } from './ExamTable';
-import { ExamFormDialog } from './ExamFormDialog';
-import { DeleteConfirmDialog } from '@/components/common/DeleteConfirmDialog';
-import { Button } from '@/components/ui/button';
-import { Plus, Search, Filter } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { toast } from 'sonner';
-import type { AdminExamItem, ExamCreateBody } from '@/types/exam.type';
+import { ExamTable } from './ExamTable'
+import { ExamFormDialog } from './ExamFormDialog'
+import { DeleteConfirmDialog } from '@/components/common/DeleteConfirmDialog'
+import { Button } from '@/components/ui/button'
+import { Plus, Search } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { toast } from 'sonner'
+import type { AdminExamItem, ExamCreateBody } from '@/types/exam.type'
 
-import { useExamStore } from '@/store/useExamStore';
+import { useExamStore } from '@/store/useExamStore'
+import { useExams, useCreateExam, useUpdateExam, useDeleteExam } from '@/hooks/queries/useExamQuery'
 import {
-  useExams,
-  useCreateExam,
-  useUpdateExam,
-  useDeleteExam
-} from '@/hooks/queries/useExamQuery';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 export function ExamManagementContainer() {
   const {
-    searchTerm, setSearchTerm,
-    page, setPage,
+    searchTerm,
+    setSearchTerm,
+    page,
+    setPage,
     limit,
-    partFilter, setPartFilter,
-    difficultyFilter, setDifficultyFilter,
-    typeFilter, setTypeFilter,
-    statusFilter, setStatusFilter,
-    selectedIds, setSelectedIds,
-    isDialogOpen, openAddDialog, openEditDialog, closeDialog, selectedExam,
-    deletingExam, setDeletingExam,
-    isBulkDeleteOpen, setIsBulkDeleteOpen
-  } = useExamStore();
+    partFilter,
+    setPartFilter,
+    difficultyFilter,
+    setDifficultyFilter,
+    typeFilter,
+    setTypeFilter,
+    statusFilter,
+    setStatusFilter,
+    selectedIds,
+    setSelectedIds,
+    isDialogOpen,
+    openAddDialog,
+    openEditDialog,
+    closeDialog,
+    selectedExam,
+    deletingExam,
+    setDeletingExam,
+    isBulkDeleteOpen,
+    setIsBulkDeleteOpen,
+  } = useExamStore()
 
-  const { data: exams = [], isLoading } = useExams();
-  const createExamMutation = useCreateExam();
-  const updateExamMutation = useUpdateExam();
-  const deleteExamMutation = useDeleteExam();
+  const { data: exams = [], isLoading } = useExams()
+  const createExamMutation = useCreateExam()
+  const updateExamMutation = useUpdateExam()
+  const deleteExamMutation = useDeleteExam()
 
-  const isSaving = createExamMutation.isPending || updateExamMutation.isPending;
+  const isSaving = createExamMutation.isPending || updateExamMutation.isPending
 
   const handleEdit = (exam: AdminExamItem) => {
-    openEditDialog(exam);
-  };
+    openEditDialog(exam)
+  }
 
   const handleAdd = () => {
-    openAddDialog();
-  };
+    openAddDialog()
+  }
 
   const handleSave = async (body: ExamCreateBody) => {
     try {
       if (selectedExam) {
-        await updateExamMutation.mutateAsync({ id: selectedExam.id, data: body });
-        toast.success('Cập nhật đề thi thành công!');
+        await updateExamMutation.mutateAsync({ id: selectedExam.id, data: body })
+        toast.success('Cập nhật đề thi thành công!')
       } else {
-        await createExamMutation.mutateAsync(body);
+        await createExamMutation.mutateAsync(body)
         // The mutate onSuccess already toasts 'Tạo đề thi mới thành công!'
       }
-      closeDialog();
+      closeDialog()
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
 
   const handleToggleStatus = async (exam: AdminExamItem) => {
     try {
-      await updateExamMutation.mutateAsync({ id: exam.id, data: { isPublished: !exam.isPublished } });
-      toast.success(!exam.isPublished ? 'Đã công khai đề thi thành công' : 'Đã gỡ đề thi thành công');
+      await updateExamMutation.mutateAsync({
+        id: exam.id,
+        data: { isPublished: !exam.isPublished },
+      })
+      toast.success(
+        !exam.isPublished ? 'Đã công khai đề thi thành công' : 'Đã gỡ đề thi thành công'
+      )
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
 
   const handleDeleteConfirm = async () => {
-    if (!deletingExam) return;
+    if (!deletingExam) return
     try {
-      await deleteExamMutation.mutateAsync(deletingExam.id);
-      toast.success(`Đã chuyển đề thi "${deletingExam.title}" vào thùng rác thành công`);
+      await deleteExamMutation.mutateAsync(deletingExam.id)
+      toast.success(`Đã chuyển đề thi "${deletingExam.title}" vào thùng rác thành công`)
     } catch (error) {
-      console.error(error);
+      console.error(error)
     } finally {
-      setDeletingExam(null);
+      setDeletingExam(null)
     }
-  };
+  }
 
   const handleBulkDeleteConfirm = async () => {
     try {
-      await Promise.all(selectedIds.map(id => deleteExamMutation.mutateAsync(id)));
-      toast.success(`Đã chuyển ${selectedIds.length} đề thi đã chọn vào thùng rác thành công`);
-      setSelectedIds([]);
+      await Promise.all(selectedIds.map((id) => deleteExamMutation.mutateAsync(id)))
+      toast.success(`Đã chuyển ${selectedIds.length} đề thi đã chọn vào thùng rác thành công`)
+      setSelectedIds([])
     } catch (error) {
-      console.error(error);
+      console.error(error)
     } finally {
-      setIsBulkDeleteOpen(false);
+      setIsBulkDeleteOpen(false)
     }
-  };
+  }
 
-  const filteredExams = exams.filter(e => {
-    const matchSearch = e.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchPart = partFilter === 'ALL' || e.part === partFilter;
-    const matchDifficulty = difficultyFilter === 'ALL' || e.difficulty === difficultyFilter;
-    const matchType = typeFilter === 'ALL' || e.type === typeFilter;
-    const matchStatus = statusFilter === 'ALL' || (statusFilter === 'PUBLISHED' ? e.isPublished : !e.isPublished);
+  const filteredExams = exams.filter((e) => {
+    const matchSearch = e.title.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchPart = partFilter === 'ALL' || e.part === partFilter
+    const matchDifficulty = difficultyFilter === 'ALL' || e.difficulty === difficultyFilter
+    const matchType = typeFilter === 'ALL' || e.type === typeFilter
+    const matchStatus =
+      statusFilter === 'ALL' || (statusFilter === 'PUBLISHED' ? e.isPublished : !e.isPublished)
 
-    return matchSearch && matchPart && matchDifficulty && matchType && matchStatus;
-  });
+    return matchSearch && matchPart && matchDifficulty && matchType && matchStatus
+  })
 
-  const totalItems = filteredExams.length;
-  const totalPages = Math.max(1, Math.ceil(totalItems / limit));
-  const paginatedExams = filteredExams.slice((page - 1) * limit, page * limit);
+  const totalItems = filteredExams.length
+  const totalPages = Math.max(1, Math.ceil(totalItems / limit))
+  const paginatedExams = filteredExams.slice((page - 1) * limit, page * limit)
 
   return (
     <div className="space-y-4 h-full flex flex-col">
@@ -124,7 +144,10 @@ export function ExamManagementContainer() {
           </div>
 
           <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
-            <Button onClick={handleAdd} className="h-10 gap-2 w-full sm:w-auto shadow-md hover:shadow-lg transition-all bg-primary text-primary-foreground hover:bg-primary/95">
+            <Button
+              onClick={handleAdd}
+              className="h-10 gap-2 w-full sm:w-auto shadow-md hover:shadow-lg transition-all bg-primary text-primary-foreground hover:bg-primary/95"
+            >
               <Plus className="w-4 h-4" />
               Thêm đề thi
             </Button>
@@ -230,8 +253,8 @@ export function ExamManagementContainer() {
       {totalPages > 0 && (
         <div className="flex items-center justify-between pt-2 border-t border-border/50 shrink-0">
           <p className="text-sm text-muted-foreground">
-            Hiển thị <span className="font-medium text-foreground">{paginatedExams.length}</span> trên tổng số{' '}
-            <span className="font-medium text-foreground">{totalItems}</span> đề thi
+            Hiển thị <span className="font-medium text-foreground">{paginatedExams.length}</span>{' '}
+            trên tổng số <span className="font-medium text-foreground">{totalItems}</span> đề thi
           </p>
           <div className="flex items-center gap-2">
             <Button
@@ -289,5 +312,5 @@ export function ExamManagementContainer() {
         description={`Bạn có chắc muốn chuyển ${selectedIds.length} đề thi đã chọn vào thùng rác?`}
       />
     </div>
-  );
+  )
 }

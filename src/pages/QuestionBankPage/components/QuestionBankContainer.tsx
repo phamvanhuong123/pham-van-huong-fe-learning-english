@@ -1,70 +1,70 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { Search, Plus, Filter } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { Search, Plus, Filter } from 'lucide-react'
 
-import { getExamsApi } from '@/services/examService';
-import { useQuestions, useSaveQuestion, useDeleteQuestion } from '@/hooks/queries/useQuestionQuery';
+import { getExamsApi } from '@/services/examService'
+import { useQuestions, useSaveQuestion, useDeleteQuestion } from '@/hooks/queries/useQuestionQuery'
 import {
   TOEIC_PARTS,
   DIFFICULTY_OPTIONS,
   PAGE_SIZE_OPTIONS,
   DEFAULT_PAGE_SIZE,
-} from '@/constants/question.constants';
-import type { QuestionQueryParams, QuestionRow } from '@/types/question.type';
-import type { AdminExamItem } from '@/types/exam.type';
+} from '@/constants/question.constants'
+import type { QuestionQueryParams, QuestionRow } from '@/types/question.type'
+import type { AdminExamItem } from '@/types/exam.type'
 
-import { QuestionTable } from './QuestionTable';
-import { CreateQuestionDialog } from './CreateQuestionDialog';
-import { UpdateQuestionDialog } from './UpdateQuestionDialog';
-import { DeleteConfirmDialog } from '@/components/common/DeleteConfirmDialog';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { QuestionTable } from './QuestionTable'
+import { CreateQuestionDialog } from './CreateQuestionDialog'
+import { UpdateQuestionDialog } from './UpdateQuestionDialog'
+import { DeleteConfirmDialog } from '@/components/common/DeleteConfirmDialog'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/components/ui/select'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface EditingItem {
-  data: QuestionRow;
-  isGroup: boolean;
+  data: QuestionRow
+  isGroup: boolean
 }
 
 interface DeletingItem {
-  data: QuestionRow;
-  isGroup: boolean;
+  data: QuestionRow
+  isGroup: boolean
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function QuestionBankContainer() {
   // --- Pagination & Filter state ---
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(DEFAULT_PAGE_SIZE);
-  const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [examId, setExamId] = useState('ALL');
-  const [difficulty, setDifficulty] = useState('ALL');
-  const [part, setPart] = useState('ALL');
+  const [page, setPage] = useState(1)
+  const [limit, setLimit] = useState(DEFAULT_PAGE_SIZE)
+  const [search, setSearch] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+  const [examId, setExamId] = useState('ALL')
+  const [difficulty, setDifficulty] = useState('ALL')
+  const [part, setPart] = useState('ALL')
 
   // --- Dialog state ---
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<EditingItem | null>(null);
-  const [deletingItem, setDeletingItem] = useState<DeletingItem | null>(null);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [editingItem, setEditingItem] = useState<EditingItem | null>(null)
+  const [deletingItem, setDeletingItem] = useState<DeletingItem | null>(null)
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
 
   // --- Debounce search ---
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedSearch(search);
-      setPage(1);
-    }, 400);
-    return () => clearTimeout(timer);
-  }, [search]);
+      setDebouncedSearch(search)
+      setPage(1)
+    }, 400)
+    return () => clearTimeout(timer)
+  }, [search])
 
   // --- Build query params ---
   const queryParams: QuestionQueryParams = {
@@ -74,82 +74,82 @@ export function QuestionBankContainer() {
     ...(examId !== 'ALL' && { examId }),
     ...(difficulty !== 'ALL' && { difficulty }),
     ...(part !== 'ALL' && { part }),
-  };
+  }
 
   // --- Data fetching ---
-  const { data: questionsResponse, isLoading } = useQuestions(queryParams);
+  const { data: questionsResponse, isLoading } = useQuestions(queryParams)
 
   const { data: examsList = [] } = useQuery({
     queryKey: ['admin', 'exams-list'],
     queryFn: async (): Promise<AdminExamItem[]> => {
-      const res = await getExamsApi();
-      const raw = res.data?.data || res.data;
-      return Array.isArray(raw) ? raw : (raw?.exams ?? []);
+      const res = await getExamsApi()
+      const raw = res.data?.data || res.data
+      return Array.isArray(raw) ? raw : (raw?.exams ?? [])
     },
     staleTime: 60_000,
-  });
+  })
 
   // --- Mutations ---
   const closeForm = useCallback(() => {
-    setIsFormOpen(false);
-    setEditingItem(null);
-  }, []);
+    setIsFormOpen(false)
+    setEditingItem(null)
+  }, [])
 
   const closeDelete = useCallback(() => {
-    setDeletingItem(null);
-  }, []);
+    setDeletingItem(null)
+  }, [])
 
-  const saveMutation = useSaveQuestion(closeForm);
+  const saveMutation = useSaveQuestion(closeForm)
 
-  const deleteMutation = useDeleteQuestion(closeDelete);
+  const deleteMutation = useDeleteQuestion(closeDelete)
 
   // --- Handlers ---
   const handleEdit = useCallback((item: QuestionRow, isGroup: boolean) => {
-    setEditingItem({ data: item, isGroup });
-    setIsFormOpen(true);
-  }, []);
+    setEditingItem({ data: item, isGroup })
+    setIsFormOpen(true)
+  }, [])
 
   const handleDeleteClick = useCallback((item: QuestionRow, isGroup: boolean) => {
-    setDeletingItem({ data: item, isGroup });
-  }, []);
+    setDeletingItem({ data: item, isGroup })
+  }, [])
 
   const handleConfirmDelete = useCallback(() => {
-    if (!deletingItem) return;
+    if (!deletingItem) return
     deleteMutation.mutate({
       id: deletingItem.data.id,
       isGroup: deletingItem.isGroup,
-    });
-  }, [deletingItem, deleteMutation]);
+    })
+  }, [deletingItem, deleteMutation])
 
-  const handleExamFilterChange = useCallback((val: string) => {
-    setExamId(val);
-    if (val !== 'ALL') {
-      const ex = examsList.find((e) => e.id === val);
-      if (ex) setPart(ex.part);
-    } else {
-      setPart('ALL');
-    }
-    setPage(1);
-  }, [examsList]);
+  const handleExamFilterChange = useCallback(
+    (val: string) => {
+      setExamId(val)
+      if (val !== 'ALL') {
+        const ex = examsList.find((e) => e.id === val)
+        if (ex) setPart(ex.part)
+      } else {
+        setPart('ALL')
+      }
+      setPage(1)
+    },
+    [examsList]
+  )
 
   const handleOpenCreate = useCallback(() => {
-    setEditingItem(null);
-    setIsFormOpen(true);
-  }, []);
+    setEditingItem(null)
+    setIsFormOpen(true)
+  }, [])
 
-  const pagination = questionsResponse?.pagination;
-  const totalPages = pagination?.totalPages ?? 1;
-  const totalCount = pagination?.total ?? 0;
-  const displayedCount = questionsResponse?.questions?.length ?? 0;
-
+  const pagination = questionsResponse?.pagination
+  const totalPages = pagination?.totalPages ?? 1
+  const totalCount = pagination?.total ?? 0
+  const displayedCount = questionsResponse?.questions?.length ?? 0
 
   return (
     <div className="flex-1 flex flex-col min-h-0 space-y-6">
-
       {/* ── Filters Bar ── */}
       <div className="flex-shrink-0 flex flex-col sm:flex-row gap-4 items-center justify-between bg-zinc-50/50 dark:bg-zinc-900/20 p-4 rounded-xl border border-dashed mb-2">
         <div className="flex flex-wrap w-full sm:w-auto items-center gap-3">
-
           {/* Search */}
           <div className="relative w-full sm:w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
@@ -169,9 +169,13 @@ export function QuestionBankContainer() {
               <SelectValue placeholder="Tất cả đề thi" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="ALL" className="font-bold">Tất cả đề thi</SelectItem>
+              <SelectItem value="ALL" className="font-bold">
+                Tất cả đề thi
+              </SelectItem>
               {examsList.map((ex) => (
-                <SelectItem key={ex.id} value={ex.id}>{ex.title}</SelectItem>
+                <SelectItem key={ex.id} value={ex.id}>
+                  {ex.title}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -179,7 +183,10 @@ export function QuestionBankContainer() {
           {/* Part filter */}
           <Select
             value={part}
-            onValueChange={(v) => { setPart(v); setPage(1); }}
+            onValueChange={(v) => {
+              setPart(v)
+              setPage(1)
+            }}
             disabled={examId !== 'ALL'}
           >
             <SelectTrigger className="w-[140px] h-10 bg-background focus:ring-primary/20 transition-all rounded-full">
@@ -188,7 +195,9 @@ export function QuestionBankContainer() {
             <SelectContent>
               <SelectItem value="ALL">Tất cả Part</SelectItem>
               {TOEIC_PARTS.map((p) => (
-                <SelectItem key={p} value={p}>{p}</SelectItem>
+                <SelectItem key={p} value={p}>
+                  {p}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -196,7 +205,10 @@ export function QuestionBankContainer() {
           {/* Difficulty filter */}
           <Select
             value={difficulty}
-            onValueChange={(v) => { setDifficulty(v); setPage(1); }}
+            onValueChange={(v) => {
+              setDifficulty(v)
+              setPage(1)
+            }}
           >
             <SelectTrigger className="w-[140px] h-10 bg-background focus:ring-primary/20 transition-all rounded-full">
               <SelectValue placeholder="Độ khó" />
@@ -204,7 +216,9 @@ export function QuestionBankContainer() {
             <SelectContent>
               <SelectItem value="ALL">Tất cả độ khó</SelectItem>
               {DIFFICULTY_OPTIONS.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                <SelectItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -235,23 +249,26 @@ export function QuestionBankContainer() {
       <div className="flex-shrink-0 flex items-center justify-between pt-4 border-t border-border">
         <div className="flex items-center gap-4">
           <p className="text-sm text-muted-foreground">
-            Hiển thị{' '}
-            <span className="font-medium text-foreground">{displayedCount}</span>
-            {' '}trên tổng số{' '}
-            <span className="font-medium text-foreground">{totalCount}</span>
+            Hiển thị <span className="font-medium text-foreground">{displayedCount}</span> trên tổng
+            số <span className="font-medium text-foreground">{totalCount}</span>
           </p>
           <div className="flex items-center gap-2">
             <span className="text-xs text-muted-foreground whitespace-nowrap">Số hàng:</span>
             <Select
               value={limit.toString()}
-              onValueChange={(v) => { setLimit(parseInt(v)); setPage(1); }}
+              onValueChange={(v) => {
+                setLimit(parseInt(v))
+                setPage(1)
+              }}
             >
               <SelectTrigger className="h-8 w-[70px]">
                 <SelectValue placeholder={limit.toString()} />
               </SelectTrigger>
               <SelectContent>
                 {PAGE_SIZE_OPTIONS.map((v) => (
-                  <SelectItem key={v} value={v.toString()}>{v}</SelectItem>
+                  <SelectItem key={v} value={v.toString()}>
+                    {v}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -268,7 +285,9 @@ export function QuestionBankContainer() {
             >
               Trang trước
             </Button>
-            <span className="text-sm px-4 font-medium">{page} / {totalPages}</span>
+            <span className="text-sm px-4 font-medium">
+              {page} / {totalPages}
+            </span>
             <Button
               variant="outline"
               size="sm"
@@ -291,7 +310,7 @@ export function QuestionBankContainer() {
               data,
               isGroup,
               editingId: editingItem.data.id,
-            });
+            })
           }}
           initialData={editingItem.data}
           exams={examsList}
@@ -305,7 +324,7 @@ export function QuestionBankContainer() {
             await saveMutation.mutateAsync({
               data,
               isGroup,
-            });
+            })
           }}
           exams={examsList}
           isPending={saveMutation.isPending}
@@ -316,14 +335,15 @@ export function QuestionBankContainer() {
       <DeleteConfirmDialog
         open={!!deletingItem}
         onOpenChange={(open) => {
-          if (!open) closeDelete();
+          if (!open) closeDelete()
         }}
         onConfirm={handleConfirmDelete}
         title="Cảnh báo Xoá"
-        description={`Bạn có chắc chắn muốn xoá ${deletingItem?.isGroup ? 'toàn bộ Nhóm câu hỏi này' : 'Câu hỏi này'
-          } không? Hành động này không thể hoàn tác và có thể xoá cả file Media đính kèm.`}
+        description={`Bạn có chắc chắn muốn xoá ${
+          deletingItem?.isGroup ? 'toàn bộ Nhóm câu hỏi này' : 'Câu hỏi này'
+        } không? Hành động này không thể hoàn tác và có thể xoá cả file Media đính kèm.`}
         isLoading={deleteMutation.isPending}
       />
     </div>
-  );
+  )
 }

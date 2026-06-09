@@ -1,33 +1,33 @@
-import { useState } from 'react';
-import { useUsers } from '@/hooks/useUsers';
-import { UserTable } from './components/UserTable';
-import { UserFilters } from './components/UserFilters';
-import { BanUserModal } from './components/BanUserModal';
-import { AssignRoleModal } from './components/AssignRoleModal';
+import { useState } from 'react'
+import { useUsers } from '@/hooks/useUsers'
+import { UserTable } from './components/UserTable'
+import { UserFilters } from './components/UserFilters'
+import { BanUserModal } from './components/BanUserModal'
+import { AssignRoleModal } from './components/AssignRoleModal'
 
 function UserManagerPage() {
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [role, setRole] = useState('ALL');
-  const [status, setStatus] = useState('ALL');
+  const [page, setPage] = useState(1)
+  const [search, setSearch] = useState('')
+  const [role, setRole] = useState('ALL')
+  const [status, setStatus] = useState('ALL')
 
-  const { data, isLoading, error } = useUsers({ page, limit: 10, search, role, status });
+  const { data, isLoading, error } = useUsers({ page, limit: 10, search, role, status })
 
-  const [banModalOpen, setBanModalOpen] = useState(false);
-  const [assignRoleModalOpen, setAssignRoleModalOpen] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserIsBanned, setSelectedUserIsBanned] = useState(false);
+  const [banModalOpen, setBanModalOpen] = useState(false)
+  const [assignRoleModalOpen, setAssignRoleModalOpen] = useState(false)
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
+  const [selectedUserIsBanned, setSelectedUserIsBanned] = useState(false)
 
   const handleOpenBanModal = (userId: string, isBanned: boolean) => {
-    setSelectedUserId(userId);
-    setSelectedUserIsBanned(isBanned);
-    setBanModalOpen(true);
-  };
+    setSelectedUserId(userId)
+    setSelectedUserIsBanned(isBanned)
+    setBanModalOpen(true)
+  }
 
   const handleOpenAssignRoleModal = (userId: string) => {
-    setSelectedUserId(userId);
-    setAssignRoleModalOpen(true);
-  };
+    setSelectedUserId(userId)
+    setAssignRoleModalOpen(true)
+  }
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -38,14 +38,26 @@ function UserManagerPage() {
         </p>
       </div>
 
-      <UserFilters 
-        search={search} onSearchChange={(v) => { setSearch(v); setPage(1); }}
-        role={role} onRoleChange={(v) => { setRole(v); setPage(1); }}
-        status={status} onStatusChange={(v) => { setStatus(v); setPage(1); }}
+      <UserFilters
+        search={search}
+        onSearchChange={(v) => {
+          setSearch(v)
+          setPage(1)
+        }}
+        role={role}
+        onRoleChange={(v) => {
+          setRole(v)
+          setPage(1)
+        }}
+        status={status}
+        onStatusChange={(v) => {
+          setStatus(v)
+          setPage(1)
+        }}
       />
 
-      <UserTable 
-        users={data?.users || []} 
+      <UserTable
+        users={data?.users || []}
         pagination={data?.pagination}
         isLoading={isLoading}
         error={error}
@@ -54,9 +66,9 @@ function UserManagerPage() {
         onOpenAssignRoleModal={handleOpenAssignRoleModal}
       />
 
-      <BanUserModal 
-        open={banModalOpen} 
-        onOpenChange={setBanModalOpen} 
+      <BanUserModal
+        open={banModalOpen}
+        onOpenChange={setBanModalOpen}
         userId={selectedUserId}
         isCurrentlyBanned={selectedUserIsBanned}
       />
@@ -67,7 +79,7 @@ function UserManagerPage() {
         userId={selectedUserId}
       />
     </div>
-  );
+  )
 }
 
-export default UserManagerPage;
+export default UserManagerPage

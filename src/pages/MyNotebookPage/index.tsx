@@ -1,69 +1,71 @@
-import React, { useEffect, useState } from 'react';
-import { BookOpen, Calendar, Loader2, Search, Trash2 } from 'lucide-react';
-import { getMyNotesApi } from '@/services/profileService';
-import { deleteNoteApi } from '@/services/questionService';
-import { toast } from 'sonner';
-import { format } from 'date-fns';
-import { vi } from 'date-fns/locale';
-import ReactMarkdown from 'react-markdown';
-import { Input } from '@/components/ui/input';
-import { DeleteConfirmDialog } from '@/components/common/DeleteConfirmDialog';
+import React, { useEffect, useState } from 'react'
+import { BookOpen, Calendar, Loader2, Search, Trash2 } from 'lucide-react'
+import { getMyNotesApi } from '@/services/profileService'
+import { deleteNoteApi } from '@/services/questionService'
+import { toast } from 'sonner'
+import { format } from 'date-fns'
+import { vi } from 'date-fns/locale'
+import ReactMarkdown from 'react-markdown'
+import { Input } from '@/components/ui/input'
+import { DeleteConfirmDialog } from '@/components/common/DeleteConfirmDialog'
 
 interface Note {
-  id: string;
-  questionId: string;
-  content: string;
-  updatedAt: string;
+  id: string
+  questionId: string
+  content: string
+  updatedAt: string
   question: {
-    id: string;
-    part: string;
-    questionText: string | null;
-  };
+    id: string
+    part: string
+    questionText: string | null
+  }
 }
 
 const MyNotebookPage: React.FC = () => {
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [noteToDelete, setNoteToDelete] = useState<string | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [notes, setNotes] = useState<Note[]>([])
+  const [loading, setLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [noteToDelete, setNoteToDelete] = useState<string | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const res = await getMyNotesApi();
+        const res = await getMyNotesApi()
         if (res.data && res.data.data) {
-          const validNotes = res.data.data.filter((note: Note) => note.content.trim() !== '');
-          setNotes(validNotes);
+          const validNotes = res.data.data.filter((note: Note) => note.content.trim() !== '')
+          setNotes(validNotes)
         }
       } catch (error) {
-        toast.error('Không thể tải Sổ tay cá nhân');
+        toast.error('Không thể tải Sổ tay cá nhân')
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-    fetchNotes();
-  }, []);
+    }
+    fetchNotes()
+  }, [])
 
   const confirmDeleteNote = async () => {
-    if (!noteToDelete) return;
+    if (!noteToDelete) return
     try {
-      setIsDeleting(true);
-      await deleteNoteApi(noteToDelete);
-      setNotes(notes.filter(note => note.questionId !== noteToDelete));
-      toast.success('Đã xóa ghi chú');
+      setIsDeleting(true)
+      await deleteNoteApi(noteToDelete)
+      setNotes(notes.filter((note) => note.questionId !== noteToDelete))
+      toast.success('Đã xóa ghi chú')
     } catch (error) {
-      toast.error('Không thể xóa ghi chú');
+      toast.error('Không thể xóa ghi chú')
     } finally {
-      setIsDeleting(false);
-      setNoteToDelete(null);
+      setIsDeleting(false)
+      setNoteToDelete(null)
     }
-  };
+  }
 
-  const filteredNotes = notes.filter(note =>
-    note.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (note.question.questionText && note.question.questionText.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const filteredNotes = notes.filter(
+    (note) =>
+      note.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (note.question.questionText &&
+        note.question.questionText.toLowerCase().includes(searchTerm.toLowerCase()))
+  )
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
@@ -72,7 +74,9 @@ const MyNotebookPage: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <BookOpen className="w-6 h-6 text-indigo-600" /> Sổ tay cá nhân
           </h1>
-          <p className="text-gray-500 mt-1">Nơi lưu trữ tất cả các ghi chú và lời giải thích từ AI của bạn.</p>
+          <p className="text-gray-500 mt-1">
+            Nơi lưu trữ tất cả các ghi chú và lời giải thích từ AI của bạn.
+          </p>
         </div>
         <div className="relative w-full md:w-72">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -95,12 +99,17 @@ const MyNotebookPage: React.FC = () => {
             <BookOpen className="w-8 h-8 text-indigo-300" />
           </div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">Cuốn sổ tay đang trống</h3>
-          <p className="text-gray-500">Bạn chưa có ghi chú nào. Hãy ôn tập và lưu lại những kiến thức quan trọng nhé!</p>
+          <p className="text-gray-500">
+            Bạn chưa có ghi chú nào. Hãy ôn tập và lưu lại những kiến thức quan trọng nhé!
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {filteredNotes.map((note) => (
-            <div key={note.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow flex flex-col h-full relative group">
+            <div
+              key={note.id}
+              className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow flex flex-col h-full relative group"
+            >
               <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500 rounded-l-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
               <div className="flex justify-between items-start mb-3">
@@ -145,7 +154,7 @@ const MyNotebookPage: React.FC = () => {
         isLoading={isDeleting}
       />
     </div>
-  );
-};
+  )
+}
 
-export default MyNotebookPage;
+export default MyNotebookPage

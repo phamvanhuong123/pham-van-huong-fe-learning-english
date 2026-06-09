@@ -1,27 +1,40 @@
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Search } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 interface UserFiltersProps {
-  search: string;
-  onSearchChange: (value: string) => void;
-  role: string;
-  onRoleChange: (value: string) => void;
-  status: string;
-  onStatusChange: (value: string) => void;
+  search: string
+  onSearchChange: (value: string) => void
+  role: string
+  onRoleChange: (value: string) => void
+  status: string
+  onStatusChange: (value: string) => void
 }
 
-export function UserFilters({ search, onSearchChange, role, onRoleChange, status, onStatusChange }: UserFiltersProps) {
-  const [localSearch, setLocalSearch] = useState(search);
+export function UserFilters({
+  search,
+  onSearchChange,
+  role,
+  onRoleChange,
+  status,
+  onStatusChange,
+}: UserFiltersProps) {
+  const [localSearch, setLocalSearch] = useState(search)
 
   // Debounce search
   useEffect(() => {
     const timer = setTimeout(() => {
-      onSearchChange(localSearch);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [localSearch, onSearchChange]);
+      onSearchChange(localSearch)
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [localSearch, onSearchChange])
 
   return (
     <div className="flex flex-col md:flex-row gap-4 mb-6 bg-zinc-50/50 dark:bg-zinc-900/20 p-4 rounded-xl border border-dashed">
@@ -60,5 +73,5 @@ export function UserFilters({ search, onSearchChange, role, onRoleChange, status
         </Select>
       </div>
     </div>
-  );
+  )
 }

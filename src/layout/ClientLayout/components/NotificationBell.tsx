@@ -1,27 +1,31 @@
-import { Bell, Check, Clock } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Bell, Check, Clock } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { useNotifications, useMarkAsRead, useMarkAllAsRead } from '@/hooks/queries/useNotificationQuery';
-import { formatDistanceToNow } from 'date-fns';
-import { vi } from 'date-fns/locale';
+} from '@/components/ui/dropdown-menu'
+import {
+  useNotifications,
+  useMarkAsRead,
+  useMarkAllAsRead,
+} from '@/hooks/queries/useNotificationQuery'
+import { formatDistanceToNow } from 'date-fns'
+import { vi } from 'date-fns/locale'
 
 export function NotificationBell() {
-  const { data, isLoading } = useNotifications(1, 20); // Fetch top 20
-  const markAsRead = useMarkAsRead();
-  const markAllAsRead = useMarkAllAsRead();
+  const { data, isLoading } = useNotifications(1, 20) // Fetch top 20
+  const markAsRead = useMarkAsRead()
+  const markAllAsRead = useMarkAllAsRead()
 
-  const notifications = data?.data || [];
-  const unreadCount = data?.meta.unreadCount || 0;
+  const notifications = data?.data || []
+  const unreadCount = data?.meta.unreadCount || 0
 
   const handleMarkAsRead = (id: string, isRead: boolean) => {
     if (!isRead) {
-      markAsRead.mutate(id);
+      markAsRead.mutate(id)
     }
-  };
+  }
 
   return (
     <DropdownMenu>
@@ -73,14 +77,18 @@ export function NotificationBell() {
                 `}
               >
                 <div className="flex justify-between items-start mb-1 gap-2">
-                  <h4 className={`text-sm ${notif.isRead ? 'font-medium text-foreground/80' : 'font-semibold text-primary'}`}>
+                  <h4
+                    className={`text-sm ${notif.isRead ? 'font-medium text-foreground/80' : 'font-semibold text-primary'}`}
+                  >
                     {notif.title}
                   </h4>
                   {!notif.isRead && (
                     <span className="h-2 w-2 mt-1.5 rounded-full bg-primary shrink-0" />
                   )}
                 </div>
-                <p className={`text-xs leading-relaxed ${notif.isRead ? 'text-muted-foreground' : 'text-foreground/80'}`}>
+                <p
+                  className={`text-xs leading-relaxed ${notif.isRead ? 'text-muted-foreground' : 'text-foreground/80'}`}
+                >
                   {notif.body}
                 </p>
                 <span className="flex items-center text-[10px] text-muted-foreground mt-2 font-medium">
@@ -93,5 +101,5 @@ export function NotificationBell() {
         </div>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

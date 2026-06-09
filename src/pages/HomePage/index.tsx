@@ -1,11 +1,19 @@
-import { Link } from 'react-router';
-import { ArrowRight, BookOpen, Crown, FileText, GraduationCap, History, Sparkles } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useAuthStore } from '@/store/useAuthStore';
+import { Link } from 'react-router'
+import {
+  ArrowRight,
+  BookOpen,
+  Crown,
+  FileText,
+  GraduationCap,
+  History,
+  Sparkles,
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { useAuthStore } from '@/store/useAuthStore'
 
 export default function HomePage() {
-  const { userInfo } = useAuthStore();
-  const isVip = userInfo?.isVip;
+  const { userInfo } = useAuthStore()
+  const isVip = userInfo?.isVip
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -31,17 +39,27 @@ export default function HomePage() {
           </h1>
 
           <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-150">
-            Hệ thống luyện đề chuẩn cấu trúc thật, kết hợp học từ vựng thông minh qua Flashcard và ngân hàng ngữ pháp trọng tâm. Tất cả những gì bạn cần để đạt điểm cao.
+            Hệ thống luyện đề chuẩn cấu trúc thật, kết hợp học từ vựng thông minh qua Flashcard và
+            ngân hàng ngữ pháp trọng tâm. Tất cả những gì bạn cần để đạt điểm cao.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300">
-            <Button size="lg" className="w-full sm:w-auto text-base h-14 px-8 rounded-full shadow-lg shadow-primary/25 transition-transform hover:scale-105" asChild>
+            <Button
+              size="lg"
+              className="w-full sm:w-auto text-base h-14 px-8 rounded-full shadow-lg shadow-primary/25 transition-transform hover:scale-105"
+              asChild
+            >
               <Link to="/exams">
                 Bắt đầu làm bài <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
             </Button>
             {!isVip && (
-              <Button size="lg" variant="outline" className="w-full sm:w-auto text-base h-14 px-8 rounded-full border-primary/20 hover:bg-primary/5 transition-transform hover:scale-105" asChild>
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-auto text-base h-14 px-8 rounded-full border-primary/20 hover:bg-primary/5 transition-transform hover:scale-105"
+                asChild
+              >
                 <Link to="/pricing">
                   <Crown className="mr-2 w-5 h-5 text-yellow-500" /> Khám phá gói PRO
                 </Link>
@@ -55,9 +73,12 @@ export default function HomePage() {
       <section className="py-24 bg-muted/30 border-y">
         <div className="container px-4 mx-auto max-w-6xl">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold tracking-tight mb-4">Hệ sinh thái học tập toàn diện</h2>
+            <h2 className="text-3xl font-bold tracking-tight mb-4">
+              Hệ sinh thái học tập toàn diện
+            </h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
-              Không chỉ là luyện đề, TOEIC Master cung cấp cho bạn một lộ trình học tập khép kín từ lúc mất gốc đến khi đạt mục tiêu.
+              Không chỉ là luyện đề, TOEIC Master cung cấp cho bạn một lộ trình học tập khép kín từ
+              lúc mất gốc đến khi đạt mục tiêu.
             </p>
           </div>
 
@@ -69,9 +90,13 @@ export default function HomePage() {
               </div>
               <h3 className="text-lg font-semibold mb-2">Luyện đề thực chiến</h3>
               <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                Kho đề thi phong phú được cập nhật theo cấu trúc mới nhất. Thi thử như thi thật với thời gian đếm ngược.
+                Kho đề thi phong phú được cập nhật theo cấu trúc mới nhất. Thi thử như thi thật với
+                thời gian đếm ngược.
               </p>
-              <Link to="/exams" className="text-sm font-medium text-blue-600 inline-flex items-center hover:underline">
+              <Link
+                to="/exams"
+                className="text-sm font-medium text-blue-600 inline-flex items-center hover:underline"
+              >
                 Vào kho đề <ArrowRight className="w-4 h-4 ml-1" />
               </Link>
             </div>
@@ -83,9 +108,13 @@ export default function HomePage() {
               </div>
               <h3 className="text-lg font-semibold mb-2">Từ vựng Flashcard</h3>
               <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                Học hàng ngàn từ vựng TOEIC chia theo chủ đề. Tích hợp thuật toán thông minh giúp bạn nhớ lâu hơn.
+                Học hàng ngàn từ vựng TOEIC chia theo chủ đề. Tích hợp thuật toán thông minh giúp
+                bạn nhớ lâu hơn.
               </p>
-              <Link to="/vocab" className="text-sm font-medium text-emerald-600 inline-flex items-center hover:underline">
+              <Link
+                to="/vocab"
+                className="text-sm font-medium text-emerald-600 inline-flex items-center hover:underline"
+              >
                 Học từ vựng <ArrowRight className="w-4 h-4 ml-1" />
               </Link>
             </div>
@@ -97,9 +126,13 @@ export default function HomePage() {
               </div>
               <h3 className="text-lg font-semibold mb-2">Ngữ pháp trọng tâm</h3>
               <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                Tổng hợp đầy đủ các chủ điểm ngữ pháp chắc chắn sẽ xuất hiện trong bài thi TOEIC kèm bài tập thực hành.
+                Tổng hợp đầy đủ các chủ điểm ngữ pháp chắc chắn sẽ xuất hiện trong bài thi TOEIC kèm
+                bài tập thực hành.
               </p>
-              <Link to="/grammar" className="text-sm font-medium text-purple-600 inline-flex items-center hover:underline">
+              <Link
+                to="/grammar"
+                className="text-sm font-medium text-purple-600 inline-flex items-center hover:underline"
+              >
                 Ôn ngữ pháp <ArrowRight className="w-4 h-4 ml-1" />
               </Link>
             </div>
@@ -111,9 +144,13 @@ export default function HomePage() {
               </div>
               <h3 className="text-lg font-semibold mb-2">Lịch sử & Thống kê</h3>
               <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                Theo dõi chi tiết lịch sử làm bài, chấm điểm tự động và phân tích sự tiến bộ của bạn qua từng ngày.
+                Theo dõi chi tiết lịch sử làm bài, chấm điểm tự động và phân tích sự tiến bộ của bạn
+                qua từng ngày.
               </p>
-              <Link to="/history" className="text-sm font-medium text-orange-600 inline-flex items-center hover:underline">
+              <Link
+                to="/history"
+                className="text-sm font-medium text-orange-600 inline-flex items-center hover:underline"
+              >
                 Xem lịch sử <ArrowRight className="w-4 h-4 ml-1" />
               </Link>
             </div>
@@ -137,18 +174,24 @@ export default function HomePage() {
                 </div>
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">Tối đa hóa điểm số của bạn</h2>
                 <p className="text-indigo-100 text-lg mb-8 opacity-90">
-                  Nâng cấp lên thẻ thành viên PRO để mở khóa quyền xem giải thích chi tiết đáp án và truy cập không giới hạn vào kho đề thi độc quyền dành riêng cho học viên VIP.
+                  Nâng cấp lên thẻ thành viên PRO để mở khóa quyền xem giải thích chi tiết đáp án và
+                  truy cập không giới hạn vào kho đề thi độc quyền dành riêng cho học viên VIP.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                  <Button size="lg" className="bg-white text-purple-900 hover:bg-white/90 shadow-lg text-base h-12 px-8 rounded-full" asChild>
-                    <Link to="/pricing">
-                      Nâng cấp ngay
-                    </Link>
+                  <Button
+                    size="lg"
+                    className="bg-white text-purple-900 hover:bg-white/90 shadow-lg text-base h-12 px-8 rounded-full"
+                    asChild
+                  >
+                    <Link to="/pricing">Nâng cấp ngay</Link>
                   </Button>
-                  <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm text-base h-12 px-8 rounded-full bg-transparent" asChild>
-                    <Link to="/profile">
-                      Quản lý gói cước
-                    </Link>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm text-base h-12 px-8 rounded-full bg-transparent"
+                    asChild
+                  >
+                    <Link to="/profile">Quản lý gói cước</Link>
                   </Button>
                 </div>
               </div>
@@ -180,5 +223,5 @@ export default function HomePage() {
         </div>
       </footer>
     </div>
-  );
+  )
 }

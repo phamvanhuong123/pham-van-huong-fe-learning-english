@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router';
+import { Outlet } from 'react-router'
 import {
   BookOpen,
   Sparkles,
@@ -7,23 +7,18 @@ import {
   Target,
   Compass,
   BrainCircuit,
-  Award
-} from 'lucide-react';
+  Award,
+} from 'lucide-react'
 
 const AuthLayout = () => {
   return (
     <div className="h-screen max-h-screen w-full flex flex-col lg:flex-row bg-background overflow-hidden relative antialiased">
-
       <div className="hidden lg:flex lg:w-[58%] xl:w-[60%] h-full relative flex-col justify-between p-12 overflow-hidden bg-slate-50 dark:bg-[#0f111a] border-r border-border/40">
-
-   
         <div className="w-100 h-100 rounded-full bg-primary/5 blur-[120px] absolute -top-40 -left-40 animate-aurora-1 pointer-events-none" />
         <div className="w-112.5 h-112.5 rounded-full bg-primary/4 blur-[130px] absolute -right-20 top-1/4 animate-aurora-2 pointer-events-none" />
 
-       
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.015)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-size-[4rem_4rem] pointer-events-none" />
 
-      
         <div className="absolute top-[15%] left-[10%] text-slate-300 dark:text-slate-800 animate-float-1 select-none pointer-events-none">
           <BookOpen className="w-12 h-12" />
         </div>
@@ -50,7 +45,9 @@ const AuthLayout = () => {
           </div>
           <div>
             <h1 className="text-xl font-bold tracking-wider text-foreground">TOEIC MASTER</h1>
-            <p className="text-[10px] text-muted-foreground/60 tracking-widest font-mono">EDTECH PLATFORM</p>
+            <p className="text-[10px] text-muted-foreground/60 tracking-widest font-mono">
+              EDTECH PLATFORM
+            </p>
           </div>
         </div>
 
@@ -66,7 +63,9 @@ const AuthLayout = () => {
               trên con đường chinh phục TOEIC
             </h2>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              Hệ thống cung cấp thư viện đề thi đa dạng, các bài tập thực hành bám sát cấu trúc đề thi thực tế và công cụ theo dõi tiến trình làm bài chi tiết, giúp bạn nâng cấp điểm số của mình một cách có định hướng và hiệu quả.
+              Hệ thống cung cấp thư viện đề thi đa dạng, các bài tập thực hành bám sát cấu trúc đề
+              thi thực tế và công cụ theo dõi tiến trình làm bài chi tiết, giúp bạn nâng cấp điểm số
+              của mình một cách có định hướng và hiệu quả.
             </p>
           </div>
         </div>
@@ -80,9 +79,7 @@ const AuthLayout = () => {
         </div>
       </div>
 
-
       <div className="w-full lg:w-[42%] xl:w-[40%] h-full overflow-y-auto flex flex-col items-center justify-center p-6 sm:p-8 md:p-12 bg-background relative">
-
         {/* Soft background aura for Mobile */}
         <div className="lg:hidden w-[300px] h-[300px] rounded-full bg-primary/5 blur-[80px] absolute top-1/4 -right-10 pointer-events-none" />
         <div className="lg:hidden w-[250px] h-[250px] rounded-full bg-primary/4 blur-[70px] absolute bottom-1/4 -left-10 pointer-events-none" />
@@ -104,9 +101,8 @@ const AuthLayout = () => {
           <p>© 2026 TOEIC Master. All rights reserved.</p>
         </div>
       </div>
-
     </div>
-  );
-};
+  )
+}
 
-export default AuthLayout;
+export default AuthLayout

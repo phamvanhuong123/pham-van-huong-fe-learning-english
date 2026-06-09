@@ -1,73 +1,73 @@
-import { useEffect, useState, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router';
-import { Clock, BarChart, BookOpen, ChevronLeft, Play, ShieldAlert, RotateCcw } from 'lucide-react';
-import { getExamDetailsForClientApi } from '@/services/clientExamService';
-import { Button } from '@/components/ui/button';
+import { useEffect, useState, useMemo } from 'react'
+import { useParams, useNavigate } from 'react-router'
+import { Clock, BarChart, BookOpen, ChevronLeft, Play, ShieldAlert, RotateCcw } from 'lucide-react'
+import { getExamDetailsForClientApi } from '@/services/clientExamService'
+import { Button } from '@/components/ui/button'
 
-import { toast } from 'sonner';
-import type { ClientExamData } from '@/types/clientExam.type';
-import { useClientExamStore } from '@/store/useClientExamStore';
-import { ConfirmDialog } from '@/components/common/ConfirmDialog';
+import { toast } from 'sonner'
+import type { ClientExamData } from '@/types/clientExam.type'
+import { useClientExamStore } from '@/store/useClientExamStore'
+import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 
 function ExamDetailPage() {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const [exam, setExam] = useState<ClientExamData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+  const [exam, setExam] = useState<ClientExamData | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false)
 
   // Lấy trạng thái từ store để kiểm tra xem có bài làm dở không
-  const activeExamId = useClientExamStore((state) => state.examId);
-  const activeStatus = useClientExamStore((state) => state.status);
-  const clearExam = useClientExamStore((state) => state.clearExam);
+  const activeExamId = useClientExamStore((state) => state.examId)
+  const activeStatus = useClientExamStore((state) => state.status)
+  const clearExam = useClientExamStore((state) => state.clearExam)
 
-  const hasActiveSession = activeExamId === id && activeStatus === 'IN_PROGRESS';
+  const hasActiveSession = activeExamId === id && activeStatus === 'IN_PROGRESS'
 
   useEffect(() => {
-    if (!id) return;
+    if (!id) return
     const fetchExamDetails = async () => {
       try {
-        setIsLoading(true);
-        const res = await getExamDetailsForClientApi(id);
-        setExam(res.data.data);
+        setIsLoading(true)
+        const res = await getExamDetailsForClientApi(id)
+        setExam(res.data.data)
       } catch (error) {
-        toast.error('Không tìm thấy đề thi hoặc có lỗi xảy ra.');
-        navigate('/exams');
+        toast.error('Không tìm thấy đề thi hoặc có lỗi xảy ra.')
+        navigate('/exams')
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
-    fetchExamDetails();
-  }, [id, navigate]);
+    }
+    fetchExamDetails()
+  }, [id, navigate])
 
   // Tính toán số lượng câu hỏi và đoạn văn
   const stats = useMemo(() => {
-    if (!exam) return { passages: 0, questions: 0 };
-    let passageCount = 0;
-    let questionCount = 0;
+    if (!exam) return { passages: 0, questions: 0 }
+    let passageCount = 0
+    let questionCount = 0
 
     if (exam.passageGroups) {
-      passageCount += exam.passageGroups.length;
-      exam.passageGroups.forEach(pg => {
-        questionCount += pg.questions.length;
-      });
+      passageCount += exam.passageGroups.length
+      exam.passageGroups.forEach((pg) => {
+        questionCount += pg.questions.length
+      })
     }
     if (exam.questions) {
-      questionCount += exam.questions.length;
+      questionCount += exam.questions.length
     }
 
-    return { passages: passageCount, questions: questionCount };
-  }, [exam]);
+    return { passages: passageCount, questions: questionCount }
+  }, [exam])
 
   if (isLoading) {
     return (
       <div className="flex h-[calc(100vh-64px)] items-center justify-center bg-gray-50/50">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
-    );
+    )
   }
 
-  if (!exam) return null;
+  if (!exam) return null
 
   return (
     <div className="min-h-[calc(100vh-64px)] bg-gray-50/50 py-8">
@@ -81,24 +81,33 @@ function ExamDetailPage() {
         </button>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col md:flex-row">
-
           {/* Cột trái: Thông tin chính & Lưu ý */}
           <div className="flex-1 p-6 md:p-8 flex flex-col">
             <div className="flex gap-2 mb-4">
               <span className="bg-blue-50 border border-blue-100 text-blue-600 px-3 py-1 rounded-md text-xs font-bold tracking-wider uppercase">
                 {exam.part === 'FULL' ? 'FULL TEST' : exam.part.replace('PART', 'PART ')}
               </span>
-              <span className={`px-3 py-1 rounded-md text-xs font-bold tracking-wider uppercase border
-                ${exam.difficulty === 'EASY' ? 'bg-green-50 border-green-100 text-green-600' :
-                  exam.difficulty === 'MEDIUM' ? 'bg-yellow-50 border-yellow-100 text-yellow-600' :
-                    'bg-red-50 border-red-100 text-red-600'}`}
+              <span
+                className={`px-3 py-1 rounded-md text-xs font-bold tracking-wider uppercase border
+                ${
+                  exam.difficulty === 'EASY'
+                    ? 'bg-green-50 border-green-100 text-green-600'
+                    : exam.difficulty === 'MEDIUM'
+                      ? 'bg-yellow-50 border-yellow-100 text-yellow-600'
+                      : 'bg-red-50 border-red-100 text-red-600'
+                }`}
               >
                 {exam.difficulty}
               </span>
             </div>
 
-            <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 leading-tight mb-3">{exam.title}</h1>
-            <p className="text-gray-500 text-base mb-8 flex-1">{exam.description || 'Bài thi đánh giá năng lực theo cấu trúc TOEIC chuẩn. Phù hợp để kiểm tra trình độ hiện tại của bạn.'}</p>
+            <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 leading-tight mb-3">
+              {exam.title}
+            </h1>
+            <p className="text-gray-500 text-base mb-8 flex-1">
+              {exam.description ||
+                'Bài thi đánh giá năng lực theo cấu trúc TOEIC chuẩn. Phù hợp để kiểm tra trình độ hiện tại của bạn.'}
+            </p>
 
             <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200 mt-auto flex gap-3 items-start">
               <ShieldAlert className="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" />
@@ -107,7 +116,10 @@ function ExamDetailPage() {
                 <ul className="text-yellow-700/80 text-xs space-y-1 list-disc pl-4">
                   <li>Hệ thống tự bắt đầu đếm ngược thời gian khi bấm nút.</li>
                   <li>Tiến trình sẽ được lưu tạm khi rớt mạng.</li>
-                  <li><strong>Tuyệt đối không chuyển Tab</strong> hay rời màn hình. Hệ thống sẽ ghi nhận gian lận.</li>
+                  <li>
+                    <strong>Tuyệt đối không chuyển Tab</strong> hay rời màn hình. Hệ thống sẽ ghi
+                    nhận gian lận.
+                  </li>
                 </ul>
               </div>
             </div>
@@ -118,7 +130,9 @@ function ExamDetailPage() {
             <div className="space-y-3 mb-8">
               <div className="bg-white rounded-lg p-3 border border-gray-100 shadow-sm flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="bg-blue-50 p-2 rounded-md"><Clock className="w-5 h-5 text-blue-500" /></div>
+                  <div className="bg-blue-50 p-2 rounded-md">
+                    <Clock className="w-5 h-5 text-blue-500" />
+                  </div>
                   <span className="text-sm font-medium text-gray-600">Thời gian</span>
                 </div>
                 <span className="font-bold text-gray-900">{exam.duration} phút</span>
@@ -126,7 +140,9 @@ function ExamDetailPage() {
 
               <div className="bg-white rounded-lg p-3 border border-gray-100 shadow-sm flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="bg-orange-50 p-2 rounded-md"><BookOpen className="w-5 h-5 text-orange-500" /></div>
+                  <div className="bg-orange-50 p-2 rounded-md">
+                    <BookOpen className="w-5 h-5 text-orange-500" />
+                  </div>
                   <span className="text-sm font-medium text-gray-600">Số câu hỏi</span>
                 </div>
                 <span className="font-bold text-gray-900">{stats.questions}</span>
@@ -134,7 +150,9 @@ function ExamDetailPage() {
 
               <div className="bg-white rounded-lg p-3 border border-gray-100 shadow-sm flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="bg-purple-50 p-2 rounded-md"><BarChart className="w-5 h-5 text-purple-500" /></div>
+                  <div className="bg-purple-50 p-2 rounded-md">
+                    <BarChart className="w-5 h-5 text-purple-500" />
+                  </div>
                   <span className="text-sm font-medium text-gray-600">Đoạn văn</span>
                 </div>
                 <span className="font-bold text-gray-900">{stats.passages}</span>
@@ -163,8 +181,8 @@ function ExamDetailPage() {
               ) : (
                 <Button
                   onClick={() => {
-                    clearExam();
-                    navigate(`/exams/${exam.id}/take`);
+                    clearExam()
+                    navigate(`/exams/${exam.id}/take`)
                   }}
                   className="w-full h-12 font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-sm transition-all"
                 >
@@ -176,21 +194,21 @@ function ExamDetailPage() {
           </div>
         </div>
       </div>
-      
+
       <ConfirmDialog
         open={isConfirmOpen}
         onOpenChange={setIsConfirmOpen}
         onConfirm={() => {
-          setIsConfirmOpen(false);
-          clearExam();
-          navigate(`/exams/${exam.id}/take`);
+          setIsConfirmOpen(false)
+          clearExam()
+          navigate(`/exams/${exam.id}/take`)
         }}
         title="Xác nhận làm lại"
         description="Bắt đầu bài thi mới sẽ xoá toàn bộ tiến trình làm bài hiện tại. Bạn có chắc chắn?"
         variant="destructive"
       />
     </div>
-  );
+  )
 }
 
-export default ExamDetailPage;
+export default ExamDetailPage

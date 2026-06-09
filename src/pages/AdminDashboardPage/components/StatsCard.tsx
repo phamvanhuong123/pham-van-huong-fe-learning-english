@@ -1,21 +1,19 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import type { ElementType } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import type { ElementType } from 'react'
 
 interface StatsCardProps {
-  title: string;
-  value: string | number;
-  icon: ElementType;
-  description?: string;
-  trend?: string; // Optional: e.g. "+12.5%"
+  title: string
+  value: string | number
+  icon: ElementType
+  description?: string
+  trend?: string // Optional: e.g. "+12.5%"
 }
 
 export function StatsCard({ title, value, icon: Icon, description, trend }: StatsCardProps) {
   return (
     <Card className="border border-border/50 shadow-sm bg-card hover:border-primary/50 transition-colors duration-200 rounded-xl">
       <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-        <CardTitle className="text-[13px] font-medium text-muted-foreground">
-          {title}
-        </CardTitle>
+        <CardTitle className="text-[13px] font-medium text-muted-foreground">{title}</CardTitle>
         <Icon className="w-[15px] h-[15px] text-muted-foreground/60" />
       </CardHeader>
       <CardContent>
@@ -27,10 +25,8 @@ export function StatsCard({ title, value, icon: Icon, description, trend }: Stat
             </span>
           )}
         </div>
-        {description && (
-          <p className="text-[13px] text-muted-foreground mt-1">{description}</p>
-        )}
+        {description && <p className="text-[13px] text-muted-foreground mt-1">{description}</p>}
       </CardContent>
     </Card>
-  );
+  )
 }

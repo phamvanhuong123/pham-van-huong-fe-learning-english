@@ -5,9 +5,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { AlertCircle } from "lucide-react"
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { AlertCircle } from 'lucide-react'
 
 interface ConfirmDialogProps {
   open: boolean
@@ -18,7 +18,7 @@ interface ConfirmDialogProps {
   isLoading?: boolean
   confirmText?: string
   cancelText?: string
-  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
   icon?: React.ReactNode
 }
 
@@ -26,12 +26,12 @@ export function ConfirmDialog({
   open,
   onOpenChange,
   onConfirm,
-  title = "Xác nhận",
-  description = "Bạn có chắc chắn muốn thực hiện hành động này không?",
+  title = 'Xác nhận',
+  description = 'Bạn có chắc chắn muốn thực hiện hành động này không?',
   isLoading = false,
-  confirmText = "Xác nhận",
-  cancelText = "Huỷ",
-  variant = "default",
+  confirmText = 'Xác nhận',
+  cancelText = 'Huỷ',
+  variant = 'default',
   icon = <AlertCircle className="h-5 w-5" />,
 }: ConfirmDialogProps) {
   return (
@@ -39,7 +39,9 @@ export function ConfirmDialog({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <div className="flex items-center gap-3 mb-2">
-            <div className={`p-2 rounded-full ${variant === 'destructive' ? 'bg-rose-100 text-rose-600' : 'bg-primary/10 text-primary'}`}>
+            <div
+              className={`p-2 rounded-full ${variant === 'destructive' ? 'bg-rose-100 text-rose-600' : 'bg-primary/10 text-primary'}`}
+            >
               {icon}
             </div>
             <DialogTitle className="text-lg font-bold">{title}</DialogTitle>
@@ -52,12 +54,8 @@ export function ConfirmDialog({
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isLoading}>
             {cancelText}
           </Button>
-          <Button
-            onClick={onConfirm}
-            variant={variant}
-            disabled={isLoading}
-          >
-            {isLoading ? "Đang xử lý..." : confirmText}
+          <Button onClick={onConfirm} variant={variant} disabled={isLoading}>
+            {isLoading ? 'Đang xử lý...' : confirmText}
           </Button>
         </DialogFooter>
       </DialogContent>

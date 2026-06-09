@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router';
+import { useState } from 'react'
+import { Link, NavLink, useNavigate } from 'react-router'
 import {
   User,
   LogOut,
@@ -11,13 +11,13 @@ import {
   Crown,
   GraduationCap,
   Bookmark,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { useAuthStore } from '@/store/useAuthStore';
-import { cn } from '@/lib/utils';
-import { NotificationBell } from './NotificationBell';
-import { handleLogoutApi } from '@/services/authServices';
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { useAuthStore } from '@/store/useAuthStore'
+import { cn } from '@/lib/utils'
+import { NotificationBell } from './NotificationBell'
+import { handleLogoutApi } from '@/services/authServices'
 
 const navItems = [
   { label: 'Trang chủ', to: '/', icon: LayoutDashboard, end: true },
@@ -26,30 +26,29 @@ const navItems = [
   { label: 'Ngữ pháp', to: '/grammar', icon: GraduationCap, end: false },
   { label: 'Sổ tay', to: '/my-notebook', icon: Bookmark, end: false },
   { label: 'Lịch sử', to: '/history', icon: History, end: false },
-];
+]
 
 export function ClientHeader() {
-  const userInfo = useAuthStore(state => state.userInfo);
-  const navigate = useNavigate();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userInfo = useAuthStore((state) => state.userInfo)
+  const navigate = useNavigate()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
 
   const handleLogout = async () => {
     try {
-      await handleLogoutApi();
+      await handleLogoutApi()
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('Logout error:', error)
     }
-    navigate('/login', { replace: true });
-    setUserMenuOpen(false);
-  };
+    navigate('/login', { replace: true })
+    setUserMenuOpen(false)
+  }
 
-  const isAdmin = userInfo?.role === 'ADMIN' || userInfo?.role === 'superAdmin';
+  const isAdmin = userInfo?.role === 'ADMIN' || userInfo?.role === 'superAdmin'
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-
         {/* ── Logo ── */}
         <div className="flex items-center gap-6">
           <Link to="/" className="flex items-center gap-2.5" replace>
@@ -87,8 +86,9 @@ export function ClientHeader() {
         {/* ── Right Section ── */}
         <div className="flex items-center gap-2">
           {/* Go VIP button / VIP Badge */}
-          {userInfo && !isAdmin && (
-            userInfo.isVip ? (
+          {userInfo &&
+            !isAdmin &&
+            (userInfo.isVip ? (
               <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-200 to-yellow-400 text-yellow-900 text-sm font-semibold shadow-sm cursor-default">
                 <Crown className="h-4 w-4 fill-yellow-900" />
                 VIP
@@ -105,8 +105,7 @@ export function ClientHeader() {
                   Nâng cấp VIP
                 </Link>
               </Button>
-            )
-          )}
+            ))}
 
           {/* ── Khi đã đăng nhập: User Menu ── */}
           {userInfo ? (
@@ -142,13 +141,13 @@ export function ClientHeader() {
                 {userMenuOpen && (
                   <>
                     {/* overlay để click ngoài đóng menu */}
-                    <div
-                      className="fixed inset-0 z-40"
-                      onClick={() => setUserMenuOpen(false)}
-                    />
+                    <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
                     <div className="absolute right-0 mt-2 w-56 rounded-lg border bg-popover shadow-md z-50 p-1.5 flex flex-col gap-0.5">
                       <div className="px-2 py-1.5 text-xs text-muted-foreground w-full overflow-hidden flex flex-col gap-0.5">
-                        <span className="font-semibold text-foreground block truncate" title={userInfo.name || userInfo.email}>
+                        <span
+                          className="font-semibold text-foreground block truncate"
+                          title={userInfo.name || userInfo.email}
+                        >
                           {userInfo.name || userInfo.email.split('@')[0]}
                         </span>
                         <span className="block truncate opacity-80" title={userInfo.email}>
@@ -175,8 +174,8 @@ export function ClientHeader() {
                         </Link>
                       )}
 
-                      {!isAdmin && (
-                        userInfo.isVip ? (
+                      {!isAdmin &&
+                        (userInfo.isVip ? (
                           <div className="flex items-center gap-2 px-2 py-1.5 text-sm rounded-md text-yellow-600 font-semibold bg-yellow-500/10 cursor-default">
                             <Crown className="h-4 w-4 fill-yellow-600" /> Thành viên VIP
                           </div>
@@ -188,8 +187,7 @@ export function ClientHeader() {
                           >
                             <Crown className="h-4 w-4" /> Nâng cấp VIP
                           </Link>
-                        )
-                      )}
+                        ))}
 
                       <div className="h-px bg-border my-1" />
 
@@ -295,8 +293,8 @@ export function ClientHeader() {
                     </div>
                     <button
                       onClick={() => {
-                        handleLogout();
-                        setMobileMenuOpen(false);
+                        handleLogout()
+                        setMobileMenuOpen(false)
                       }}
                       className="flex items-center gap-3 w-full px-3 py-2.5 text-sm rounded-md hover:bg-destructive/10 text-destructive transition-colors"
                     >
@@ -324,5 +322,5 @@ export function ClientHeader() {
         </div>
       </div>
     </header>
-  );
+  )
 }

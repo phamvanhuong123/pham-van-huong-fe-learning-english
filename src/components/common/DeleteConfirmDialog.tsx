@@ -5,9 +5,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { AlertTriangle } from "lucide-react"
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { AlertTriangle } from 'lucide-react'
 
 interface DeleteConfirmDialogProps {
   open: boolean
@@ -22,8 +22,8 @@ export function DeleteConfirmDialog({
   open,
   onOpenChange,
   onConfirm,
-  title = "Xác nhận xoá?",
-  description = "Bạn có chắc chắn muốn xoá dữ liệu này không? Hành động này không thể hoàn tác.",
+  title = 'Xác nhận xoá?',
+  description = 'Bạn có chắc chắn muốn xoá dữ liệu này không? Hành động này không thể hoàn tác.',
   isLoading = false,
 }: DeleteConfirmDialogProps) {
   return (
@@ -49,7 +49,7 @@ export function DeleteConfirmDialog({
             className="bg-rose-600 text-white hover:bg-rose-700"
             disabled={isLoading}
           >
-            {isLoading ? "Đang xoá..." : "Xác nhận xoá"}
+            {isLoading ? 'Đang xoá...' : 'Xác nhận xoá'}
           </Button>
         </DialogFooter>
       </DialogContent>

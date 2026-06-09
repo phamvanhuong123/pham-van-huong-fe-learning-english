@@ -1,50 +1,50 @@
-import { create } from 'zustand';
-import type { AdminExamItem } from '../types/exam.type';
+import { create } from 'zustand'
+import type { AdminExamItem } from '../types/exam.type'
 
 interface ExamState {
-  searchTerm: string;
-  setSearchTerm: (term: string) => void;
+  searchTerm: string
+  setSearchTerm: (term: string) => void
 
-  page: number;
-  setPage: (page: number) => void;
+  page: number
+  setPage: (page: number) => void
 
-  limit: number;
-  setLimit: (limit: number) => void;
+  limit: number
+  setLimit: (limit: number) => void
 
-  partFilter: string;
-  setPartFilter: (part: string) => void;
+  partFilter: string
+  setPartFilter: (part: string) => void
 
-  difficultyFilter: string;
-  setDifficultyFilter: (difficulty: string) => void;
+  difficultyFilter: string
+  setDifficultyFilter: (difficulty: string) => void
 
-  typeFilter: string;
-  setTypeFilter: (type: string) => void;
+  typeFilter: string
+  setTypeFilter: (type: string) => void
 
-  statusFilter: string;
-  setStatusFilter: (status: string) => void;
+  statusFilter: string
+  setStatusFilter: (status: string) => void
 
-  selectedIds: string[];
-  setSelectedIds: (ids: string[]) => void;
-  toggleSelectedId: (id: string) => void;
-  toggleAllSelectedIds: (ids: string[]) => void;
-  clearSelectedIds: () => void;
+  selectedIds: string[]
+  setSelectedIds: (ids: string[]) => void
+  toggleSelectedId: (id: string) => void
+  toggleAllSelectedIds: (ids: string[]) => void
+  clearSelectedIds: () => void
 
-  isDialogOpen: boolean;
-  selectedExam: AdminExamItem | null;
-  openAddDialog: () => void;
-  openEditDialog: (exam: AdminExamItem) => void;
-  closeDialog: () => void;
+  isDialogOpen: boolean
+  selectedExam: AdminExamItem | null
+  openAddDialog: () => void
+  openEditDialog: (exam: AdminExamItem) => void
+  closeDialog: () => void
 
-  deletingExam: AdminExamItem | null;
-  setDeletingExam: (exam: AdminExamItem | null) => void;
+  deletingExam: AdminExamItem | null
+  setDeletingExam: (exam: AdminExamItem | null) => void
 
-  isBulkDeleteOpen: boolean;
-  setIsBulkDeleteOpen: (isOpen: boolean) => void;
+  isBulkDeleteOpen: boolean
+  setIsBulkDeleteOpen: (isOpen: boolean) => void
 }
 
 export const useExamStore = create<ExamState>((set) => ({
   searchTerm: '',
-  setSearchTerm: (term) => set({ searchTerm: term, page: 1 }), // Reset page on search
+  setSearchTerm: (term) => set({ searchTerm: term, page: 1 }),
 
   page: 1,
   setPage: (page) => set({ page }),
@@ -66,14 +66,16 @@ export const useExamStore = create<ExamState>((set) => ({
 
   selectedIds: [],
   setSelectedIds: (ids) => set({ selectedIds: ids }),
-  toggleSelectedId: (id) => set((state) => ({
-    selectedIds: state.selectedIds.includes(id)
-      ? state.selectedIds.filter((i) => i !== id)
-      : [...state.selectedIds, id]
-  })),
-  toggleAllSelectedIds: (ids) => set((state) => ({
-    selectedIds: state.selectedIds.length === ids.length ? [] : ids
-  })),
+  toggleSelectedId: (id) =>
+    set((state) => ({
+      selectedIds: state.selectedIds.includes(id)
+        ? state.selectedIds.filter((i) => i !== id)
+        : [...state.selectedIds, id],
+    })),
+  toggleAllSelectedIds: (ids) =>
+    set((state) => ({
+      selectedIds: state.selectedIds.length === ids.length ? [] : ids,
+    })),
   clearSelectedIds: () => set({ selectedIds: [] }),
 
   isDialogOpen: false,
@@ -87,4 +89,4 @@ export const useExamStore = create<ExamState>((set) => ({
 
   isBulkDeleteOpen: false,
   setIsBulkDeleteOpen: (isOpen) => set({ isBulkDeleteOpen: isOpen }),
-}));
+}))

@@ -1,25 +1,21 @@
-import React from 'react';
+import React from 'react'
 
 interface ScoreCircleProps {
-  score: number;
-  maxScore: number;
-  isFullTest: boolean;
+  score: number
+  maxScore: number
+  isFullTest: boolean
 }
 
 export const ScoreCircle: React.FC<ScoreCircleProps> = ({ score, maxScore, isFullTest }) => {
-  const radius = 60;
-  const stroke = 12;
-  const normalizedRadius = radius - stroke * 2;
-  const circumference = normalizedRadius * 2 * Math.PI;
-  const strokeDashoffset = circumference - (score / maxScore) * circumference;
+  const radius = 60
+  const stroke = 12
+  const normalizedRadius = radius - stroke * 2
+  const circumference = normalizedRadius * 2 * Math.PI
+  const strokeDashoffset = circumference - (score / maxScore) * circumference
 
   return (
     <div className="relative flex items-center justify-center">
-      <svg
-        height={radius * 2}
-        width={radius * 2}
-        className="transform -rotate-90"
-      >
+      <svg height={radius * 2} width={radius * 2} className="transform -rotate-90">
         <circle
           stroke="#f3f4f6"
           fill="transparent"
@@ -51,5 +47,5 @@ export const ScoreCircle: React.FC<ScoreCircleProps> = ({ score, maxScore, isFul
         {!isFullTest && <span className="text-xs text-gray-500 font-medium">/ {maxScore}</span>}
       </div>
     </div>
-  );
-};
+  )
+}

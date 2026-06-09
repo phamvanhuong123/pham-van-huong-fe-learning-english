@@ -1,5 +1,5 @@
-import { Outlet } from 'react-router';
-import { ClientHeader } from './components/ClientHeader';
+import { Outlet } from 'react-router'
+import { ClientHeader } from './components/ClientHeader'
 
 function ClientLayout() {
   return (
@@ -11,7 +11,7 @@ function ClientLayout() {
         </div>
       </main>
     </div>
-  );
+  )
 }
 
-export default ClientLayout;
+export default ClientLayout

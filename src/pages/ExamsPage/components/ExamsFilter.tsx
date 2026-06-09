@@ -1,18 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { cn } from '@/lib/utils';
-import { useDebounce } from 'use-debounce';
+import React, { useEffect, useState } from 'react'
+import { Search } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { cn } from '@/lib/utils'
+import { useDebounce } from 'use-debounce'
 
 interface ExamsFilterProps {
-  search: string;
-  setSearch: (val: string) => void;
-  part: string;
-  setPart: (val: string) => void;
-  difficulty: string;
-  setDifficulty: (val: string) => void;
-  onFilter: () => void; // Keep for backward compatibility if parent still uses it manually
+  search: string
+  setSearch: (val: string) => void
+  part: string
+  setPart: (val: string) => void
+  difficulty: string
+  setDifficulty: (val: string) => void
+  onFilter: () => void // Keep for backward compatibility if parent still uses it manually
 }
 
 const PARTS = [
@@ -25,7 +31,7 @@ const PARTS = [
   { value: 'PART5', label: 'Part 5' },
   { value: 'PART6', label: 'Part 6' },
   { value: 'PART7', label: 'Part 7' },
-];
+]
 
 export const ExamsFilter: React.FC<ExamsFilterProps> = ({
   search,
@@ -34,20 +40,20 @@ export const ExamsFilter: React.FC<ExamsFilterProps> = ({
   setPart,
   difficulty,
   setDifficulty,
-  onFilter
+  onFilter,
 }) => {
-  const [localSearch, setLocalSearch] = useState(search);
-  const [debouncedSearch] = useDebounce(localSearch, 500);
+  const [localSearch, setLocalSearch] = useState(search)
+  const [debouncedSearch] = useDebounce(localSearch, 500)
 
   // Auto trigger search when debounced value changes
   useEffect(() => {
     if (debouncedSearch !== search) {
-      setSearch(debouncedSearch);
-      onFilter();
+      setSearch(debouncedSearch)
+      onFilter()
     }
-  }, [debouncedSearch, search, setSearch, onFilter]);
+  }, [debouncedSearch, search, setSearch, onFilter])
 
-  // Handle direct parts/difficulty clicks auto triggering filter in parent due to useEffect there, 
+  // Handle direct parts/difficulty clicks auto triggering filter in parent due to useEffect there,
   // but we can also manually call onFilter if needed. Parent already has useEffect for part/difficulty.
 
   return (
@@ -56,21 +62,21 @@ export const ExamsFilter: React.FC<ExamsFilterProps> = ({
       <div className="flex flex-col md:flex-row gap-4 items-center bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
         <div className="relative flex-1 w-full flex items-center">
           <Search className="absolute left-4 text-slate-400 h-5 w-5" />
-          <Input 
-            placeholder="Tìm kiếm đề thi..." 
+          <Input
+            placeholder="Tìm kiếm đề thi..."
             className="pl-12 h-12 bg-transparent border-none shadow-none focus-visible:ring-0 text-base"
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
           />
         </div>
-        
+
         <div className="h-8 w-px bg-slate-200 hidden md:block"></div>
-        
+
         <div className="w-full md:w-auto px-2 pb-2 md:pb-0">
-          <Select 
-            value={difficulty} 
+          <Select
+            value={difficulty}
             onValueChange={(val) => {
-              setDifficulty(val);
+              setDifficulty(val)
               // Give state time to update in parent, parent's useEffect will catch it
             }}
           >
@@ -94,10 +100,10 @@ export const ExamsFilter: React.FC<ExamsFilterProps> = ({
             key={p.value}
             onClick={() => setPart(p.value)}
             className={cn(
-              "whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
-              part === p.value 
-                ? "bg-slate-900 text-white shadow-md shadow-slate-900/20" 
-                : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:border-slate-300"
+              'whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
+              part === p.value
+                ? 'bg-slate-900 text-white shadow-md shadow-slate-900/20'
+                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:border-slate-300'
             )}
           >
             {p.label}
@@ -105,5 +111,5 @@ export const ExamsFilter: React.FC<ExamsFilterProps> = ({
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
