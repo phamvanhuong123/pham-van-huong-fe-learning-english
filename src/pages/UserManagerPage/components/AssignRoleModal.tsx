@@ -1,35 +1,48 @@
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { useState } from 'react';
-import { useAssignRole } from '@/hooks/useUsers';
-import { useRoles } from '@/hooks/useRoles';
-import { UserCog } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
+import { useState } from 'react'
+import { useAssignRole } from '@/hooks/useUsers'
+import { useRoles } from '@/hooks/useRoles'
+import { UserCog } from 'lucide-react'
 
 interface AssignRoleModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  userId: string | null;
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  userId: string | null
 }
 
 export function AssignRoleModal({ open, onOpenChange, userId }: AssignRoleModalProps) {
-  const [selectedRole, setSelectedRole] = useState<string>('');
-  const { data: roles, isLoading: loadingRoles } = useRoles();
-  const { mutate: assignRole, isPending } = useAssignRole();
+  const [selectedRole, setSelectedRole] = useState<string>('')
+  const { data: roles, isLoading: loadingRoles } = useRoles()
+  const { mutate: assignRole, isPending } = useAssignRole()
 
   const handleConfirm = () => {
-    if (!userId || !selectedRole) return;
+    if (!userId || !selectedRole) return
     assignRole(
       { id: userId, role: selectedRole },
       {
         onSuccess: () => {
-          onOpenChange(false);
-          setSelectedRole('');
-        }
+          onOpenChange(false)
+          setSelectedRole('')
+        },
       }
-    );
-  };
+    )
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -51,12 +64,16 @@ export function AssignRoleModal({ open, onOpenChange, userId }: AssignRoleModalP
             <Label>Vai trò</Label>
             <Select value={selectedRole} onValueChange={setSelectedRole} disabled={loadingRoles}>
               <SelectTrigger>
-                <SelectValue placeholder={loadingRoles ? "Đang tải..." : "Chọn vai trò..."} />
+                <SelectValue placeholder={loadingRoles ? 'Đang tải...' : 'Chọn vai trò...'} />
               </SelectTrigger>
               <SelectContent>
-                {roles?.filter(role => role.name !== 'VIP').map((role) => (
-                  <SelectItem key={role.id} value={role.name}>{role.name}</SelectItem>
-                ))}
+                {roles
+                  ?.filter((role) => role.name !== 'VIP')
+                  .map((role) => (
+                    <SelectItem key={role.id} value={role.name}>
+                      {role.name}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>
@@ -67,10 +84,10 @@ export function AssignRoleModal({ open, onOpenChange, userId }: AssignRoleModalP
             Huỷ
           </Button>
           <Button onClick={handleConfirm} disabled={isPending || !selectedRole}>
-            {isPending ? "Đang cập nhật..." : "Lưu thay đổi"}
+            {isPending ? 'Đang cập nhật...' : 'Lưu thay đổi'}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

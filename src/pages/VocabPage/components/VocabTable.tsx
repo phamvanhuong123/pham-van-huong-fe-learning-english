@@ -1,15 +1,22 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Edit, Trash2, Volume2 } from 'lucide-react';
-import type { Vocab } from '@/types/vocab.type';
-import { playVocabAudio } from '@/utils/audioHelper';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Edit, Trash2, Volume2 } from 'lucide-react'
+import type { Vocab } from '@/types/vocab.type'
+import { playVocabAudio } from '@/utils/audioHelper'
 
 interface VocabTableProps {
-  vocabs: Vocab[];
-  isLoading: boolean;
-  onEdit: (vocab: Vocab) => void;
-  onDelete: (id: string) => void;
+  vocabs: Vocab[]
+  isLoading: boolean
+  onEdit: (vocab: Vocab) => void
+  onDelete: (id: string) => void
 }
 
 const statusColors: Record<string, string> = {
@@ -17,22 +24,26 @@ const statusColors: Record<string, string> = {
   LEARNING: 'bg-yellow-100 text-yellow-800',
   REVIEW: 'bg-orange-100 text-orange-800',
   MASTERED: 'bg-green-100 text-green-800',
-};
+}
 
 const statusLabels: Record<string, string> = {
   NEW: 'Từ mới',
   LEARNING: 'Đang học',
   REVIEW: 'Chờ ôn tập',
   MASTERED: 'Đã thuộc',
-};
+}
 
 export default function VocabTable({ vocabs, isLoading, onEdit, onDelete }: VocabTableProps) {
   if (isLoading) {
-    return <div className="text-center py-10">Đang tải dữ liệu...</div>;
+    return <div className="text-center py-10">Đang tải dữ liệu...</div>
   }
 
   if (vocabs.length === 0) {
-    return <div className="text-center py-10 text-muted-foreground border rounded-md">Chưa có từ vựng nào. Hãy thêm từ mới để bắt đầu học!</div>;
+    return (
+      <div className="text-center py-10 text-muted-foreground border rounded-md">
+        Chưa có từ vựng nào. Hãy thêm từ mới để bắt đầu học!
+      </div>
+    )
   }
 
   return (
@@ -55,7 +66,10 @@ export default function VocabTable({ vocabs, isLoading, onEdit, onDelete }: Voca
                 <div className="flex items-center gap-2">
                   {vocab.word}
                   <span className="text-xs text-muted-foreground">{vocab.phonetic}</span>
-                  <button onClick={() => playVocabAudio(vocab.audioUrl, vocab.word)} className="text-muted-foreground hover:text-primary">
+                  <button
+                    onClick={() => playVocabAudio(vocab.audioUrl, vocab.word)}
+                    className="text-muted-foreground hover:text-primary"
+                  >
                     <Volume2 className="h-4 w-4" />
                   </button>
                 </div>
@@ -67,18 +81,28 @@ export default function VocabTable({ vocabs, isLoading, onEdit, onDelete }: Voca
                 {vocab.toeicTopic && <Badge variant="outline">{vocab.toeicTopic}</Badge>}
               </TableCell>
               <TableCell>
-                <Badge className={statusColors[vocab.schedule?.status || 'NEW']} variant="secondary">
+                <Badge
+                  className={statusColors[vocab.schedule?.status || 'NEW']}
+                  variant="secondary"
+                >
                   {statusLabels[vocab.schedule?.status || 'NEW']}
                 </Badge>
               </TableCell>
               <TableCell className="text-sm text-muted-foreground">
-                {vocab.schedule?.nextReviewAt ? new Date(vocab.schedule.nextReviewAt).toLocaleDateString() : '-'}
+                {vocab.schedule?.nextReviewAt
+                  ? new Date(vocab.schedule.nextReviewAt).toLocaleDateString()
+                  : '-'}
               </TableCell>
               <TableCell className="text-right">
                 <Button variant="ghost" size="icon" onClick={() => onEdit(vocab)}>
                   <Edit className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon" className="text-red-500" onClick={() => onDelete(vocab.id)}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-red-500"
+                  onClick={() => onDelete(vocab.id)}
+                >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </TableCell>
@@ -87,5 +111,5 @@ export default function VocabTable({ vocabs, isLoading, onEdit, onDelete }: Voca
         </TableBody>
       </Table>
     </div>
-  );
+  )
 }

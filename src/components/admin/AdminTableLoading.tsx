@@ -1,9 +1,9 @@
-import { TableRow, TableCell } from '@/components/ui/table';
-import { Skeleton } from '@/components/ui/skeleton';
+import { TableRow, TableCell } from '@/components/ui/table'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface AdminTableLoadingProps {
-  columns?: number;
-  rows?: number;
+  columns?: number
+  rows?: number
 }
 
 export function AdminTableLoading({ columns = 5, rows = 5 }: AdminTableLoadingProps) {
@@ -20,5 +20,5 @@ export function AdminTableLoading({ columns = 5, rows = 5 }: AdminTableLoadingPr
         </TableRow>
       ))}
     </>
-  );
+  )
 }

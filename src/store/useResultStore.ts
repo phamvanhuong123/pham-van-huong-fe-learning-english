@@ -1,31 +1,31 @@
-import { create } from 'zustand';
-import type { ResultRecord, ReviewDetailsResponse } from '@/types/result.type';
+import { create } from 'zustand'
+import type { ResultRecord, ReviewDetailsResponse } from '@/types/result.type'
 
 interface ResultState {
-  currentResult: ResultRecord | null;
-  currentReview: ReviewDetailsResponse | null;
-  history: ResultRecord[];
-  
-  isLoadingResult: boolean;
-  isLoadingHistory: boolean;
-  isLoadingReview: boolean;
+  currentResult: ResultRecord | null
+  currentReview: ReviewDetailsResponse | null
+  history: ResultRecord[]
 
-  setCurrentResult: (result: ResultRecord) => void;
-  setCurrentReview: (review: ReviewDetailsResponse) => void;
-  setHistory: (history: ResultRecord[]) => void;
-  
-  setLoadingResult: (loading: boolean) => void;
-  setLoadingHistory: (loading: boolean) => void;
-  setLoadingReview: (loading: boolean) => void;
+  isLoadingResult: boolean
+  isLoadingHistory: boolean
+  isLoadingReview: boolean
 
-  clear: () => void;
+  setCurrentResult: (result: ResultRecord) => void
+  setCurrentReview: (review: ReviewDetailsResponse) => void
+  setHistory: (history: ResultRecord[]) => void
+
+  setLoadingResult: (loading: boolean) => void
+  setLoadingHistory: (loading: boolean) => void
+  setLoadingReview: (loading: boolean) => void
+
+  clear: () => void
 }
 
 export const useResultStore = create<ResultState>((set) => ({
   currentResult: null,
   currentReview: null,
   history: [],
-  
+
   isLoadingResult: false,
   isLoadingHistory: false,
   isLoadingReview: false,
@@ -38,5 +38,5 @@ export const useResultStore = create<ResultState>((set) => ({
   setLoadingHistory: (isLoadingHistory) => set({ isLoadingHistory }),
   setLoadingReview: (isLoadingReview) => set({ isLoadingReview }),
 
-  clear: () => set({ currentResult: null, currentReview: null, history: [] })
-}));
+  clear: () => set({ currentResult: null, currentReview: null, history: [] }),
+}))

@@ -1,22 +1,21 @@
-import { Route, Navigate } from 'react-router';
-import ProtectedRoute from '@/layout/ProtectedRoute';
+import { Route, Navigate } from 'react-router'
+import ProtectedRoute from '@/layout/ProtectedRoute'
 import DashboardLayout from '@/layout/DasboardLayout'
-import AdminDashboardPage from '@/pages/AdminDashboardPage';
-import UserManagerPage from '@/pages/UserManagerPage';
-import RoleManagerPage from '@/pages/RoleManagerPage';
-import SubscriptionManagerPage from '@/pages/SubscriptionManagerPage';
-import QuestionBankPage from '@/pages/QuestionBankPage';
-import ExamManagementPage from '@/pages/ExamManagementPage';
-import AdminNotificationsPage from '@/pages/AdminNotificationsPage';
-import TrashManagerPage from '@/pages/TrashManagerPage';
-import AdminVocabPage from '@/pages/AdminVocabPage';
-import AdminGrammarPage from '@/pages/AdminGrammarPage';
-import AdminGrammarDetailPage from '@/pages/AdminGrammarDetailPage';
-import UserDetailPage from '@/pages/UserDetailPage';
-import AdminResultDetailPage from '@/pages/AdminResultDetailPage';
-import AdminLogsPage from '@/pages/AdminLogsPage';
-import { PERMISSIONS } from '@/config/rbacConfig';
-
+import AdminDashboardPage from '@/pages/AdminDashboardPage'
+import UserManagerPage from '@/pages/UserManagerPage'
+import RoleManagerPage from '@/pages/RoleManagerPage'
+import SubscriptionManagerPage from '@/pages/SubscriptionManagerPage'
+import QuestionBankPage from '@/pages/QuestionBankPage'
+import ExamManagementPage from '@/pages/ExamManagementPage'
+import AdminNotificationsPage from '@/pages/AdminNotificationsPage'
+import TrashManagerPage from '@/pages/TrashManagerPage'
+import AdminVocabPage from '@/pages/AdminVocabPage'
+import AdminGrammarPage from '@/pages/AdminGrammarPage'
+import AdminGrammarDetailPage from '@/pages/AdminGrammarDetailPage'
+import UserDetailPage from '@/pages/UserDetailPage'
+import AdminResultDetailPage from '@/pages/AdminResultDetailPage'
+import AdminLogsPage from '@/pages/AdminLogsPage'
+import { PERMISSIONS } from '@/config/rbacConfig'
 
 function DashboardRoute() {
   return (
@@ -27,7 +26,7 @@ function DashboardRoute() {
       <Route element={<DashboardLayout />}>
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<AdminDashboardPage />} />
-        
+
         <Route element={<ProtectedRoute requiredPermissions={[PERMISSIONS.USER_MANAGE]} />}>
           <Route path="users" element={<UserManagerPage />} />
           <Route path="users/:id" element={<UserDetailPage />} />
@@ -66,10 +65,9 @@ function DashboardRoute() {
           <Route path="notifications" element={<AdminNotificationsPage />} />
           <Route path="trash" element={<TrashManagerPage />} />
         </Route>
-
       </Route>
     </Route>
-  );
+  )
 }
 
-export default DashboardRoute;
+export default DashboardRoute

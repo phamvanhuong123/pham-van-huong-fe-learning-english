@@ -1,19 +1,19 @@
-import { Route } from 'react-router';
-import ClientLayout from '@/layout/ClientLayout';
-import ProtectedRoute from '@/layout/ProtectedRoute';
-import HomePage from '@/pages/HomePage';
-import ExamsPage from '@/pages/ExamsPage';
-import VocabPage from '@/pages/VocabPage';
-import GrammarPage from '@/pages/GrammarPage';
-import GrammarPracticePage from '@/pages/GrammarPracticePage';
-import HistoryPage from '@/pages/HistoryPage';
-import ExamDetailPage from '@/pages/ExamDetailPage';
-import { ClientExamWorkspacePage } from '@/pages/ClientExamWorkspacePage';
-import ScoreReportPage from '@/pages/ScoreReportPage';
-import ReviewModePage from '@/pages/ReviewModePage';
-import UpgradeVipPage from '@/pages/UpgradeVipPage';
-import ProfilePage from '@/pages/ProfilePage';
-import MyNotebookPage from '@/pages/MyNotebookPage';
+import { Route } from 'react-router'
+import ClientLayout from '@/layout/ClientLayout'
+import ProtectedRoute from '@/layout/ProtectedRoute'
+import HomePage from '@/pages/HomePage'
+import ExamsPage from '@/pages/ExamsPage'
+import VocabPage from '@/pages/VocabPage'
+import GrammarPage from '@/pages/GrammarPage'
+import GrammarPracticePage from '@/pages/GrammarPracticePage'
+import HistoryPage from '@/pages/HistoryPage'
+import ExamDetailPage from '@/pages/ExamDetailPage'
+import { ClientExamWorkspacePage } from '@/pages/ClientExamWorkspacePage'
+import ScoreReportPage from '@/pages/ScoreReportPage'
+import ReviewModePage from '@/pages/ReviewModePage'
+import UpgradeVipPage from '@/pages/UpgradeVipPage'
+import ProfilePage from '@/pages/ProfilePage'
+import MyNotebookPage from '@/pages/MyNotebookPage'
 
 function ClientRoute() {
   return (
@@ -38,7 +38,7 @@ function ClientRoute() {
         <Route path="results/:resultId/review" element={<ReviewModePage />} />
       </Route>
     </>
-  );
+  )
 }
 
-export default ClientRoute;
+export default ClientRoute

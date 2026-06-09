@@ -1,18 +1,18 @@
-import { motion } from 'framer-motion';
-import { Check, Sparkles } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import type { SubscriptionPlan } from '@/types/subscription.type';
+import { motion } from 'framer-motion'
+import { Check, Sparkles } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import type { SubscriptionPlan } from '@/types/subscription.type'
 
 interface PlanCardProps {
-  plan: SubscriptionPlan;
-  title: string;
-  price: number;
-  originalPrice?: number;
-  months: number;
-  features: string[];
-  isPopular?: boolean;
-  isSelected: boolean;
-  onSelect: (plan: SubscriptionPlan, amount: number) => void;
+  plan: SubscriptionPlan
+  title: string
+  price: number
+  originalPrice?: number
+  months: number
+  features: string[]
+  isPopular?: boolean
+  isSelected: boolean
+  onSelect: (plan: SubscriptionPlan, amount: number) => void
 }
 
 export default function PlanCard({
@@ -24,7 +24,7 @@ export default function PlanCard({
   features,
   isPopular,
   isSelected,
-  onSelect
+  onSelect,
 }: PlanCardProps) {
   return (
     <motion.div
@@ -32,10 +32,10 @@ export default function PlanCard({
       whileTap={{ scale: 0.98 }}
       onClick={() => onSelect(plan, price)}
       className={cn(
-        "relative p-6 rounded-2xl cursor-pointer border-2 transition-all duration-300",
-        isSelected 
-          ? "border-primary bg-primary/5 shadow-lg shadow-primary/10" 
-          : "border-border bg-card hover:border-primary/50"
+        'relative p-6 rounded-2xl cursor-pointer border-2 transition-all duration-300',
+        isSelected
+          ? 'border-primary bg-primary/5 shadow-lg shadow-primary/10'
+          : 'border-border bg-card hover:border-primary/50'
       )}
     >
       {isPopular && (
@@ -73,12 +73,10 @@ export default function PlanCard({
             <div className="mt-1 bg-primary/10 rounded-full p-0.5">
               <Check className="w-4 h-4 text-primary" />
             </div>
-            <span className="text-sm text-muted-foreground leading-tight">
-              {feature}
-            </span>
+            <span className="text-sm text-muted-foreground leading-tight">{feature}</span>
           </li>
         ))}
       </ul>
     </motion.div>
-  );
+  )
 }

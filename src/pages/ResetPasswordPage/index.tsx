@@ -1,30 +1,42 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Link, useSearchParams } from 'react-router';
-import { useMutation } from '@tanstack/react-query';
-import { resetPasswordApi } from '@/services/authServices';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertTriangle, CheckCircle } from 'lucide-react';
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { Link, useSearchParams } from 'react-router'
+import { useMutation } from '@tanstack/react-query'
+import { resetPasswordApi } from '@/services/authServices'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { AlertTriangle, CheckCircle } from 'lucide-react'
 
-const resetPasswordSchema = z.object({
-  newPassword: z.string().min(8, "Mật khẩu phải có ít nhất 8 ký tự").regex(/\d/, "Mật khẩu phải chứa ít nhất 1 chữ số"),
-  confirmPassword: z.string()
-}).refine(data => data.newPassword === data.confirmPassword, {
-  message: "Mật khẩu xác nhận không khớp",
-  path: ["confirmPassword"]
-});
+const resetPasswordSchema = z
+  .object({
+    newPassword: z
+      .string()
+      .min(8, 'Mật khẩu phải có ít nhất 8 ký tự')
+      .regex(/\d/, 'Mật khẩu phải chứa ít nhất 1 chữ số'),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: 'Mật khẩu xác nhận không khớp',
+    path: ['confirmPassword'],
+  })
 
-type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
+type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>
 
 const ResetPasswordPage = () => {
-  const [searchParams] = useSearchParams();
-  const token = searchParams.get('token');
-  const [success, setSuccess] = useState(false);
+  const [searchParams] = useSearchParams()
+  const token = searchParams.get('token')
+  const [success, setSuccess] = useState(false)
 
   const {
     register,
@@ -32,19 +44,23 @@ const ResetPasswordPage = () => {
     formState: { errors },
   } = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordSchema),
-  });
+  })
 
-  const { mutate: resetPassword, isPending, error } = useMutation({
+  const {
+    mutate: resetPassword,
+    isPending,
+    error,
+  } = useMutation({
     mutationFn: (newPassword: string) => resetPasswordApi({ token: token || '', newPassword }),
     onSuccess: () => {
-      setSuccess(true);
-    }
-  });
+      setSuccess(true)
+    },
+  })
 
   const onSubmit = (data: ResetPasswordFormValues) => {
-    if (!token) return;
-    resetPassword(data.newPassword);
-  };
+    if (!token) return
+    resetPassword(data.newPassword)
+  }
 
   if (!token) {
     return (
@@ -64,7 +80,7 @@ const ResetPasswordPage = () => {
           </Button>
         </CardFooter>
       </Card>
-    );
+    )
   }
 
   if (success) {
@@ -85,33 +101,45 @@ const ResetPasswordPage = () => {
           </Button>
         </CardFooter>
       </Card>
-    );
+    )
   }
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-xl font-bold">Đặt lại mật khẩu</CardTitle>
-        <CardDescription>
-          Nhập mật khẩu mới của bạn bên dưới.
-        </CardDescription>
+        <CardDescription>Nhập mật khẩu mới của bạn bên dưới.</CardDescription>
       </CardHeader>
       <CardContent>
         {error && (
           <div className="bg-rose-50 text-rose-600 text-sm p-3 rounded-md mb-4 border border-rose-200">
-            {(error as any)?.response?.data?.message || "Đã xảy ra lỗi khi đặt lại mật khẩu."}
+            {(error as any)?.response?.data?.message || 'Đã xảy ra lỗi khi đặt lại mật khẩu.'}
           </div>
         )}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-left">
           <div className="space-y-2">
             <Label htmlFor="newPassword">Mật khẩu mới</Label>
-            <Input id="newPassword" type="password" placeholder="••••••••" {...register('newPassword')} />
-            {errors.newPassword && <p className="text-sm text-destructive mt-1">{errors.newPassword.message}</p>}
+            <Input
+              id="newPassword"
+              type="password"
+              placeholder="••••••••"
+              {...register('newPassword')}
+            />
+            {errors.newPassword && (
+              <p className="text-sm text-destructive mt-1">{errors.newPassword.message}</p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="confirmPassword">Xác nhận mật khẩu mới</Label>
-            <Input id="confirmPassword" type="password" placeholder="••••••••" {...register('confirmPassword')} />
-            {errors.confirmPassword && <p className="text-sm text-destructive mt-1">{errors.confirmPassword.message}</p>}
+            <Input
+              id="confirmPassword"
+              type="password"
+              placeholder="••••••••"
+              {...register('confirmPassword')}
+            />
+            {errors.confirmPassword && (
+              <p className="text-sm text-destructive mt-1">{errors.confirmPassword.message}</p>
+            )}
           </div>
           <Button type="submit" className="w-full" disabled={isPending}>
             {isPending ? 'Đang xử lý...' : 'Xác nhận đổi mật khẩu'}
@@ -119,7 +147,7 @@ const ResetPasswordPage = () => {
         </form>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export default ResetPasswordPage;
+export default ResetPasswordPage

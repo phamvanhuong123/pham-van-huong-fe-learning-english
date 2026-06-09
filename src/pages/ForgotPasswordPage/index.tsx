@@ -1,45 +1,54 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Link } from 'react-router';
-import { useMutation } from '@tanstack/react-query';
-import { forgotPasswordApi } from '@/services/authServices';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { toast } from 'sonner';
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { Link } from 'react-router'
+import { useMutation } from '@tanstack/react-query'
+import { forgotPasswordApi } from '@/services/authServices'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { toast } from 'sonner'
 
 const forgotPasswordSchema = z.object({
-  email: z.string().email("Email không hợp lệ"),
-});
+  email: z.string().email('Email không hợp lệ'),
+})
 
-type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
+type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>
 
 const ForgotPasswordPage = () => {
-  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null)
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<ForgotPasswordFormValues>({
     resolver: zodResolver(forgotPasswordSchema),
-  });
+  })
 
   const { mutate: forgotPassword, isPending } = useMutation({
     mutationFn: (email: string) => forgotPasswordApi(email),
     onSuccess: () => {
-      setSuccessMsg("Một link đặt lại mật khẩu đã được gửi đến email của bạn. Vui lòng kiểm tra hộp thư.");
+      setSuccessMsg(
+        'Một link đặt lại mật khẩu đã được gửi đến email của bạn. Vui lòng kiểm tra hộp thư.'
+      )
     },
     onError: (error: any) => {
-      toast.error(error?.response?.data?.message || 'Có lỗi xảy ra, vui lòng thử lại sau.');
-    }
-  });
+      toast.error(error?.response?.data?.message || 'Có lỗi xảy ra, vui lòng thử lại sau.')
+    },
+  })
 
   const onSubmit = (data: ForgotPasswordFormValues) => {
-    forgotPassword(data.email);
-  };
+    forgotPassword(data.email)
+  }
 
   return (
     <Card>
@@ -59,7 +68,9 @@ const ForgotPasswordPage = () => {
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" placeholder="m@example.com" {...register('email')} />
-              {errors.email && <p className="text-sm text-destructive mt-1">{errors.email.message}</p>}
+              {errors.email && (
+                <p className="text-sm text-destructive mt-1">{errors.email.message}</p>
+              )}
             </div>
             <Button type="submit" className="w-full" disabled={isPending}>
               {isPending ? 'Đang gửi...' : 'Gửi link khôi phục'}
@@ -73,7 +84,7 @@ const ForgotPasswordPage = () => {
         </Button>
       </CardFooter>
     </Card>
-  );
-};
+  )
+}
 
-export default ForgotPasswordPage;
+export default ForgotPasswordPage

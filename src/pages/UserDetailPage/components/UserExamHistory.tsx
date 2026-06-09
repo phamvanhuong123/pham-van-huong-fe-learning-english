@@ -1,23 +1,23 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router';
-import { useQuery } from '@tanstack/react-query';
-import { adminService } from '@/services/adminService';
-import { Button } from '@/components/ui/button';
-import { format } from 'date-fns';
-import { vi } from 'date-fns/locale';
-import { Badge } from '@/components/ui/badge';
-import { Eye, Clock } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { useState } from 'react'
+import { useNavigate } from 'react-router'
+import { useQuery } from '@tanstack/react-query'
+import { adminService } from '@/services/adminService'
+import { Button } from '@/components/ui/button'
+import { format } from 'date-fns'
+import { vi } from 'date-fns/locale'
+import { Badge } from '@/components/ui/badge'
+import { Eye, Clock } from 'lucide-react'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export function UserExamHistory({ userId }: { userId: string }) {
-  const [page, setPage] = useState(1);
-  const navigate = useNavigate();
+  const [page, setPage] = useState(1)
+  const navigate = useNavigate()
 
   const { data, isLoading } = useQuery({
     queryKey: ['adminUserResults', userId, page],
     queryFn: () => adminService.getUserResults(userId, { page, limit: 10 }),
-    enabled: !!userId
-  });
+    enabled: !!userId,
+  })
 
   return (
     <div className="space-y-4">
@@ -49,11 +49,13 @@ export function UserExamHistory({ userId }: { userId: string }) {
                 <tr key={r.id} className="hover:bg-muted/50 transition-colors">
                   <td className="px-4 py-3 font-medium">
                     {r.exam?.title || 'Đề thi đã bị xóa'}
-                    {r.exam?.type === 'VIP' && <Badge variant="secondary" className="ml-2 text-[10px]">VIP</Badge>}
+                    {r.exam?.type === 'VIP' && (
+                      <Badge variant="secondary" className="ml-2 text-[10px]">
+                        VIP
+                      </Badge>
+                    )}
                   </td>
-                  <td className="px-4 py-3 text-center font-bold text-primary">
-                    {r.score}
-                  </td>
+                  <td className="px-4 py-3 text-center font-bold text-primary">{r.score}</td>
                   <td className="px-4 py-3 text-center">
                     <span className="text-emerald-600 font-medium">{r.correctQ}</span> / {r.totalQ}
                   </td>
@@ -64,11 +66,13 @@ export function UserExamHistory({ userId }: { userId: string }) {
                     </div>
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
-                    {r.submittedAt ? format(new Date(r.submittedAt), 'HH:mm dd/MM/yy', { locale: vi }) : 'Đang làm'}
+                    {r.submittedAt
+                      ? format(new Date(r.submittedAt), 'HH:mm dd/MM/yy', { locale: vi })
+                      : 'Đang làm'}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="sm"
                       onClick={() => navigate(`/admin/results/${r.id}`)}
                       disabled={!r.submittedAt}
@@ -80,25 +84,25 @@ export function UserExamHistory({ userId }: { userId: string }) {
               ))}
             </tbody>
           </table>
-          
+
           {data?.pagination.totalPages > 1 && (
             <div className="p-4 border-t flex justify-end gap-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 disabled={page === 1}
-                onClick={() => setPage(p => p - 1)}
+                onClick={() => setPage((p) => p - 1)}
               >
                 Trước
               </Button>
               <div className="flex items-center px-4 text-sm font-medium">
-                Trang {page} / {data.pagination.totalPages}
+                Trang {page} / {data?.pagination.totalPages}
               </div>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
-                disabled={page === data.pagination.totalPages}
-                onClick={() => setPage(p => p + 1)}
+                disabled={page === data?.pagination.totalPages}
+                onClick={() => setPage((p) => p + 1)}
               >
                 Sau
               </Button>
@@ -107,5 +111,5 @@ export function UserExamHistory({ userId }: { userId: string }) {
         </div>
       )}
     </div>
-  );
+  )
 }

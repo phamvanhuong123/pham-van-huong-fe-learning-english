@@ -1,26 +1,42 @@
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search } from 'lucide-react';
-import type { VocabStatus } from '@/types/vocab.type';
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Search } from 'lucide-react'
+import type { VocabStatus } from '@/types/vocab.type'
+import { useVocabTopics } from '@/hooks/queries/useVocabQuery'
 
 interface VocabFiltersProps {
-  search: string;
-  setSearch: (val: string) => void;
-  status: VocabStatus | 'ALL';
-  setStatus: (val: VocabStatus | 'ALL') => void;
-  toeicTopic: string;
-  setToeicTopic: (val: string) => void;
-  onAddClick: () => void;
-  onImportClick: () => void;
+  search: string
+  setSearch: (val: string) => void
+  status: VocabStatus | 'ALL'
+  setStatus: (val: VocabStatus | 'ALL') => void
+  toeicTopic: string
+  setToeicTopic: (val: string) => void
+  onAddClick: () => void
+  onImportClick: () => void
 }
 
-const TOPICS = ['Business', 'Office', 'Travel', 'Health', 'Finance', 'General'];
+export default function VocabFilters({
+  search,
+  setSearch,
+  status,
+  setStatus,
+  toeicTopic,
+  setToeicTopic,
+  onAddClick,
+  onImportClick,
+}: VocabFiltersProps) {
+  const { data: topics = [] } = useVocabTopics()
 
-export default function VocabFilters({ search, setSearch, status, setStatus, toeicTopic, setToeicTopic, onAddClick, onImportClick }: VocabFiltersProps) {
   return (
     <div className="flex flex-col sm:flex-row gap-4 mb-6">
-      <div className="relative flex-1" >
+      <div className="relative flex-1">
         <Search className="absolute left-3 top-[22px] -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
         <Input
           placeholder="Tìm kiếm từ vựng..."
@@ -43,22 +59,29 @@ export default function VocabFilters({ search, setSearch, status, setStatus, toe
         </SelectContent>
       </Select>
 
-      <Select value={toeicTopic || "ALL"} onValueChange={(val) => setToeicTopic(val === "ALL" ? "" : val)}>
+      <Select
+        value={toeicTopic || 'ALL'}
+        onValueChange={(val) => setToeicTopic(val === 'ALL' ? '' : val)}
+      >
         <SelectTrigger className="w-[180px] h-10 bg-background rounded-full focus:ring-primary/20 transition-all">
           <SelectValue placeholder="Chủ đề TOEIC" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="ALL">Tất cả chủ đề</SelectItem>
-          {TOPICS.map(topic => (
-            <SelectItem key={topic} value={topic}>{topic}</SelectItem>
+          {topics.map((topic) => (
+            <SelectItem key={topic} value={topic}>
+              {topic}
+            </SelectItem>
           ))}
         </SelectContent>
       </Select>
 
       <div className="flex gap-2">
-        <Button variant="outline" onClick={onImportClick}>Import CSV</Button>
+        <Button variant="outline" onClick={onImportClick}>
+          Import CSV
+        </Button>
         <Button onClick={onAddClick}>+ Thêm từ</Button>
       </div>
     </div>
-  );
+  )
 }

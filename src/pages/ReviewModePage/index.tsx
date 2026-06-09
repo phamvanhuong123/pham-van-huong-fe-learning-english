@@ -1,134 +1,139 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useParams, useNavigate } from 'react-router';
-import { toast } from 'sonner';
-import { getReviewDetailsApi } from '@/services/resultService';
-import { useResultStore } from '@/store/useResultStore';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
-import { ReviewQuestionPalette } from './components/ReviewQuestionPalette';
-import { ExamToolbar } from '@/pages/ClientExamWorkspacePage/components/ExamToolbar';
+import { useEffect, useMemo, useState } from 'react'
+import { useParams, useNavigate } from 'react-router'
+import { toast } from 'sonner'
+import { getReviewDetailsApi } from '@/services/resultService'
+import { useResultStore } from '@/store/useResultStore'
+import { Button } from '@/components/ui/button'
+import { ArrowLeft } from 'lucide-react'
+import { ReviewQuestionPalette } from './components/ReviewQuestionPalette'
+import { ExamToolbar } from '@/pages/ClientExamWorkspacePage/components/ExamToolbar'
 
-import { ReviewPart1Viewer } from './components/viewers/ReviewPart1Viewer';
-import { ReviewPart2Viewer } from './components/viewers/ReviewPart2Viewer';
-import { ReviewPart34Viewer } from './components/viewers/ReviewPart34Viewer';
-import { ReviewPart5Viewer } from './components/viewers/ReviewPart5Viewer';
-import { ReviewPart67Viewer } from './components/viewers/ReviewPart67Viewer';
+import { ReviewPart1Viewer } from './components/viewers/ReviewPart1Viewer'
+import { ReviewPart2Viewer } from './components/viewers/ReviewPart2Viewer'
+import { ReviewPart34Viewer } from './components/viewers/ReviewPart34Viewer'
+import { ReviewPart5Viewer } from './components/viewers/ReviewPart5Viewer'
+import { ReviewPart67Viewer } from './components/viewers/ReviewPart67Viewer'
 function ReviewModePage() {
-  const { resultId } = useParams<{ resultId: string }>();
-  const navigate = useNavigate();
-  const { currentReview, setCurrentReview, isLoadingReview, setLoadingReview } = useResultStore();
-  const [activePart, setActivePart] = useState<string>('');
+  const { resultId } = useParams<{ resultId: string }>()
+  const navigate = useNavigate()
+  const { currentReview, setCurrentReview, isLoadingReview, setLoadingReview } = useResultStore()
+  const [activePart, setActivePart] = useState<string>('')
 
   useEffect(() => {
-    if (!resultId) return;
+    if (!resultId) return
 
     const fetchReview = async () => {
       try {
-        setLoadingReview(true);
-        const res = await getReviewDetailsApi(resultId);
-        setCurrentReview(res.data.data);
+        setLoadingReview(true)
+        const res = await getReviewDetailsApi(resultId)
+        setCurrentReview(res.data.data)
       } catch (error) {
-        toast.error('Không thể tải dữ liệu xem lại');
-        navigate(-1);
+        toast.error('Không thể tải dữ liệu xem lại')
+        navigate(-1)
       } finally {
-        setLoadingReview(false);
+        setLoadingReview(false)
       }
-    };
+    }
 
-    fetchReview();
-  }, [resultId, setCurrentReview, setLoadingReview, navigate]);
+    fetchReview()
+  }, [resultId, setCurrentReview, setLoadingReview, navigate])
 
   const allQuestions = useMemo(() => {
-    if (!currentReview) return [];
-    const fromPassages = currentReview.passageGroups.flatMap(pg => pg.questions);
-    const qs = [...fromPassages, ...currentReview.questions];
-    return qs.sort((a, b) => a.order - b.order);
-  }, [currentReview]);
+    if (!currentReview) return []
+    const fromPassages = currentReview.passageGroups.flatMap((pg) => pg.questions)
+    const qs = [...fromPassages, ...currentReview.questions]
+    return qs.sort((a, b) => a.order - b.order)
+  }, [currentReview])
 
   const groupedData = useMemo(() => {
-    if (!currentReview) return null;
-    const groups: Record<string, { passageGroups: typeof currentReview.passageGroups, questions: typeof currentReview.questions }> = {};
+    if (!currentReview) return null
+    const groups: Record<
+      string,
+      {
+        passageGroups: typeof currentReview.passageGroups
+        questions: typeof currentReview.questions
+      }
+    > = {}
 
-    currentReview.passageGroups.forEach(pg => {
-      const part = pg.questions[0]?.part || 'OTHER';
-      if (!groups[part]) groups[part] = { passageGroups: [], questions: [] };
-      groups[part].passageGroups.push(pg);
-    });
+    currentReview.passageGroups.forEach((pg) => {
+      const part = pg.questions[0]?.part || 'OTHER'
+      if (!groups[part]) groups[part] = { passageGroups: [], questions: [] }
+      groups[part].passageGroups.push(pg)
+    })
 
-    currentReview.questions.forEach(q => {
-      const part = q.part || 'OTHER';
-      if (!groups[part]) groups[part] = { passageGroups: [], questions: [] };
-      groups[part].questions.push(q);
-    });
+    currentReview.questions.forEach((q) => {
+      const part = q.part || 'OTHER'
+      if (!groups[part]) groups[part] = { passageGroups: [], questions: [] }
+      groups[part].questions.push(q)
+    })
 
-    return groups;
-  }, [currentReview]);
+    return groups
+  }, [currentReview])
 
   const availableParts = useMemo(() => {
-    if (!groupedData) return [];
-    return Object.keys(groupedData).sort();
-  }, [groupedData]);
+    if (!groupedData) return []
+    return Object.keys(groupedData).sort()
+  }, [groupedData])
 
   useEffect(() => {
     if (availableParts.length > 0 && !activePart) {
-      setActivePart(availableParts[0]);
+      setActivePart(availableParts[0])
     }
-  }, [availableParts, activePart]);
+  }, [availableParts, activePart])
 
   if (isLoadingReview || !currentReview) {
     return (
       <div className="flex h-screen items-center justify-center bg-gray-50/50">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
-    );
+    )
   }
 
-  const { title, resultSummary } = currentReview;
-
-
+  const { title, resultSummary } = currentReview
 
   const renderPartViewers = () => {
-    if (!groupedData || !activePart || !groupedData[activePart]) return null;
+    if (!groupedData || !activePart || !groupedData[activePart]) return null
 
-    const data = groupedData[activePart];
-    const part = activePart;
+    const data = groupedData[activePart]
+    const part = activePart
 
     // Sắp xếp các cụm passage dựa theo thứ tự câu hỏi đầu tiên
     const sortedPassageGroups = [...data.passageGroups].sort((a, b) => {
-      const aOrder = a.questions[0]?.order || 0;
-      const bOrder = b.questions[0]?.order || 0;
-      return aOrder - bOrder;
-    });
+      const aOrder = a.questions[0]?.order || 0
+      const bOrder = b.questions[0]?.order || 0
+      return aOrder - bOrder
+    })
 
     // Sắp xếp các câu hỏi riêng lẻ (Part 5)
-    const sortedQuestions = [...data.questions].sort((a, b) => a.order - b.order);
+    const sortedQuestions = [...data.questions].sort((a, b) => a.order - b.order)
 
     if (['PART1', 'PART2'].includes(part)) {
-      const Viewer = part === 'PART1' ? ReviewPart1Viewer : ReviewPart2Viewer;
-      return sortedPassageGroups.map(pg => {
-        const pgQs = [...pg.questions].sort((a, b) => a.order - b.order);
-        return pgQs.map(q => <Viewer key={q.id} passageGroup={pg} question={q} />);
-      });
+      const Viewer = part === 'PART1' ? ReviewPart1Viewer : ReviewPart2Viewer
+      return sortedPassageGroups.map((pg) => {
+        const pgQs = [...pg.questions].sort((a, b) => a.order - b.order)
+        return pgQs.map((q) => <Viewer key={q.id} passageGroup={pg} question={q} />)
+      })
     }
 
     if (['PART3', 'PART4'].includes(part)) {
-      return sortedPassageGroups.map(pg => <ReviewPart34Viewer key={pg.id} passageGroup={pg} />);
+      return sortedPassageGroups.map((pg) => <ReviewPart34Viewer key={pg.id} passageGroup={pg} />)
     }
 
     if (['PART5', 'GRAMMAR'].includes(part)) {
-      return sortedQuestions.map(q => <ReviewPart5Viewer key={q.id} question={q} />);
+      return sortedQuestions.map((q) => <ReviewPart5Viewer key={q.id} question={q} />)
     }
 
     if (['PART6', 'PART7'].includes(part)) {
-      return sortedPassageGroups.map(pg => <ReviewPart67Viewer key={pg.id} passageGroup={pg} part={part} />);
+      return sortedPassageGroups.map((pg) => (
+        <ReviewPart67Viewer key={pg.id} passageGroup={pg} part={part} />
+      ))
     }
 
-    return <div>Unsupported Part format: {part}</div>;
-  };
+    return <div>Unsupported Part format: {part}</div>
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
-
       {/* Header */}
       <header className="bg-white border-b border-gray-200 shadow-sm z-50 sticky top-0 shrink-0">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -168,11 +173,8 @@ function ReviewModePage() {
 
       {/* Main Content */}
       <main className="flex-1 container mx-auto px-4 py-6 flex gap-6 items-start relative">
-
         {/* Left: Questions & Passages */}
-        <div className="flex-1 min-w-0 max-w-5xl mx-auto xl:max-w-none">
-          {renderPartViewers()}
-        </div>
+        <div className="flex-1 min-w-0 max-w-5xl mx-auto xl:max-w-none">{renderPartViewers()}</div>
 
         {/* Right: Navigation Palette */}
         <div className="w-80 shrink-0 hidden lg:block sticky top-[100px]">
@@ -182,10 +184,9 @@ function ReviewModePage() {
             onNavigateToPart={(p) => setActivePart(p)}
           />
         </div>
-
       </main>
     </div>
-  );
+  )
 }
 
-export default ReviewModePage;
+export default ReviewModePage

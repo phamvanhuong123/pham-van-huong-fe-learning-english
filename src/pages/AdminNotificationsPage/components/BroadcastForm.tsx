@@ -1,49 +1,69 @@
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { useSendBroadcast } from '@/hooks/useNotifications';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { BellRing, Send } from 'lucide-react';
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+import { useSendBroadcast } from '@/hooks/useNotifications'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { BellRing, Send } from 'lucide-react'
 
 const formSchema = z.object({
   title: z.string().min(3, 'Tiêu đề ít nhất 3 ký tự').max(100, 'Tiêu đề tối đa 100 ký tự'),
   body: z.string().min(5, 'Nội dung ít nhất 5 ký tự').max(500, 'Nội dung tối đa 500 ký tự'),
   type: z.string(),
   targetRole: z.string(),
-});
+})
 
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = z.infer<typeof formSchema>
 
 export function BroadcastForm() {
-  const { mutate: sendBroadcast, isPending } = useSendBroadcast();
+  const { mutate: sendBroadcast, isPending } = useSendBroadcast()
 
-  const { register, handleSubmit, setValue, watch, formState: { errors }, reset } = useForm<FormValues>({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+    reset,
+  } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: '',
       body: '',
       type: 'SYSTEM',
       targetRole: 'ALL',
-    }
-  });
+    },
+  })
 
   const onSubmit = (data: FormValues) => {
     sendBroadcast(data, {
       onSuccess: () => {
-        reset();
-        setValue('type', 'SYSTEM');
-        setValue('targetRole', 'ALL');
-      }
-    });
-  };
+        reset()
+        setValue('type', 'SYSTEM')
+        setValue('targetRole', 'ALL')
+      },
+    })
+  }
 
-  const previewTitle = watch('title') || 'Tiêu đề thông báo...';
-  const previewBody = watch('body') || 'Nội dung thông báo sẽ hiển thị ở đây...';
+  const previewTitle = watch('title') || 'Tiêu đề thông báo...'
+  const previewBody = watch('body') || 'Nội dung thông báo sẽ hiển thị ở đây...'
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -57,13 +77,22 @@ export function BroadcastForm() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="title" className="font-semibold text-foreground">Tiêu đề</Label>
-              <Input id="title" placeholder="Nhập tiêu đề..." className="focus-visible:ring-primary/20 transition-all" {...register('title')} />
+              <Label htmlFor="title" className="font-semibold text-foreground">
+                Tiêu đề
+              </Label>
+              <Input
+                id="title"
+                placeholder="Nhập tiêu đề..."
+                className="focus-visible:ring-primary/20 transition-all"
+                {...register('title')}
+              />
               {errors.title && <p className="text-sm text-rose-500">{errors.title.message}</p>}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="body" className="font-semibold text-foreground">Nội dung</Label>
+              <Label htmlFor="body" className="font-semibold text-foreground">
+                Nội dung
+              </Label>
               <Textarea
                 id="body"
                 placeholder="Nhập nội dung..."
@@ -75,7 +104,10 @@ export function BroadcastForm() {
 
             <div className="space-y-2">
               <Label className="font-semibold text-foreground">Đối tượng nhận</Label>
-              <Select value={watch('targetRole')} onValueChange={(val) => setValue('targetRole', val)}>
+              <Select
+                value={watch('targetRole')}
+                onValueChange={(val) => setValue('targetRole', val)}
+              >
                 <SelectTrigger className="focus:ring-primary/20 transition-all">
                   <SelectValue placeholder="Chọn đối tượng..." />
                 </SelectTrigger>
@@ -96,7 +128,9 @@ export function BroadcastForm() {
       </Card>
 
       <div className="space-y-4">
-        <h3 className="font-semibold text-muted-foreground uppercase text-xs tracking-wider">Xem trước hiển thị (Toast)</h3>
+        <h3 className="font-semibold text-muted-foreground uppercase text-xs tracking-wider">
+          Xem trước hiển thị (Toast)
+        </h3>
         <Card className="bg-card shadow-md border-primary/20 p-5 max-w-sm flex items-start gap-4 rounded-xl overflow-hidden relative">
           <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-primary"></div>
           <div className="p-2 bg-primary/10 rounded-full shrink-0 text-primary mt-1">
@@ -111,5 +145,5 @@ export function BroadcastForm() {
         </Card>
       </div>
     </div>
-  );
+  )
 }

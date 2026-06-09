@@ -1,15 +1,22 @@
-import { useGetClientGrammarTopics } from '@/hooks/queries/useGrammarQuery';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Skeleton } from '@/components/ui/skeleton';
-import { BookOpen, CheckCircle2, PlayCircle, Clock } from 'lucide-react';
-import { useNavigate } from 'react-router';
-import { motion } from 'framer-motion';
+import { useGetClientGrammarTopics } from '@/hooks/queries/useGrammarQuery'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Progress } from '@/components/ui/progress'
+import { Skeleton } from '@/components/ui/skeleton'
+import { BookOpen, CheckCircle2, PlayCircle, Clock } from 'lucide-react'
+import { useNavigate } from 'react-router'
+import { motion } from 'framer-motion'
 
 function GrammarPage() {
-  const { data: topics, isLoading, isError } = useGetClientGrammarTopics();
-  const navigate = useNavigate();
+  const { data: topics, isLoading, isError } = useGetClientGrammarTopics()
+  const navigate = useNavigate()
 
   if (isLoading) {
     return (
@@ -24,7 +31,7 @@ function GrammarPage() {
           ))}
         </div>
       </div>
-    );
+    )
   }
 
   if (isError) {
@@ -33,15 +40,18 @@ function GrammarPage() {
         <h2 className="text-2xl font-bold text-destructive">Đã xảy ra lỗi</h2>
         <p className="text-muted-foreground mt-2">Không thể tải danh sách chủ đề ngữ pháp.</p>
       </div>
-    );
+    )
   }
 
   return (
     <div className="py-8 max-w-7xl mx-auto px-4 md:px-8">
       <div className="mb-10 text-center md:text-left">
-        <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight">Ngữ Pháp TOEIC</h1>
+        <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight">
+          Ngữ Pháp TOEIC
+        </h1>
         <p className="text-muted-foreground mt-3 text-lg max-w-2xl">
-          Nắm chắc các điểm ngữ pháp thường gặp nhất trong kỳ thi TOEIC thông qua các bài luyện tập tương tác chuyên sâu.
+          Nắm chắc các điểm ngữ pháp thường gặp nhất trong kỳ thi TOEIC thông qua các bài luyện tập
+          tương tác chuyên sâu.
         </p>
       </div>
 
@@ -54,13 +64,14 @@ function GrammarPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {topics?.map((topic, index) => {
-            const hasQuestions = topic._count?.questions && topic._count.questions > 0;
-            const progress = topic.progress;
-            const progressPercent = progress && progress.totalQ > 0 
-              ? Math.round((progress.correctQ / progress.totalQ) * 100) 
-              : 0;
-            
-            const isCompleted = progressPercent === 100;
+            const hasQuestions = topic._count?.questions && topic._count.questions > 0
+            const progress = topic.progress
+            const progressPercent =
+              progress && progress.totalQ > 0
+                ? Math.round((progress.correctQ / progress.totalQ) * 100)
+                : 0
+
+            const isCompleted = progressPercent === 100
 
             return (
               <motion.div
@@ -72,13 +83,15 @@ function GrammarPage() {
                 <Card className="h-full flex flex-col hover:border-primary/50 transition-colors shadow-sm hover:shadow-md">
                   <CardHeader className="pb-4">
                     <div className="flex justify-between items-start gap-4">
-                      <CardTitle className="text-xl leading-tight line-clamp-2">{topic.name}</CardTitle>
-                      {isCompleted && (
-                        <CheckCircle2 className="h-6 w-6 text-green-500 shrink-0" />
-                      )}
+                      <CardTitle className="text-xl leading-tight line-clamp-2">
+                        {topic.name}
+                      </CardTitle>
+                      {isCompleted && <CheckCircle2 className="h-6 w-6 text-green-500 shrink-0" />}
                     </div>
                     {topic.description && (
-                      <CardDescription className="line-clamp-2 mt-2">{topic.description}</CardDescription>
+                      <CardDescription className="line-clamp-2 mt-2">
+                        {topic.description}
+                      </CardDescription>
                     )}
                   </CardHeader>
 
@@ -99,12 +112,21 @@ function GrammarPage() {
                       {progress ? (
                         <div className="space-y-1.5">
                           <div className="flex justify-between text-xs font-medium">
-                            <span className={isCompleted ? 'text-green-600 dark:text-green-400' : 'text-primary'}>
-                              {isCompleted ? 'Đã thành thạo' : `Đúng ${progress.correctQ}/${progress.totalQ} câu`}
+                            <span
+                              className={
+                                isCompleted ? 'text-green-600 dark:text-green-400' : 'text-primary'
+                              }
+                            >
+                              {isCompleted
+                                ? 'Đã thành thạo'
+                                : `Đúng ${progress.correctQ}/${progress.totalQ} câu`}
                             </span>
                             <span>{progressPercent}%</span>
                           </div>
-                          <Progress value={progressPercent} className={`h-2 ${isCompleted ? '[&>div]:bg-green-500' : ''}`} />
+                          <Progress
+                            value={progressPercent}
+                            className={`h-2 ${isCompleted ? '[&>div]:bg-green-500' : ''}`}
+                          />
                         </div>
                       ) : (
                         <div className="space-y-1.5">
@@ -119,9 +141,9 @@ function GrammarPage() {
                   </CardContent>
 
                   <CardFooter className="pt-4 border-t">
-                    <Button 
-                      className="w-full font-semibold" 
-                      variant={progress ? "outline" : "default"}
+                    <Button
+                      className="w-full font-semibold"
+                      variant={progress ? 'outline' : 'default'}
                       disabled={!hasQuestions}
                       onClick={() => navigate(`/grammar/${topic.slug}/practice`)}
                     >
@@ -140,12 +162,12 @@ function GrammarPage() {
                   </CardFooter>
                 </Card>
               </motion.div>
-            );
+            )
           })}
         </div>
       )}
     </div>
-  );
+  )
 }
 
-export default GrammarPage;
+export default GrammarPage

@@ -7,5 +7,5 @@ export const PERMISSIONS = {
   QUESTION_MANAGE: 'question.manage',
   SUBSCRIPTION_MANAGE: 'subscription.manage',
   GRAMMAR_MANAGE: 'grammar.manage',
-  VOCAB_MANAGE: 'vocab.manage'
-};
+  VOCAB_MANAGE: 'vocab.manage',
+}

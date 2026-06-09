@@ -1,5 +1,5 @@
-import { BroadcastForm } from './components/BroadcastForm';
-import { BroadcastHistory } from './components/BroadcastHistory';
+import { BroadcastForm } from './components/BroadcastForm'
+import { BroadcastHistory } from './components/BroadcastHistory'
 
 function AdminNotificationsPage() {
   return (
@@ -25,7 +25,7 @@ function AdminNotificationsPage() {
         </section>
       </div>
     </div>
-  );
+  )
 }
 
-export default AdminNotificationsPage;
+export default AdminNotificationsPage

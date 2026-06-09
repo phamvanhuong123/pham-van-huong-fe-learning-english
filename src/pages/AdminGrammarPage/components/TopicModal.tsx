@@ -1,58 +1,67 @@
-import { useState, useEffect } from 'react';
-import { useCreateGrammarTopic, useUpdateGrammarTopic } from '@/hooks/queries/useGrammarQuery';
-import type { GrammarTopic } from '@/types/grammar.type';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { toast } from 'sonner';
-import { Loader2 } from 'lucide-react';
+import { useState, useEffect } from 'react'
+import { useCreateGrammarTopic, useUpdateGrammarTopic } from '@/hooks/queries/useGrammarQuery'
+import type { GrammarTopic } from '@/types/grammar.type'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog'
+import { toast } from 'sonner'
+import { Loader2 } from 'lucide-react'
 
 interface TopicModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  topic?: GrammarTopic | null;
+  isOpen: boolean
+  onClose: () => void
+  topic?: GrammarTopic | null
 }
 
 export function TopicModal({ isOpen, onClose, topic }: TopicModalProps) {
-  const createTopic = useCreateGrammarTopic();
-  const updateTopic = useUpdateGrammarTopic();
+  const createTopic = useCreateGrammarTopic()
+  const updateTopic = useUpdateGrammarTopic()
 
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
-    description: ''
-  });
+    description: '',
+  })
 
   useEffect(() => {
     if (topic) {
       setFormData({
         name: topic.name,
         slug: topic.slug,
-        description: topic.description || ''
-      });
+        description: topic.description || '',
+      })
     } else {
-      setFormData({ name: '', slug: '', description: '' });
+      setFormData({ name: '', slug: '', description: '' })
     }
-  }, [topic, isOpen]);
+  }, [topic, isOpen])
 
   // Auto-generate slug from name
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.value;
+    const name = e.target.value
     if (!topic) {
-      const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-      setFormData({ ...formData, name, slug });
+      const slug = name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)+/g, '')
+      setFormData({ ...formData, name, slug })
     } else {
-      setFormData({ ...formData, name });
+      setFormData({ ...formData, name })
     }
-  };
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!formData.name.trim() || !formData.slug.trim()) {
-      toast.error('Vui lòng điền tên và slug');
-      return;
+      toast.error('Vui lòng điền tên và slug')
+      return
     }
 
     if (topic) {
@@ -60,28 +69,28 @@ export function TopicModal({ isOpen, onClose, topic }: TopicModalProps) {
         { id: topic.id, data: formData },
         {
           onSuccess: () => {
-            toast.success('Cập nhật thành công');
-            onClose();
+            toast.success('Cập nhật thành công')
+            onClose()
           },
           onError: (error: any) => {
-            toast.error(error.response?.data?.message || 'Cập nhật thất bại');
-          }
+            toast.error(error.response?.data?.message || 'Cập nhật thất bại')
+          },
         }
-      );
+      )
     } else {
       createTopic.mutate(formData, {
         onSuccess: () => {
-          toast.success('Tạo chủ đề thành công');
-          onClose();
+          toast.success('Tạo chủ đề thành công')
+          onClose()
         },
         onError: (error: any) => {
-          toast.error(error.response?.data?.message || 'Tạo thất bại');
-        }
-      });
+          toast.error(error.response?.data?.message || 'Tạo thất bại')
+        },
+      })
     }
-  };
+  }
 
-  const isPending = createTopic.isPending || updateTopic.isPending;
+  const isPending = createTopic.isPending || updateTopic.isPending
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -92,7 +101,9 @@ export function TopicModal({ isOpen, onClose, topic }: TopicModalProps) {
 
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Tên chủ đề <span className="text-destructive">*</span></Label>
+            <Label htmlFor="name">
+              Tên chủ đề <span className="text-destructive">*</span>
+            </Label>
             <Input
               id="name"
               value={formData.name}
@@ -102,7 +113,9 @@ export function TopicModal({ isOpen, onClose, topic }: TopicModalProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="slug">Slug (URL) <span className="text-destructive">*</span></Label>
+            <Label htmlFor="slug">
+              Slug (URL) <span className="text-destructive">*</span>
+            </Label>
             <Input
               id="slug"
               value={formData.slug}
@@ -134,5 +147,5 @@ export function TopicModal({ isOpen, onClose, topic }: TopicModalProps) {
         </form>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

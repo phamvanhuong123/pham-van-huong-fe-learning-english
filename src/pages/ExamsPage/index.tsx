@@ -1,66 +1,66 @@
-import { useEffect, useState } from 'react';
-import { SearchX, LayoutGrid } from 'lucide-react';
-import { getPublishedExamsApi } from '@/services/clientExamService';
-import { toast } from 'sonner';
+import { useEffect, useState } from 'react'
+import { SearchX, LayoutGrid } from 'lucide-react'
+import { getPublishedExamsApi } from '@/services/clientExamService'
+import { toast } from 'sonner'
 
-import { ExamsHeader } from './components/ExamsHeader';
-import { ExamsFilter } from './components/ExamsFilter';
-import { ExamCard } from './components/ExamCard';
-import { ExamsPagination } from './components/ExamsPagination';
-import type { ClientExam } from '@/types/exam.type';
+import { ExamsHeader } from './components/ExamsHeader'
+import { ExamsFilter } from './components/ExamsFilter'
+import { ExamCard } from './components/ExamCard'
+import { ExamsPagination } from './components/ExamsPagination'
+import type { ClientExam } from '@/types/exam.type'
 
 function ExamsPage() {
-  const [exams, setExams] = useState<ClientExam[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [exams, setExams] = useState<ClientExam[]>([])
+  const [isLoading, setIsLoading] = useState(false)
 
   // Filters state
-  const [search, setSearch] = useState('');
-  const [part, setPart] = useState('ALL');
-  const [difficulty, setDifficulty] = useState('ALL');
+  const [search, setSearch] = useState('')
+  const [part, setPart] = useState('ALL')
+  const [difficulty, setDifficulty] = useState('ALL')
 
   // Pagination state
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [total, setTotal] = useState(0)
 
   const fetchExams = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      const params: any = { page, limit: 12 };
-      if (search) params.search = search;
-      if (part !== 'ALL') params.part = part;
-      if (difficulty !== 'ALL') params.difficulty = difficulty;
+      const params: any = { page, limit: 12 }
+      if (search) params.search = search
+      if (part !== 'ALL') params.part = part
+      if (difficulty !== 'ALL') params.difficulty = difficulty
 
-      const res = await getPublishedExamsApi(params) as any;
-      
-      const data = res.data?.data || [];
-      const meta = res.data?.meta || {};
+      const res = (await getPublishedExamsApi(params)) as any
 
-      setExams(data);
-      setTotalPages(meta.totalPages || 1);
-      setTotal(meta.total || 0);
+      const data = res.data?.data || []
+      const meta = res.data?.meta || {}
+
+      setExams(data)
+      setTotalPages(meta.totalPages || 1)
+      setTotal(meta.total || 0)
     } catch (error) {
-      toast.error('Không thể tải danh sách đề thi. Vui lòng thử lại sau.');
+      toast.error('Không thể tải danh sách đề thi. Vui lòng thử lại sau.')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchExams();
+    fetchExams()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, part, difficulty, search]); // search added so it auto-fetches
+  }, [page, part, difficulty, search]) // search added so it auto-fetches
 
   // Reset page when filters change
   useEffect(() => {
-    setPage(1);
-  }, [search, part, difficulty]);
+    setPage(1)
+  }, [search, part, difficulty])
 
   // Keep for compatibility if child components still call it explicitly
   const handleFilter = () => {
-    setPage(1);
-    fetchExams();
-  };
+    setPage(1)
+    fetchExams()
+  }
 
   return (
     <div className="py-10 bg-white min-h-[calc(100vh-64px)] selection:bg-blue-100 selection:text-blue-900">
@@ -90,8 +90,11 @@ function ExamsPage() {
         {/* Grid List */}
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map(i => (
-              <div key={i} className="h-[380px] bg-slate-50/50 rounded-xl animate-pulse border border-slate-100"></div>
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div
+                key={i}
+                className="h-[380px] bg-slate-50/50 rounded-xl animate-pulse border border-slate-100"
+              ></div>
             ))}
           </div>
         ) : exams.length === 0 ? (
@@ -101,12 +104,13 @@ function ExamsPage() {
             </div>
             <h3 className="text-xl font-semibold text-slate-900 mb-2">Không tìm thấy kết quả</h3>
             <p className="text-slate-500 max-w-sm text-center">
-              Rất tiếc, chúng tôi không tìm thấy đề thi nào phù hợp với tiêu chí của bạn. Vui lòng thử lại với từ khóa khác.
+              Rất tiếc, chúng tôi không tìm thấy đề thi nào phù hợp với tiêu chí của bạn. Vui lòng
+              thử lại với từ khóa khác.
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {exams.map(exam => (
+            {exams.map((exam) => (
               <ExamCard key={exam.id} exam={exam} />
             ))}
           </div>
@@ -120,7 +124,7 @@ function ExamsPage() {
         )}
       </div>
     </div>
-  );
+  )
 }
 
-export default ExamsPage;
+export default ExamsPage

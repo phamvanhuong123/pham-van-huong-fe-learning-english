@@ -1,26 +1,31 @@
-import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useCreateVocab, useUpdateVocab } from '@/hooks/queries/useVocabQuery';
-import type { Vocab, CreateVocabDto } from '@/types/vocab.type';
-import { toast } from 'sonner';
-import { Volume2 } from 'lucide-react';
-import { playVocabAudio } from '@/utils/audioHelper';
+import { useState, useEffect } from 'react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { useCreateVocab, useUpdateVocab, useVocabTopics } from '@/hooks/queries/useVocabQuery'
+import type { Vocab, CreateVocabDto } from '@/types/vocab.type'
+import { toast } from 'sonner'
+import { Volume2 } from 'lucide-react'
+import { playVocabAudio } from '@/utils/audioHelper'
 
 interface VocabModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  vocab: Vocab | null; // null if creating, object if editing
+  isOpen: boolean
+  onClose: () => void
+  vocab: Vocab | null
 }
 
-const TOPICS = ['Business', 'Office', 'Travel', 'Health', 'Finance', 'General'];
-
 export default function VocabModal({ isOpen, onClose, vocab }: VocabModalProps) {
-  const isEditing = !!vocab;
+  const { data: topics = [] } = useVocabTopics()
+  const isEditing = !!vocab
 
   const [formData, setFormData] = useState<CreateVocabDto>({
     word: '',
@@ -29,8 +34,8 @@ export default function VocabModal({ isOpen, onClose, vocab }: VocabModalProps) 
     audioUrl: '',
     example: '',
     toeicTopic: '',
-    collocations: ''
-  });
+    collocations: '',
+  })
 
   useEffect(() => {
     if (vocab) {
@@ -41,35 +46,41 @@ export default function VocabModal({ isOpen, onClose, vocab }: VocabModalProps) 
         audioUrl: vocab.audioUrl || '',
         example: vocab.example || '',
         toeicTopic: vocab.toeicTopic || '',
-        collocations: vocab.collocations || ''
-      });
+        collocations: vocab.collocations || '',
+      })
     } else {
       setFormData({
-        word: '', meaning: '', phonetic: '', audioUrl: '', example: '', toeicTopic: '', collocations: ''
-      });
+        word: '',
+        meaning: '',
+        phonetic: '',
+        audioUrl: '',
+        example: '',
+        toeicTopic: '',
+        collocations: '',
+      })
     }
-  }, [vocab, isOpen]);
+  }, [vocab, isOpen])
 
-  const { mutateAsync: createVocab, isPending: isCreating } = useCreateVocab();
-  const { mutateAsync: updateVocab, isPending: isUpdating } = useUpdateVocab();
+  const { mutateAsync: createVocab, isPending: isCreating } = useCreateVocab()
+  const { mutateAsync: updateVocab, isPending: isUpdating } = useUpdateVocab()
 
-  const isSubmitting = isCreating || isUpdating;
+  const isSubmitting = isCreating || isUpdating
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
       if (isEditing) {
-        await updateVocab({ id: vocab.id, data: formData });
-        toast.success('Cập nhật từ vựng thành công');
+        await updateVocab({ id: vocab.id, data: formData })
+        toast.success('Cập nhật từ vựng thành công')
       } else {
-        await createVocab(formData);
-        toast.success('Thêm từ vựng thành công');
+        await createVocab(formData)
+        toast.success('Thêm từ vựng thành công')
       }
-      onClose();
+      onClose()
     } catch (error) {
       // Error handled by interceptor
     }
-  };
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -134,15 +145,17 @@ export default function VocabModal({ isOpen, onClose, vocab }: VocabModalProps) 
             <div className="space-y-2">
               <Label htmlFor="toeicTopic">Chủ đề TOEIC</Label>
               <Select
-                value={formData.toeicTopic || ""}
+                value={formData.toeicTopic || ''}
                 onValueChange={(val) => setFormData({ ...formData, toeicTopic: val })}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Chọn chủ đề" />
                 </SelectTrigger>
                 <SelectContent>
-                  {TOPICS.map(topic => (
-                    <SelectItem key={topic} value={topic}>{topic}</SelectItem>
+                  {topics.map((topic) => (
+                    <SelectItem key={topic} value={topic}>
+                      {topic}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -157,8 +170,8 @@ export default function VocabModal({ isOpen, onClose, vocab }: VocabModalProps) 
                     accept="audio/*"
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                     onChange={(e) => {
-                      const file = e.target.files?.[0] || null;
-                      setFormData({ ...formData, audioFile: file, audioUrl: '' });
+                      const file = e.target.files?.[0] || null
+                      setFormData({ ...formData, audioFile: file, audioUrl: '' })
                     }}
                   />
                   <div className="flex items-center gap-3 p-3 border-2 border-dashed border-muted-foreground/25 rounded-lg bg-muted/10 group-hover:bg-muted/40 group-hover:border-primary/50 transition-all">
@@ -167,11 +180,11 @@ export default function VocabModal({ isOpen, onClose, vocab }: VocabModalProps) 
                     </div>
                     <div className="flex flex-col overflow-hidden">
                       <span className="text-sm font-medium text-foreground truncate">
-                        {formData.audioFile ? formData.audioFile.name : 'Chọn hoặc kéo thả file âm thanh'}
+                        {formData.audioFile
+                          ? formData.audioFile.name
+                          : 'Chọn hoặc kéo thả file âm thanh'}
                       </span>
-                      <span className="text-xs text-muted-foreground">
-                        Hỗ trợ MP3, WAV
-                      </span>
+                      <span className="text-xs text-muted-foreground">Hỗ trợ MP3, WAV</span>
                     </div>
                   </div>
                 </div>
@@ -183,12 +196,14 @@ export default function VocabModal({ isOpen, onClose, vocab }: VocabModalProps) 
                 {vocab?.audioUrl && !formData.audioFile && (
                   <div className="flex items-center justify-between mt-1 bg-primary/5 p-2 px-3 rounded-lg border border-primary/20">
                     <span className="text-xs font-semibold text-primary">Audio hiện tại</span>
-                    <Button 
-                      type="button" 
-                      variant="secondary" 
-                      size="sm" 
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
                       className="h-8 flex items-center gap-2"
-                      onClick={() => playVocabAudio(vocab.audioUrl || null, formData.word || vocab.word)}
+                      onClick={() =>
+                        playVocabAudio(vocab.audioUrl || null, formData.word || vocab.word)
+                      }
                     >
                       <Volume2 className="h-4 w-4" /> Nghe thử
                     </Button>
@@ -199,13 +214,15 @@ export default function VocabModal({ isOpen, onClose, vocab }: VocabModalProps) 
           </div>
 
           <div className="flex justify-end gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>Hủy</Button>
+            <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>
+              Hủy
+            </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Đang lưu...' : (isEditing ? 'Cập nhật' : 'Thêm mới')}
+              {isSubmitting ? 'Đang lưu...' : isEditing ? 'Cập nhật' : 'Thêm mới'}
             </Button>
           </div>
         </form>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

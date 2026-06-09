@@ -1,39 +1,45 @@
-import { useState } from 'react';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { ChevronDown, Search } from 'lucide-react';
+import { useState } from 'react'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { ChevronDown, Search } from 'lucide-react'
 
 interface ExamSelectionProps {
-  exams: any[];
-  selectedExamId: string;
-  onExamSelect: (val: string) => void;
+  exams: any[]
+  selectedExamId: string
+  onExamSelect: (val: string) => void
 }
 
 export function ExamSelection({ exams, selectedExamId, onExamSelect }: ExamSelectionProps) {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('')
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
-  const selectedExam = exams.find(e => e.id === selectedExamId);
+  const selectedExam = exams.find((e) => e.id === selectedExamId)
 
   // Grouping and Filtering Exams for Combobox
-  const filteredExams = exams.filter(e =>
-    e.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    e.part.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredExams = exams.filter(
+    (e) =>
+      e.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      e.part.toLowerCase().includes(searchTerm.toLowerCase())
+  )
 
-  const parts = ['PART1', 'PART2', 'PART3', 'PART4', 'PART5', 'PART6', 'PART7'];
-  const groupedExams = parts.reduce((acc, p) => {
-    const list = filteredExams.filter(e => e.part === p);
-    if (list.length > 0) acc[p] = list;
-    return acc;
-  }, {} as Record<string, any[]>);
+  const parts = ['PART1', 'PART2', 'PART3', 'PART4', 'PART5', 'PART6', 'PART7']
+  const groupedExams = parts.reduce(
+    (acc, p) => {
+      const list = filteredExams.filter((e) => e.part === p)
+      if (list.length > 0) acc[p] = list
+      return acc
+    },
+    {} as Record<string, any[]>
+  )
 
   return (
     <div className="space-y-4 max-w-md mx-auto py-8 bg-white p-6 rounded-lg border shadow-sm">
       <div className="text-center space-y-2 mb-6">
         <h3 className="text-xl font-bold">Chọn Đề thi</h3>
-        <p className="text-sm text-muted-foreground">Vui lòng chọn đề thi để tiếp tục tạo câu hỏi.</p>
+        <p className="text-sm text-muted-foreground">
+          Vui lòng chọn đề thi để tiếp tục tạo câu hỏi.
+        </p>
       </div>
       <div className="space-y-2 relative">
         <Label className="text-sm font-medium">Đề thi</Label>
@@ -50,7 +56,9 @@ export function ExamSelection({ exams, selectedExamId, onExamSelect }: ExamSelec
             >
               {selectedExam ? (
                 <div className="flex items-center gap-2">
-                  <Badge variant="secondary" className="text-[10px] uppercase font-bold">{selectedExam.part}</Badge>
+                  <Badge variant="secondary" className="text-[10px] uppercase font-bold">
+                    {selectedExam.part}
+                  </Badge>
                   <span className="truncate max-w-[280px] font-medium">{selectedExam.title}</span>
                 </div>
               ) : (
@@ -75,25 +83,32 @@ export function ExamSelection({ exams, selectedExamId, onExamSelect }: ExamSelec
                   </div>
                   <div className="flex-1 overflow-y-auto space-y-3 custom-scrollbar pr-1">
                     {Object.keys(groupedExams).length === 0 ? (
-                      <div className="text-xs text-muted-foreground p-3 text-center">Không tìm thấy đề thi</div>
+                      <div className="text-xs text-muted-foreground p-3 text-center">
+                        Không tìm thấy đề thi
+                      </div>
                     ) : (
                       Object.entries(groupedExams).map(([p, list]) => (
                         <div key={p} className="space-y-1">
                           <div className="text-[10px] font-bold text-muted-foreground/70 uppercase px-2 tracking-wider py-1 border-b border-border/30">
                             {p}
                           </div>
-                          {list.map(e => (
+                          {list.map((e) => (
                             <button
                               key={e.id}
                               type="button"
                               onClick={() => {
-                                onExamSelect(e.id);
-                                setIsDropdownOpen(false);
-                                setSearchTerm('');
+                                onExamSelect(e.id)
+                                setIsDropdownOpen(false)
+                                setSearchTerm('')
                               }}
                               className="flex w-full items-center gap-2 rounded-sm px-2 py-2 text-sm text-left hover:bg-primary/10 hover:text-primary transition-all font-medium"
                             >
-                              <Badge variant="secondary" className="text-[8px] uppercase font-bold shrink-0">{e.part}</Badge>
+                              <Badge
+                                variant="secondary"
+                                className="text-[8px] uppercase font-bold shrink-0"
+                              >
+                                {e.part}
+                              </Badge>
                               <span className="truncate">{e.title}</span>
                             </button>
                           ))}
@@ -108,5 +123,5 @@ export function ExamSelection({ exams, selectedExamId, onExamSelect }: ExamSelec
         )}
       </div>
     </div>
-  );
+  )
 }

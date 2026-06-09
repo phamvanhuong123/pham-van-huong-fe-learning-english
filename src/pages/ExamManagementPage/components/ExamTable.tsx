@@ -5,26 +5,32 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Edit, Eye, EyeOff, Trash2, MoreVertical } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Checkbox } from '@/components/ui/checkbox';
-import type { AdminExamItem } from '@/types/exam.type';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { AdminEmptyState } from '@/components/admin/AdminEmptyState';
-import { AdminTableLoading } from '@/components/admin/AdminTableLoading';
+} from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Edit, Eye, EyeOff, Trash2, MoreVertical } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Checkbox } from '@/components/ui/checkbox'
+import type { AdminExamItem } from '@/types/exam.type'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu'
+import { AdminEmptyState } from '@/components/admin/AdminEmptyState'
+import { AdminTableLoading } from '@/components/admin/AdminTableLoading'
 
 interface ExamTableProps {
-  exams: AdminExamItem[];
-  isLoading?: boolean;
-  onEdit: (e: AdminExamItem) => void;
-  onToggleStatus: (e: AdminExamItem) => void;
-  onDelete: (e: AdminExamItem) => void;
-  selectedIds?: string[];
-  onSelectionChange?: (ids: string[]) => void;
+  exams: AdminExamItem[]
+  isLoading?: boolean
+  onEdit: (e: AdminExamItem) => void
+  onToggleStatus: (e: AdminExamItem) => void
+  onDelete: (e: AdminExamItem) => void
+  selectedIds?: string[]
+  onSelectionChange?: (ids: string[]) => void
 }
 
 export function ExamTable({
@@ -34,25 +40,25 @@ export function ExamTable({
   onToggleStatus,
   onDelete,
   selectedIds = [],
-  onSelectionChange
+  onSelectionChange,
 }: ExamTableProps) {
   const toggleAll = () => {
-    if (!onSelectionChange) return;
+    if (!onSelectionChange) return
     if (selectedIds.length === exams.length) {
-      onSelectionChange([]);
+      onSelectionChange([])
     } else {
-      onSelectionChange(exams.map(e => e.id));
+      onSelectionChange(exams.map((e) => e.id))
     }
-  };
+  }
 
   const toggleOne = (id: string) => {
-    if (!onSelectionChange) return;
+    if (!onSelectionChange) return
     if (selectedIds.includes(id)) {
-      onSelectionChange(selectedIds.filter(i => i !== id));
+      onSelectionChange(selectedIds.filter((i) => i !== id))
     } else {
-      onSelectionChange([...selectedIds, id]);
+      onSelectionChange([...selectedIds, id])
     }
-  };
+  }
 
   if (isLoading) {
     return (
@@ -60,7 +66,9 @@ export function ExamTable({
         <Table>
           <TableHeader className="bg-muted/50">
             <TableRow>
-              <TableHead className="w-10"><Checkbox disabled /></TableHead>
+              <TableHead className="w-10">
+                <Checkbox disabled />
+              </TableHead>
               <TableHead>Mã đề</TableHead>
               <TableHead>Tiêu đề</TableHead>
               <TableHead>Phân loại</TableHead>
@@ -75,17 +83,17 @@ export function ExamTable({
           </TableBody>
         </Table>
       </div>
-    );
+    )
   }
 
   if (exams.length === 0) {
     return (
-      <AdminEmptyState 
-        title="Không tìm thấy đề thi" 
-        description="Chưa có đề thi nào phù hợp với bộ lọc hiện tại." 
-        icon="file" 
+      <AdminEmptyState
+        title="Không tìm thấy đề thi"
+        description="Chưa có đề thi nào phù hợp với bộ lọc hiện tại."
+        icon="file"
       />
-    );
+    )
   }
 
   return (
@@ -95,28 +103,37 @@ export function ExamTable({
           <TableHeader className="bg-muted/80 backdrop-blur-sm sticky top-0 z-10 border-b border-border shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
             <TableRow className="hover:bg-transparent border-none">
               <TableHead className="w-10 h-12">
-                <Checkbox 
+                <Checkbox
                   checked={exams.length > 0 && selectedIds.length === exams.length}
                   onCheckedChange={toggleAll}
                 />
               </TableHead>
               <TableHead className="w-25 h-12 font-semibold text-center">Mã đề</TableHead>
-              <TableHead className="min-w-62.5 h-12 font-semibold text-foreground">Tiêu đề</TableHead>
+              <TableHead className="min-w-62.5 h-12 font-semibold text-foreground">
+                Tiêu đề
+              </TableHead>
               <TableHead className="h-12 font-semibold text-foreground">Phân loại</TableHead>
-              <TableHead className="h-12 font-semibold text-foreground text-center">Câu hỏi</TableHead>
+              <TableHead className="h-12 font-semibold text-foreground text-center">
+                Câu hỏi
+              </TableHead>
               <TableHead className="h-12 font-semibold text-foreground">Độ khó</TableHead>
               <TableHead className="h-12 font-semibold text-foreground">Trạng thái</TableHead>
-              <TableHead className="text-center h-12 font-semibold text-foreground">Thao tác</TableHead>
+              <TableHead className="text-center h-12 font-semibold text-foreground">
+                Thao tác
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {exams.map((e) => (
-              <TableRow key={e.id} className={cn(
-                "group hover:bg-muted/45 transition-colors border-b border-border/50",
-                selectedIds.includes(e.id) && "bg-primary/5"
-              )}>
+              <TableRow
+                key={e.id}
+                className={cn(
+                  'group hover:bg-muted/45 transition-colors border-b border-border/50',
+                  selectedIds.includes(e.id) && 'bg-primary/5'
+                )}
+              >
                 <TableCell className="py-4">
-                  <Checkbox 
+                  <Checkbox
                     checked={selectedIds.includes(e.id)}
                     onCheckedChange={() => toggleOne(e.id)}
                   />
@@ -142,10 +159,16 @@ export function ExamTable({
                 </TableCell>
                 <TableCell className="py-4">
                   <div className="flex flex-col gap-1">
-                    <Badge variant="secondary" className="w-fit text-[10px] font-bold tracking-tight">
+                    <Badge
+                      variant="secondary"
+                      className="w-fit text-[10px] font-bold tracking-tight"
+                    >
                       {e.part}
                     </Badge>
-                    <Badge variant={e.type === 'VIP' ? 'destructive' : 'outline'}  className={`${e.type === 'VIP' ? 'text-red-600 text-[11px] font-bold' : 'text-emerald-600 text-[11px] font-bold'} text-center`}>
+                    <Badge
+                      variant={e.type === 'VIP' ? 'destructive' : 'outline'}
+                      className={`${e.type === 'VIP' ? 'text-red-600 text-[11px] font-bold' : 'text-emerald-600 text-[11px] font-bold'} text-center`}
+                    >
                       {e.type}
                     </Badge>
                   </div>
@@ -155,23 +178,42 @@ export function ExamTable({
                 </TableCell>
                 <TableCell className="py-4">
                   {e.difficulty === 'EASY' ? (
-                    <Badge variant="outline" className="bg-emerald-500/5 text-emerald-600 border-emerald-500/20 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-tight">Dễ</Badge>
+                    <Badge
+                      variant="outline"
+                      className="bg-emerald-500/5 text-emerald-600 border-emerald-500/20 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-tight"
+                    >
+                      Dễ
+                    </Badge>
                   ) : e.difficulty === 'MEDIUM' ? (
-                    <Badge variant="outline" className="bg-amber-500/5 text-amber-600 border-amber-500/20 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-tight">Vừa</Badge>
+                    <Badge
+                      variant="outline"
+                      className="bg-amber-500/5 text-amber-600 border-amber-500/20 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-tight"
+                    >
+                      Vừa
+                    </Badge>
                   ) : (
-                    <Badge variant="outline" className="bg-rose-500/5 text-rose-600 border-rose-500/20 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-tight">Khó</Badge>
+                    <Badge
+                      variant="outline"
+                      className="bg-rose-500/5 text-rose-600 border-rose-500/20 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-tight"
+                    >
+                      Khó
+                    </Badge>
                   )}
                 </TableCell>
                 <TableCell className="py-4">
                   {e.isPublished ? (
                     <div className="flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      <span className="text-xs font-semibold text-emerald-600 uppercase tracking-tighter">Công khai</span>
+                      <span className="text-xs font-semibold text-emerald-600 uppercase tracking-tighter">
+                        Công khai
+                      </span>
                     </div>
                   ) : (
                     <div className="flex items-center gap-1.5 text-muted-foreground">
                       <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40" />
-                      <span className="text-xs font-semibold uppercase tracking-tighter">Bản nháp</span>
+                      <span className="text-xs font-semibold uppercase tracking-tighter">
+                        Bản nháp
+                      </span>
                     </div>
                   )}
                 </TableCell>
@@ -186,15 +228,30 @@ export function ExamTable({
                       <DropdownMenuItem onClick={() => onEdit(e)} className="cursor-pointer">
                         <Edit className="w-4 h-4 mr-2" /> Chỉnh sửa
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => onToggleStatus(e)} className={cn("cursor-pointer", e.isPublished ? "text-amber-600 focus:text-amber-600" : "text-emerald-600 focus:text-emerald-600")}>
+                      <DropdownMenuItem
+                        onClick={() => onToggleStatus(e)}
+                        className={cn(
+                          'cursor-pointer',
+                          e.isPublished
+                            ? 'text-amber-600 focus:text-amber-600'
+                            : 'text-emerald-600 focus:text-emerald-600'
+                        )}
+                      >
                         {e.isPublished ? (
-                          <><EyeOff className="w-4 h-4 mr-2" /> Gỡ bài</>
+                          <>
+                            <EyeOff className="w-4 h-4 mr-2" /> Gỡ bài
+                          </>
                         ) : (
-                          <><Eye className="w-4 h-4 mr-2" /> Công khai bài</>
+                          <>
+                            <Eye className="w-4 h-4 mr-2" /> Công khai bài
+                          </>
                         )}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => onDelete(e)} className="text-destructive focus:text-destructive cursor-pointer">
+                      <DropdownMenuItem
+                        onClick={() => onDelete(e)}
+                        className="text-destructive focus:text-destructive cursor-pointer"
+                      >
                         <Trash2 className="w-4 h-4 mr-2" /> Xóa đề thi
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -206,5 +263,5 @@ export function ExamTable({
         </Table>
       </div>
     </div>
-  );
+  )
 }

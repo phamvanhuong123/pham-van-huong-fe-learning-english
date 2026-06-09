@@ -1,25 +1,37 @@
-import { useNavigate } from 'react-router';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft, Home, Search } from 'lucide-react';
+import { useNavigate } from 'react-router'
+import { Button } from '@/components/ui/button'
+import { ArrowLeft, Home, Search } from 'lucide-react'
 
 // --- Sub-components ---
 
 function FloatingOrb({ className }: { className: string }) {
-  return <div className={className} aria-hidden="true" />;
+  return <div className={className} aria-hidden="true" />
 }
 
 function Particle({ style }: { style: React.CSSProperties }) {
-  return <div className="absolute w-1 h-1 rounded-full bg-primary/30" style={style} aria-hidden="true" />;
+  return (
+    <div className="absolute w-1 h-1 rounded-full bg-primary/30" style={style} aria-hidden="true" />
+  )
 }
 
 const PARTICLES: React.CSSProperties[] = [
   { top: '15%', left: '12%', opacity: 0.6, animation: 'float 9s ease-in-out infinite' },
   { top: '75%', left: '8%', opacity: 0.4, animation: 'float-reverse 12s ease-in-out infinite' },
   { top: '30%', right: '10%', opacity: 0.5, animation: 'float 7s ease-in-out infinite 1s' },
-  { top: '60%', right: '15%', opacity: 0.7, animation: 'float-reverse 11s ease-in-out infinite 2s' },
+  {
+    top: '60%',
+    right: '15%',
+    opacity: 0.7,
+    animation: 'float-reverse 11s ease-in-out infinite 2s',
+  },
   { top: '85%', left: '40%', opacity: 0.3, animation: 'float 8s ease-in-out infinite 0.5s' },
-  { top: '20%', left: '55%', opacity: 0.5, animation: 'float-reverse 14s ease-in-out infinite 1.5s' },
-];
+  {
+    top: '20%',
+    left: '55%',
+    opacity: 0.5,
+    animation: 'float-reverse 14s ease-in-out infinite 1.5s',
+  },
+]
 
 function GlassCard404() {
   return (
@@ -27,7 +39,10 @@ function GlassCard404() {
       {/* Glow behind the number */}
       <div
         className="absolute inset-0 blur-3xl opacity-20 dark:opacity-30"
-        style={{ background: 'radial-gradient(ellipse at center, oklch(50.992% 0.24211 262.892) 0%, transparent 70%)' }}
+        style={{
+          background:
+            'radial-gradient(ellipse at center, oklch(50.992% 0.24211 262.892) 0%, transparent 70%)',
+        }}
         aria-hidden="true"
       />
 
@@ -38,7 +53,7 @@ function GlassCard404() {
         <Digit label="4" delay="0.4s" />
       </div>
     </div>
-  );
+  )
 }
 
 function Digit({ label, delay }: { label: string; delay: string }) {
@@ -57,7 +72,7 @@ function Digit({ label, delay }: { label: string; delay: string }) {
         {label}
       </span>
     </div>
-  );
+  )
 }
 
 function ZeroDigit() {
@@ -78,10 +93,7 @@ function ZeroDigit() {
       }}
     >
       {/* Inner glow ring */}
-      <div
-        className="absolute inset-2 rounded-xl border border-primary/20"
-        aria-hidden="true"
-      />
+      <div className="absolute inset-2 rounded-xl border border-primary/20" aria-hidden="true" />
       <span
         className="font-sans font-black text-6xl sm:text-8xl md:text-9xl tracking-tighter leading-none"
         style={{ color: 'oklch(50.992% 0.24211 262.892)' }}
@@ -89,13 +101,13 @@ function ZeroDigit() {
         0
       </span>
     </div>
-  );
+  )
 }
 
 // --- Main Page ---
 
 function NotFoundPage() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   return (
     <main
@@ -103,24 +115,30 @@ function NotFoundPage() {
       aria-labelledby="not-found-heading"
     >
       {/* ── Layered background ── */}
-      <FloatingOrb className="
+      <FloatingOrb
+        className="
         absolute -top-40 -left-40 w-[500px] h-[500px] rounded-full
         opacity-10 dark:opacity-[0.07]
         blur-3xl pointer-events-none animate-aurora-1
         bg-primary
-      " />
-      <FloatingOrb className="
+      "
+      />
+      <FloatingOrb
+        className="
         absolute top-1/3 -right-60 w-[600px] h-[600px] rounded-full
         opacity-[0.06] dark:opacity-[0.05]
         blur-3xl pointer-events-none animate-aurora-2
         bg-primary
-      " />
-      <FloatingOrb className="
+      "
+      />
+      <FloatingOrb
+        className="
         absolute -bottom-40 left-1/4 w-[400px] h-[400px] rounded-full
         opacity-[0.08] dark:opacity-[0.06]
         blur-3xl pointer-events-none animate-aurora-3
         bg-primary
-      " />
+      "
+      />
 
       {/* ── Subtle grid overlay ── */}
       <div
@@ -142,7 +160,6 @@ function NotFoundPage() {
 
       {/* ── Content ── */}
       <div className="relative z-10 flex flex-col items-center text-center max-w-2xl w-full gap-10">
-
         {/* Badge */}
         <div
           className="
@@ -151,7 +168,10 @@ function NotFoundPage() {
             text-xs font-semibold tracking-widest uppercase text-muted-foreground
           "
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-destructive animate-pulse" aria-hidden="true" />
+          <span
+            className="w-1.5 h-1.5 rounded-full bg-destructive animate-pulse"
+            aria-hidden="true"
+          />
           Error 404
         </div>
 
@@ -167,8 +187,8 @@ function NotFoundPage() {
             Oops! Page not found.
           </h1>
           <p className="text-base text-muted-foreground leading-relaxed">
-            The page you're looking for has moved, been deleted, or never existed.
-            Let's get you back on track.
+            The page you're looking for has moved, been deleted, or never existed. Let's get you
+            back on track.
           </p>
         </div>
 
@@ -192,8 +212,8 @@ function NotFoundPage() {
               aria-label="Search the site"
               onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                 if (e.key === 'Enter') {
-                  const val = (e.currentTarget.value ?? '').trim();
-                  if (val) navigate(`/?q=${encodeURIComponent(val)}`);
+                  const val = (e.currentTarget.value ?? '').trim()
+                  if (val) navigate(`/?q=${encodeURIComponent(val)}`)
                 }
               }}
             />
@@ -260,7 +280,7 @@ function NotFoundPage() {
         aria-hidden="true"
       />
     </main>
-  );
+  )
 }
 
-export default NotFoundPage;
+export default NotFoundPage

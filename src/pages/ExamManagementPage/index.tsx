@@ -1,4 +1,4 @@
-import { ExamManagementContainer } from './components/ExamManagementContainer';
+import { ExamManagementContainer } from './components/ExamManagementContainer'
 
 function ExamManagementPage() {
   return (
@@ -12,7 +12,7 @@ function ExamManagementPage() {
 
       <ExamManagementContainer />
     </div>
-  );
+  )
 }
 
-export default ExamManagementPage;
+export default ExamManagementPage

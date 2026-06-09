@@ -1,36 +1,38 @@
-import { useRoles } from '@/hooks/useRoles';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { format } from 'date-fns';
-import { vi } from 'date-fns/locale';
+import { useRoles } from '@/hooks/useRoles'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+
+import { Skeleton } from '@/components/ui/skeleton'
+import { format } from 'date-fns'
+import { vi } from 'date-fns/locale'
 
 interface RoleListProps {
-  onSelectRole: (roleId: string) => void;
-  selectedRoleId: string | null;
+  onSelectRole: (roleId: string) => void
+  selectedRoleId: string | null
 }
 
 export function RoleList({ onSelectRole, selectedRoleId }: RoleListProps) {
-  const { data: roles, isLoading, error } = useRoles();
+  const { data: roles, isLoading, error } = useRoles()
 
   if (isLoading) {
     return (
       <div className="space-y-4">
-        {[1, 2, 3].map(i => <Skeleton key={i} className="h-24 w-full" />)}
+        {[1, 2, 3].map((i) => (
+          <Skeleton key={i} className="h-24 w-full" />
+        ))}
       </div>
-    );
+    )
   }
 
   if (error || !roles) {
-    return <div className="text-rose-500">Lỗi khi tải danh sách vai trò.</div>;
+    return <div className="text-rose-500">Lỗi khi tải danh sách vai trò.</div>
   }
 
   return (
     <div className="space-y-4">
-      {roles.map(role => (
-        <Card 
-          key={role.id} 
+      {roles.map((role) => (
+        <Card
+          key={role.id}
           className={`cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 ${selectedRoleId === role.id ? 'border-primary shadow-sm bg-primary/5 ring-1 ring-primary/20' : 'hover:border-primary/50'}`}
           onClick={() => onSelectRole(role.id)}
         >
@@ -39,7 +41,11 @@ export function RoleList({ onSelectRole, selectedRoleId }: RoleListProps) {
               <div>
                 <CardTitle className="text-base flex items-center gap-2">
                   {role.name}
-                  {role.isSystem && <Badge variant="secondary" className="text-[10px]">System</Badge>}
+                  {role.isSystem && (
+                    <Badge variant="secondary" className="text-[10px]">
+                      System
+                    </Badge>
+                  )}
                 </CardTitle>
                 <CardDescription className="text-xs mt-1 truncate max-w-[200px]">
                   {role.description || 'Chưa có mô tả'}
@@ -58,5 +64,5 @@ export function RoleList({ onSelectRole, selectedRoleId }: RoleListProps) {
         </Card>
       ))}
     </div>
-  );
+  )
 }

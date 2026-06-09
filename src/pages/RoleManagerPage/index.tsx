@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { RoleList } from './components/RoleList';
-import { PermissionMatrix } from './components/PermissionMatrix';
+import { useState } from 'react'
+import { RoleList } from './components/RoleList'
+import { PermissionMatrix } from './components/PermissionMatrix'
 
 function RoleManagerPage() {
-  const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null);
+  const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null)
 
   return (
     <div className="p-8 h-[calc(100vh-theme(spacing.16))] flex flex-col animate-fade-in">
@@ -31,7 +31,7 @@ function RoleManagerPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default RoleManagerPage;
+export default RoleManagerPage

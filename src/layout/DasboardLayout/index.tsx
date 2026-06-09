@@ -1,17 +1,17 @@
-import { Outlet, useLocation } from 'react-router';
-import { useState } from 'react';
-import { Menu, ShieldCheck } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import AdminSidebar from './components/AdminSidebar';
+import { Outlet, useLocation } from 'react-router'
+import { useState } from 'react'
+import { Menu, ShieldCheck } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import AdminSidebar from './components/AdminSidebar'
 
 function DashboardLayout() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const location = useLocation();
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const location = useLocation()
 
   // Simple breadcrumb logic based on pathname
-  const pathSegments = location.pathname.split('/').filter(Boolean);
-  const currentPage = pathSegments[pathSegments.length - 1] || 'Dashboard';
-  const pageTitle = currentPage.charAt(0).toUpperCase() + currentPage.slice(1);
+  const pathSegments = location.pathname.split('/').filter(Boolean)
+  const currentPage = pathSegments[pathSegments.length - 1] || 'Dashboard'
+  const pageTitle = currentPage.charAt(0).toUpperCase() + currentPage.slice(1)
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] flex w-full font-sans text-slate-900">
@@ -39,7 +39,12 @@ function DashboardLayout() {
         {/* Mobile top bar */}
         <header className="lg:hidden flex items-center justify-between px-4 h-14 border-b border-border/60 bg-white sticky top-0 z-30">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" className="h-9 w-9 -ml-2" onClick={() => setSidebarOpen(true)}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9 -ml-2"
+              onClick={() => setSidebarOpen(true)}
+            >
               <Menu className="w-5 h-5" />
             </Button>
             <div className="flex items-center gap-2">
@@ -64,7 +69,7 @@ function DashboardLayout() {
         </main>
       </div>
     </div>
-  );
+  )
 }
 
-export default DashboardLayout;
+export default DashboardLayout

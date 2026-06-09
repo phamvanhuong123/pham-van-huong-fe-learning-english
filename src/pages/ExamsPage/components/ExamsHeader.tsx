@@ -1,5 +1,5 @@
-import React from 'react';
-import { Sparkles } from 'lucide-react';
+import React from 'react'
+import { Sparkles } from 'lucide-react'
 
 export const ExamsHeader: React.FC = () => {
   return (
@@ -15,16 +15,16 @@ export const ExamsHeader: React.FC = () => {
           <Sparkles className="w-3.5 h-3.5" />
           <span>Cập nhật liên tục đề thi ETS mới nhất</span>
         </div>
-        
+
         <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">
           Thư viện Đề thi Thực chiến
         </h1>
-        
+
         <p className="text-lg text-slate-500 max-w-2xl mx-auto font-medium">
-          Làm quen với áp lực phòng thi qua hàng trăm bộ đề chuẩn cấu trúc. 
-          Đánh giá chính xác năng lực và chinh phục mục tiêu TOEIC của bạn.
+          Làm quen với áp lực phòng thi qua hàng trăm bộ đề chuẩn cấu trúc. Đánh giá chính xác năng
+          lực và chinh phục mục tiêu TOEIC của bạn.
         </p>
       </div>
     </div>
-  );
-};
+  )
+}

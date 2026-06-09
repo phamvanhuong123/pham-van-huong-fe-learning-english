@@ -1,33 +1,34 @@
-import React from 'react';
-import type { ReviewPassageGroup } from '@/types/result.type';
-import { cn } from '@/lib/utils';
-import { Check, X, FileText } from 'lucide-react';
-import { QuestionNoteEditor } from '../QuestionNoteEditor';
+import React from 'react'
+import type { ReviewPassageGroup } from '@/types/result.type'
+import { cn } from '@/lib/utils'
+import { Check, X, FileText } from 'lucide-react'
+import { QuestionNoteEditor } from '../QuestionNoteEditor'
 
 interface ReviewPart67ViewerProps {
-  passageGroup: ReviewPassageGroup;
-  part: string; // 'PART6' | 'PART7'
+  passageGroup: ReviewPassageGroup
+  part: string // 'PART6' | 'PART7'
 }
 
 export const ReviewPart67Viewer: React.FC<ReviewPart67ViewerProps> = ({ passageGroup, part }) => {
-  const isPart6 = part === 'PART6';
+  const isPart6 = part === 'PART6'
 
   // Sắp xếp câu hỏi theo order
-  const sortedQuestions = [...passageGroup.questions].sort((a, b) => a.order - b.order);
-  const questionNumbers = sortedQuestions.map(q => q.order).join(' - ');
-  const allTranscripts = passageGroup.passages.filter(p => p.transcript && p.transcript !== '<p><br></p>');
+  const sortedQuestions = [...passageGroup.questions].sort((a, b) => a.order - b.order)
+  const questionNumbers = sortedQuestions.map((q) => q.order).join(' - ')
+  const allTranscripts = passageGroup.passages.filter(
+    (p) => p.transcript && p.transcript !== '<p><br></p>'
+  )
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-100 mb-6 overflow-hidden">
       <div className="flex flex-col xl:flex-row h-full">
-
         {/* Left Column: Passage Content */}
         <div className="w-full xl:w-[55%] flex flex-col xl:border-r border-slate-100 xl:max-h-[calc(100vh-6rem)] xl:sticky xl:top-20">
-
           <div className="p-2.5 md:p-3 border-b border-slate-50 bg-slate-50/50 flex items-center gap-1.5">
             <FileText className="w-4 h-4 text-slate-400" />
             <h3 className="font-bold text-slate-800 text-xs md:text-sm">
-              Questions <span className="text-blue-600">{questionNumbers}</span> refer to the following {isPart6 ? 'text' : 'passage'}.
+              Questions <span className="text-blue-600">{questionNumbers}</span> refer to the
+              following {isPart6 ? 'text' : 'passage'}.
             </h3>
           </div>
 
@@ -42,10 +43,14 @@ export const ReviewPart67Viewer: React.FC<ReviewPart67ViewerProps> = ({ passageG
                   {allTranscripts.map((p, i) => (
                     <div key={i}>
                       {allTranscripts.length > 1 && (
-                        <h5 className="font-bold text-blue-800 mb-2 text-xs uppercase tracking-wider">Đoạn {i + 1}</h5>
+                        <h5 className="font-bold text-blue-800 mb-2 text-xs uppercase tracking-wider">
+                          Đoạn {i + 1}
+                        </h5>
                       )}
-                      <div className="prose prose-sm max-w-none text-[13px] md:text-sm text-slate-700 leading-relaxed break-words overflow-hidden"
-                        dangerouslySetInnerHTML={{ __html: p.transcript! }} />
+                      <div
+                        className="prose prose-sm max-w-none text-[13px] md:text-sm text-slate-700 leading-relaxed break-words overflow-hidden"
+                        dangerouslySetInnerHTML={{ __html: p.transcript! }}
+                      />
                     </div>
                   ))}
                 </div>
@@ -76,7 +81,6 @@ export const ReviewPart67Viewer: React.FC<ReviewPart67ViewerProps> = ({ passageG
                 )}
               </div>
             ))}
-
           </div>
         </div>
 
@@ -85,16 +89,26 @@ export const ReviewPart67Viewer: React.FC<ReviewPart67ViewerProps> = ({ passageG
           <div className="p-3 md:p-5 overflow-y-auto custom-scrollbar flex-1">
             <div className="flex flex-col gap-6">
               {sortedQuestions.map((question) => {
-                const isAnsweredCorrectly = question.userAnswer?.isCorrect;
-                const hasAnswer = !!question.userAnswer?.selectedLabel;
+                const isAnsweredCorrectly = question.userAnswer?.isCorrect
+                const hasAnswer = !!question.userAnswer?.selectedLabel
 
                 return (
-                  <div id={`question-${question.order}`} key={question.id} className="scroll-mt-20 p-4 bg-white rounded-lg border border-slate-100 shadow-sm">
+                  <div
+                    id={`question-${question.order}`}
+                    key={question.id}
+                    className="scroll-mt-20 p-4 bg-white rounded-lg border border-slate-100 shadow-sm"
+                  >
                     <div className="flex gap-3 mb-4">
-                      <div className={cn(
-                        "w-6 h-6 shrink-0 rounded-full flex items-center justify-center font-bold text-xs shadow-sm mt-0.5",
-                        isAnsweredCorrectly ? "bg-green-100 text-green-700" : hasAnswer ? "bg-red-100 text-red-700" : "bg-slate-100 text-slate-500"
-                      )}>
+                      <div
+                        className={cn(
+                          'w-6 h-6 shrink-0 rounded-full flex items-center justify-center font-bold text-xs shadow-sm mt-0.5',
+                          isAnsweredCorrectly
+                            ? 'bg-green-100 text-green-700'
+                            : hasAnswer
+                              ? 'bg-red-100 text-red-700'
+                              : 'bg-slate-100 text-slate-500'
+                        )}
+                      >
                         {question.order}
                       </div>
                       <div className="flex-1 pt-0">
@@ -114,49 +128,48 @@ export const ReviewPart67Viewer: React.FC<ReviewPart67ViewerProps> = ({ passageG
 
                     <div className="flex flex-col gap-2 pl-0 md:pl-9 mb-5">
                       {question.options.map((opt) => {
-                        const isSelected = question.userAnswer?.selectedLabel === opt.label;
-                        const isCorrect = opt.isCorrect;
+                        const isSelected = question.userAnswer?.selectedLabel === opt.label
+                        const isCorrect = opt.isCorrect
 
-                        let bgColor = "bg-white border-slate-200";
-                        let textColor = "text-slate-600";
-                        let circleColor = "bg-white border-slate-300 text-slate-500";
-                        let icon = null;
+                        let bgColor = 'bg-white border-slate-200'
+                        let textColor = 'text-slate-600'
+                        let circleColor = 'bg-white border-slate-300 text-slate-500'
+                        let icon = null
 
                         if (isCorrect) {
-                          bgColor = "bg-green-50 border-green-300 shadow-sm";
-                          textColor = "text-green-800 font-medium";
-                          circleColor = "bg-green-600 border-green-600 text-white";
-                          icon = <Check className="w-4 h-4 text-green-600 shrink-0 ml-auto" />;
+                          bgColor = 'bg-green-50 border-green-300 shadow-sm'
+                          textColor = 'text-green-800 font-medium'
+                          circleColor = 'bg-green-600 border-green-600 text-white'
+                          icon = <Check className="w-4 h-4 text-green-600 shrink-0 ml-auto" />
                         } else if (isSelected && !isCorrect) {
-                          bgColor = "bg-red-50 border-red-300 shadow-sm";
-                          textColor = "text-red-800 font-medium";
-                          circleColor = "bg-red-600 border-red-600 text-white";
-                          icon = <X className="w-4 h-4 text-red-600 shrink-0 ml-auto" />;
+                          bgColor = 'bg-red-50 border-red-300 shadow-sm'
+                          textColor = 'text-red-800 font-medium'
+                          circleColor = 'bg-red-600 border-red-600 text-white'
+                          icon = <X className="w-4 h-4 text-red-600 shrink-0 ml-auto" />
                         }
 
                         return (
                           <div
                             key={opt.id}
                             className={cn(
-                              "group flex items-center gap-2.5 p-2 rounded-md border transition-all duration-200",
+                              'group flex items-center gap-2.5 p-2 rounded-md border transition-all duration-200',
                               bgColor
                             )}
                           >
-                            <div className={cn(
-                              "flex items-center justify-center w-5 h-5 rounded-full border-[1.5px] text-[10px] font-bold shrink-0",
-                              circleColor
-                            )}>
+                            <div
+                              className={cn(
+                                'flex items-center justify-center w-5 h-5 rounded-full border-[1.5px] text-[10px] font-bold shrink-0',
+                                circleColor
+                              )}
+                            >
                               {opt.label}
                             </div>
-                            <span className={cn(
-                              "font-medium text-[13px] md:text-sm",
-                              textColor
-                            )}>
+                            <span className={cn('font-medium text-[13px] md:text-sm', textColor)}>
                               {opt.text}
                             </span>
                             {icon}
                           </div>
-                        );
+                        )
                       })}
                     </div>
 
@@ -167,7 +180,7 @@ export const ReviewPart67Viewer: React.FC<ReviewPart67ViewerProps> = ({ passageG
                             <FileText className="w-4 h-4" /> Giải thích chi tiết
                           </div>
                           <div
-                            className="text-slate-700 leading-relaxed"
+                            className="text-slate-700 leading-relaxed break-words overflow-hidden"
                             dangerouslySetInnerHTML={{ __html: question.explanation }}
                           />
                         </div>
@@ -176,13 +189,12 @@ export const ReviewPart67Viewer: React.FC<ReviewPart67ViewerProps> = ({ passageG
                       <QuestionNoteEditor questionId={question.id} initialNote={question.note} />
                     </div>
                   </div>
-                );
+                )
               })}
             </div>
           </div>
         </div>
-
       </div>
     </div>
-  );
-};
+  )
+}

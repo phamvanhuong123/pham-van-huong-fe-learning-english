@@ -1,53 +1,63 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Link } from 'react-router';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { registerApi } from '@/services/authServices';
-import { toast } from 'sonner';
-import { MailOpen } from 'lucide-react';
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { Link } from 'react-router'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { registerApi } from '@/services/authServices'
+import { toast } from 'sonner'
+import { MailOpen } from 'lucide-react'
 
-const registerSchema = z.object({
-  name: z.string().min(1, "Vui lòng nhập tên của bạn"),
-  email: z.string().email("Email không hợp lệ"),
-  password: z.string()
-    .min(8, "Mật khẩu phải có ít nhất 8 ký tự")
-    .regex(/\d/, "Mật khẩu phải chứa ít nhất 1 chữ số"),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Mật khẩu xác nhận không khớp",
-  path: ["confirmPassword"],
-});
+const registerSchema = z
+  .object({
+    name: z.string().min(1, 'Vui lòng nhập tên của bạn'),
+    email: z.string().email('Email không hợp lệ'),
+    password: z
+      .string()
+      .min(8, 'Mật khẩu phải có ít nhất 8 ký tự')
+      .regex(/\d/, 'Mật khẩu phải chứa ít nhất 1 chữ số'),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Mật khẩu xác nhận không khớp',
+    path: ['confirmPassword'],
+  })
 
-type RegisterFormValues = z.infer<typeof registerSchema>;
+type RegisterFormValues = z.infer<typeof registerSchema>
 
 const RegisterPage = () => {
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  
+  const [isSuccess, setIsSuccess] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
-  });
+  })
 
   const onSubmit = async (data: RegisterFormValues) => {
     try {
-      setIsLoading(true);
-      await registerApi({ email: data.email, name: data.name, password: data.password });
-      setIsSuccess(true);
+      setIsLoading(true)
+      await registerApi({ email: data.email, name: data.name, password: data.password })
+      setIsSuccess(true)
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || 'Có lỗi xảy ra khi đăng ký. Vui lòng thử lại.');
+      toast.error(error?.response?.data?.message || 'Có lỗi xảy ra khi đăng ký. Vui lòng thử lại.')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   if (isSuccess) {
     return (
@@ -61,17 +71,21 @@ const RegisterPage = () => {
               Kiểm tra email của bạn
             </CardTitle>
             <CardDescription className="text-muted-foreground/90 text-sm leading-relaxed px-2">
-              Chúng tôi đã gửi một đường link xác thực tài khoản vào email của bạn. Vui lòng kiểm tra hộp thư đến (và cả thư mục spam).
+              Chúng tôi đã gửi một đường link xác thực tài khoản vào email của bạn. Vui lòng kiểm
+              tra hộp thư đến (và cả thư mục spam).
             </CardDescription>
           </div>
         </CardHeader>
         <CardFooter className="flex justify-center border-t border-border/40 pt-6 pb-4">
-          <Button asChild className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-sm hover:scale-[1.01] active:scale-[0.99] transition-all duration-150 py-5 rounded-md">
+          <Button
+            asChild
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-sm hover:scale-[1.01] active:scale-[0.99] transition-all duration-150 py-5 rounded-md"
+          >
             <Link to="/login">Trở lại trang Đăng nhập</Link>
           </Button>
         </CardFooter>
       </Card>
-    );
+    )
   }
 
   return (
@@ -87,65 +101,104 @@ const RegisterPage = () => {
       <CardContent className="pb-4">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 text-left">
           <div className="space-y-1">
-            <Label htmlFor="name" className="font-semibold text-[10px] text-muted-foreground tracking-wide uppercase">Họ và tên</Label>
-            <Input 
-              id="name" 
-              placeholder="Nguyễn Văn A" 
+            <Label
+              htmlFor="name"
+              className="font-semibold text-[10px] text-muted-foreground tracking-wide uppercase"
+            >
+              Họ và tên
+            </Label>
+            <Input
+              id="name"
+              placeholder="Nguyễn Văn A"
               className="h-9 bg-slate-50/50 dark:bg-slate-900/30 border-border/80 focus-visible:ring-primary/20 focus-visible:border-primary text-sm transition-all duration-150"
-              {...register('name')} 
+              {...register('name')}
             />
-            {errors.name && <p className="text-[11px] text-destructive mt-0.5 font-medium">{errors.name.message}</p>}
+            {errors.name && (
+              <p className="text-[11px] text-destructive mt-0.5 font-medium">
+                {errors.name.message}
+              </p>
+            )}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="email" className="font-semibold text-[10px] text-muted-foreground tracking-wide uppercase">Email</Label>
-            <Input 
-              id="email" 
-              type="email" 
-              placeholder="m@example.com" 
+            <Label
+              htmlFor="email"
+              className="font-semibold text-[10px] text-muted-foreground tracking-wide uppercase"
+            >
+              Email
+            </Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="m@example.com"
               className="h-9 bg-slate-50/50 dark:bg-slate-900/30 border-border/80 focus-visible:ring-primary/20 focus-visible:border-primary text-sm transition-all duration-150"
-              {...register('email')} 
+              {...register('email')}
             />
-            {errors.email && <p className="text-[11px] text-destructive mt-0.5 font-medium">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="text-[11px] text-destructive mt-0.5 font-medium">
+                {errors.email.message}
+              </p>
+            )}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="password" className="font-semibold text-[10px] text-muted-foreground tracking-wide uppercase">Mật khẩu</Label>
-            <Input 
-              id="password" 
-              type="password" 
+            <Label
+              htmlFor="password"
+              className="font-semibold text-[10px] text-muted-foreground tracking-wide uppercase"
+            >
+              Mật khẩu
+            </Label>
+            <Input
+              id="password"
+              type="password"
               className="h-9 bg-slate-50/50 dark:bg-slate-900/30 border-border/80 focus-visible:ring-primary/20 focus-visible:border-primary text-sm transition-all duration-150"
-              {...register('password')} 
+              {...register('password')}
             />
-            {errors.password && <p className="text-[11px] text-destructive mt-0.5 font-medium">{errors.password.message}</p>}
+            {errors.password && (
+              <p className="text-[11px] text-destructive mt-0.5 font-medium">
+                {errors.password.message}
+              </p>
+            )}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="confirmPassword" className="font-semibold text-[10px] text-muted-foreground tracking-wide uppercase">Xác nhận mật khẩu</Label>
-            <Input 
-              id="confirmPassword" 
-              type="password" 
+            <Label
+              htmlFor="confirmPassword"
+              className="font-semibold text-[10px] text-muted-foreground tracking-wide uppercase"
+            >
+              Xác nhận mật khẩu
+            </Label>
+            <Input
+              id="confirmPassword"
+              type="password"
               className="h-9 bg-slate-50/50 dark:bg-slate-900/30 border-border/80 focus-visible:ring-primary/20 focus-visible:border-primary text-sm transition-all duration-150"
-              {...register('confirmPassword')} 
+              {...register('confirmPassword')}
             />
-            {errors.confirmPassword && <p className="text-[11px] text-destructive mt-0.5 font-medium">{errors.confirmPassword.message}</p>}
+            {errors.confirmPassword && (
+              <p className="text-[11px] text-destructive mt-0.5 font-medium">
+                {errors.confirmPassword.message}
+              </p>
+            )}
           </div>
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-sm hover:scale-[1.01] active:scale-[0.99] transition-all duration-150 py-3.5 mt-2 rounded-md text-sm"
             disabled={isLoading}
           >
-            {isLoading ? "Đang tạo tài khoản..." : "Đăng ký"}
+            {isLoading ? 'Đang tạo tài khoản...' : 'Đăng ký'}
           </Button>
         </form>
       </CardContent>
       <CardFooter className="flex justify-center border-t border-border/40 pt-3 pb-4">
         <p className="text-xs text-muted-foreground/90">
           Đã có tài khoản?{' '}
-          <Link to="/login" className="text-primary hover:underline font-semibold transition-colors">
+          <Link
+            to="/login"
+            className="text-primary hover:underline font-semibold transition-colors"
+          >
             Đăng nhập
           </Link>
         </p>
       </CardFooter>
     </Card>
-  );
-};
+  )
+}
 
-export default RegisterPage;
+export default RegisterPage
