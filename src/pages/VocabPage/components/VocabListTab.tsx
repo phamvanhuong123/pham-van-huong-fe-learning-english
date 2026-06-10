@@ -58,7 +58,9 @@ export default function VocabListTab() {
       await deleteVocab(confirmState.vocabId)
       toast.success('Xóa từ vựng thành công')
     } catch (error) {
-    } finally {
+      toast.error(`Xoá từ vựng thất bại : ${error}`)
+    } 
+    finally {
       setConfirmState({ isOpen: false, vocabId: null })
     }
   }
